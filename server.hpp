@@ -10,6 +10,7 @@ class server
 private:
     int             _listener;
     const char *    _server_port;
+    std::vector<struct pollfd>     _pfds;
 
 
 public:
@@ -34,6 +35,8 @@ public:
     void    _poll_loop(void);
     void    _add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size);
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
+    void    _add_new_client();
+    void    _handle_data(std::vector<struct pollfd>::iterator &it);
 	
 };
 

@@ -16,6 +16,7 @@
 # include <arpa/inet.h>
 # include <poll.h>
 # include <string>
+# include <vector>
 
 # define PORT "9034"
 

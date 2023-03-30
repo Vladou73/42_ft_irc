@@ -28,7 +28,7 @@ server::_get_listener_socket(void)
 {
     int             yes = 1;
     int             rv;
-    struct addrinfo hints, *ai, *p;
+    struct addrinfo hints, *ai, *temp;
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -41,16 +41,18 @@ server::_get_listener_socket(void)
         exit(1);
     }
     // Boucle pour trouver une adresse qui fonctionne avec l'ouverture du socket
-    for(p = ai; p != NULL; p = p->ai_next)
+    for(temp = ai; temp != NULL; temp = temp->ai_next)
     {
-        _listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        // point d'ecoute dans le vide, pas encore connecter au server
+        _listener = socket(temp->ai_family, temp->ai_socktype, temp->ai_protocol);
         if (_listener < 0)
           continue;
 
         // En cas de crash, permet d'avoir un nouveau socket sur le meme port
         setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
-        if (bind(_listener, p->ai_addr, p->ai_addrlen) < 0) 
+        // connexion entre le server et lepoint d'ecoute (socket)
+        if (bind(_listener, temp->ai_addr, temp->ai_addrlen) < 0) 
         {
             close(_listener);
             continue;
@@ -58,72 +60,79 @@ server::_get_listener_socket(void)
         break;
     }
     freeaddrinfo(ai);
-
-    if (p == NULL || listen(_listener, SOMAXCONN) == -1)
+    // fd du socket et en mode ecoute de connexions rentrantes de clients
+    if (temp == NULL || listen(_listener, SOMAXCONN) == -1)
     {
         std::cerr << "error getting listening socket\n";
         exit (1);
     }
 }
 
-
-// Add a new file descriptor to the set
-void 
-server::_add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size)
+void
+server::_add_new_client()
 {
-	// If we don't have room, add more space in the pfds array
-	if (*fd_count == *fd_size) {
-		*fd_size *= 2; // Double it
-		// *pfds = realloc(*pfds, sizeof(**pfds) * (*fd_size));
-		// *pfds = realloc(*pfds, sizeof(**pfds) * (*fd_size));
-	}
-	(*pfds)[*fd_count].fd = newfd;
-	(*pfds)[*fd_count].events = POLLIN; // Check ready-to-read
-	(*fd_count)++;
+    struct sockaddr_storage remoteaddr; // Client address
+    socklen_t               addrlen;
+    int						newfd; // Newly accept()ed socket descriptor
+
+    // If listener is ready to read, handle new connection  
+    addrlen = sizeof(remoteaddr);
+    newfd = accept(_listener, (struct sockaddr *)&remoteaddr,&addrlen);
+    if (newfd == -1)
+        perror("accept");
+    else
+    {
+        struct pollfd new_poll_fd;
+        new_poll_fd.fd = newfd; // the socket descriptor
+        new_poll_fd.events = POLLIN; 
+        _pfds.push_back(new_poll_fd);
+    }
 }
 
-// Remove an index from the set
-void 
-server::_del_from_pfds(struct pollfd pfds[], int i, int *fd_count)
+void
+server::_handle_data(std::vector<struct pollfd>::iterator &it)
 {
-	// Copy the one from the end over this one
-	pfds[i] = pfds[*fd_count-1];
+    //TODO find buff size
+	char    buff[256];
 
-	(*fd_count)--;
+    // If not the listener, we're just a regular client
+    int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
+    int sender_fd = it->fd; 
+
+    if (nbytes <= 0) 
+    {
+        // Got error or connection closed by client
+        if (nbytes == 0) 
+        {
+            // Connection closed
+            printf("pollserver: socket %d hung up\n", sender_fd);
+        } else
+            perror("recv"); 
+        close(it->fd); // Bye!  
+        _pfds.erase(it); 
+    } 
+    else 
+    {
+        std::cout << "msg du client fd " << it->fd << std::endl;
+        std::cout << std::string(buff, 0, nbytes) << std::endl;
+        // if (send(dest_fd, buff, nbytes, 0) == -1)
+    }
 }
 
-
-
-/*
-struct pollfd {
-int fd; // the socket descriptor
-short events; // bitmap of events we're interested in
-short revents; // when poll() returns, bitmap of events that occurred
-};
-*/
 void    
 server::_poll_loop(void)
 {
-	//TODO find buff size
-	char					buff[256];
-    int						fd_count = 1;
-    int						fd_size = 10;
-    int						newfd; // Newly accept()ed socket descriptor
-    socklen_t               addrlen;
-    struct pollfd           *pfds = new pollfd[fd_size];
-    struct sockaddr_storage remoteaddr; // Client address
+    struct pollfd first;
 
-    // Add the listener to set
-    pfds[0].fd = _listener; // the socket descriptor
-    pfds[0].events = POLLIN; // Report ready to read on incoming connection
-    fd_count = 1; // For the liste  / Main loop
+    first.fd = _listener; // the socket descriptor
+    first.events = POLLIN; // Report ready to read on incoming connection
+    _pfds.push_back(first);
 
     for(;;) 
     {
 		std::cout << "avant poll" << std::endl;
 		std::cout << "socket fd listening"<< _listener << std::endl;
-        // poll_count = nb sockets ouverts
-        int poll_count = poll(pfds, fd_count, -1);
+        int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
 		
 		std::cout << "apres poll" << std::endl;
 
@@ -132,63 +141,17 @@ server::_poll_loop(void)
             perror("poll");
             exit(1);
         }   
-        // Run through the existing connections looking for data to read
-        for(int i = 0; i < fd_count; i++) 
+        std::vector<struct pollfd>::iterator end = _pfds.end();
+        for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
         { 
             // Check if someone's ready to read
-            if (pfds[i].revents && POLLIN) 
-            {   // We got one!! 
-                if (pfds[i].fd == _listener) 
-                {
-                    // If listener is ready to read, handle new connection  
-                    addrlen = sizeof(remoteaddr);
-                    newfd = accept(_listener, (struct sockaddr *)&remoteaddr,&addrlen);  
-					std::cout << newfd << std::endl;
-                    if (newfd == -1)
-                        perror("accept");
-					else
-                    {
-						//TODO create function add to pdfs
-                        _add_to_pfds(&pfds, newfd, &fd_count, &fd_size); 
-                        std::cout << "pollserver: new connection from \n"; 
-                    }
-                } 
+            if (it->revents & POLLIN)
+            {
+                if (it->fd == _listener) 
+                    _add_new_client();
                 else 
-                {
-                    // If not the listener, we're just a regular client
-                    int nbytes = recv(pfds[i].fd, buff, sizeof(buff), 0);  
-                    int sender_fd = pfds[i].fd; 
-                    if (nbytes <= 0) 
-                    {
-                            // Got error or connection closed by client
-                            if (nbytes == 0) 
-                            {
-                                // Connection closed
-                                printf("pollserver: socket %d hung up\n", sender_fd);
-                            } else
-                                perror("recv"); 
-                            close(pfds[i].fd); // Bye!  
-							//TODO code del function
-                            _del_from_pfds(pfds, i, &fd_count);  
-                    } 
-                    else 
-                    {
-						std::cout << std::string(buff, 0, nbytes) << std::endl;
-                        // We got some good data from a client  
-                        // for(int j = 0; j < fd_count; j++) 
-                        // {
-                        //     // Send to everyone!
-                        //     int dest_fd = pfds[j].fd;
-                        //     // Except the listener and ourselves
-                        //     if (dest_fd != _listener && dest_fd != sender_fd) 
-                        //     {
-                        //         if (send(dest_fd, buff, nbytes, 0) == -1)
-                        //             perror("send");
-                        //     }
-                        // }
-                    }
-                } // END handle data from client
-            } // END got ready-to-read from poll()
-        } // END looping through file descriptors
-    } // END for(;;)--and you thought it would never end!
+                    _handle_data(it);
+            }
+        }
+    }
 }
