@@ -2,24 +2,26 @@
 # define SERVER_HPP
 
 # include "ft_irc.hpp"
+# include "client.hpp"
 
 class Server
 {
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
-    int							_listener;
+    const char *				_pwd;
+	int							_listener;
 	const char *				_server_port;
     std::vector<struct pollfd>	_pfds;
-	std::vector<std::string>	_data_connexion;
     // Client *client;
+	std::map<int, Client>	_clients;
 
 
 public:
 	// =============================================================================
 	// CONSTRUCTORS ================================================================
     Server();
-    Server(char *av);
+    Server(char **av);
 
 
 	// =============================================================================
@@ -29,17 +31,16 @@ public:
 	// =============================================================================
 	// MODIFIERS ===================================================================
 
-
     // =============================================================================
 	// METHODS =====================================================================
     // Return a listening socket
+private:
     void    _get_listener_socket(void);
     void    _poll_loop(void);
     void    _add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size);
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
     void    _add_new_client();
     void    _handle_data(std::vector<struct pollfd>::iterator &it);
-	void	_parse_connexion(std::string buff);
 };
 
 

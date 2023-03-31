@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include "client.hpp"
 #include "ft_irc.hpp"
 
 
@@ -6,7 +7,7 @@ int main (int ac, char **av)
 {
     (void) ac;
 
-    Server a(av[1]);
+    Server a(av);
 
     // a._get_listener_socket();
 

@@ -5,7 +5,7 @@
 Server::Server() : _server_port("6667")
 {}
 
-Server::Server(char *av) : _server_port(av)
+Server::Server(char **av) : _pwd(av[2]), _server_port(av[1])
 {
     _get_listener_socket();
 	_poll_loop();
@@ -86,29 +86,18 @@ Server::_add_new_client()
         new_poll_fd.fd = newfd; // the socket descriptor
         new_poll_fd.events = POLLIN; 
         _pfds.push_back(new_poll_fd);
+		Client client;
+		_clients.insert(std::pair<int,Client>(newfd, client));
     }
-}
-
-void
-Server::_parse_connexion(std::string buff)
-{
-	std::cout<<"buffer = "<< buff<<std::endl;
-	// if (buff.compare(0,4, "PASS ") == 0)
-	// {
-		// _data_connexion.clear();
-	_data_connexion.push_back(buff);
-	// }
-	// std::vector<std::string>::iterator it = _data_connexion.begin();
-	// for (; it != _data_connexion.end(); it++)
-	std::cout<<"PASS = "<<_data_connexion[0]<<std::endl;
 }
 
 void
 Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 {
     //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 character limit includes this delimiter, meaning that a message only has space for 510 useful characters.
-	char    buff[512];
-	// std::stringstream ss;
+	char    buff[100000]; //TODO CHECK LE BUFFER SIZE
+
+	memset(&buff, 0, sizeof(buff));
     // If not the listener, we're just a regular client
     int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
     int sender_fd = it->fd; 
@@ -127,11 +116,18 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
     } 
     else 
     {
-        std::cout << "[client msg] " << "fd = " << it->fd << " | ";
+        std::cout << "[client] " << "fd = " << it->fd << " | ";
         std::cout << std::string(buff, 0, nbytes) << std::endl;
-		// ss << buff;
 		std::string ss1 = buff;
-        _parse_connexion(ss1);
+
+		if (_clients[sender_fd].getDataConnexion().size() < 3)
+        	_clients[sender_fd].parse_connexion(ss1);
+		else {
+			if (_clients[sender_fd].check_connexion(_pwd) == true) {
+				return;
+			}
+		}
+			
         // if (send(dest_fd, buff, nbytes, 0) == -1)
     }
 }
@@ -147,12 +143,9 @@ Server::_poll_loop(void)
 
     for(;;) 
     {
-		std::cout << "avant poll" << std::endl;
-		std::cout << "socket fd listening"<< _listener << std::endl;
+		std::cout << "[server] is listening in fd = "<< _listener << std::endl;
         int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
 		
-		std::cout << "apres poll" << std::endl;
-
         if (poll_count == -1) 
         {
             perror("poll");

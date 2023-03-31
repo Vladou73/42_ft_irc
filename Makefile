@@ -2,6 +2,7 @@ NAME =	Irc
 
 SRCS =	main.cpp\
 		server.cpp\
+		client.cpp
 
 CC = c++
 

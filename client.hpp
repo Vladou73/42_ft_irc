@@ -9,9 +9,10 @@ class Client
 	// ATTRIBUTS ===================================================================
 private:
 
-	std::string		_nick;
-	std::string		_user;
-	int				_client_id;
+	std::string					_nick;
+	std::string					_user;
+	// int							_client_id;
+	std::vector<std::string>	_data_connexion;
 
 public:
 	// =============================================================================
@@ -23,12 +24,20 @@ public:
     ~Client();
 
 	// =============================================================================
-	// MODIFIERS ===================================================================
+	// GETTERS / SETTERS ===========================================================
+	std::vector<std::string>	getDataConnexion();
 
 
     // =============================================================================
 	// METHODS =====================================================================
+	void	parse_connexion(std::string buff);
+	bool	check_connexion(std::string password);
 	
+private:
+	bool	_check_nick();
+	bool	_check_user();
+
+
 };
 
 
