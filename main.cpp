@@ -6,9 +6,16 @@ int main (int ac, char **av)
 {
     (void) ac;
 
-    server a(av[1]);
+    Server a(av[1]);
 
     // a._get_listener_socket();
 
     return (0);
 }
+
+/*
+CAP LS
+PASS 123
+NICK l
+USER li li localhost :li
+*/

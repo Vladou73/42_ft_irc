@@ -3,26 +3,28 @@
 
 # include "ft_irc.hpp"
 
-class server
+class Server
 {
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
-    int             _listener;
-    const char *    _server_port;
-    std::vector<struct pollfd>     _pfds;
+    int							_listener;
+	const char *				_server_port;
+    std::vector<struct pollfd>	_pfds;
+	std::vector<std::string>	_data_connexion;
+    // Client *client;
 
 
 public:
 	// =============================================================================
 	// CONSTRUCTORS ================================================================
-    server();
-    server(char *av);
+    Server();
+    Server(char *av);
 
 
 	// =============================================================================
 	// DESTRUCTORS =================================================================
-    ~server();
+    ~Server();
 
 	// =============================================================================
 	// MODIFIERS ===================================================================
@@ -37,7 +39,7 @@ public:
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
     void    _add_new_client();
     void    _handle_data(std::vector<struct pollfd>::iterator &it);
-	
+	void	_parse_connexion(std::string buff);
 };
 
 

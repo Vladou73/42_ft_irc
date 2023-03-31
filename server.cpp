@@ -2,10 +2,10 @@
 
 // =============================================================================
 // CONSTRUCTORS ================================================================
-server::server() : _server_port("6667")
+Server::Server() : _server_port("6667")
 {}
 
-server::server(char *av) : _server_port(av)
+Server::Server(char *av) : _server_port(av)
 {
     _get_listener_socket();
 	_poll_loop();
@@ -14,7 +14,7 @@ server::server(char *av) : _server_port(av)
 
 // =============================================================================
 // DESTRUCTORS =================================================================
-server::~server()
+Server::~Server()
 {}
 
 // =============================================================================
@@ -24,7 +24,7 @@ server::~server()
 // =============================================================================
 // METHODS =====================================================================
 void
-server::_get_listener_socket(void)
+Server::_get_listener_socket(void)
 {
     int             yes = 1;
     int             rv;
@@ -43,7 +43,7 @@ server::_get_listener_socket(void)
     // Boucle pour trouver une adresse qui fonctionne avec l'ouverture du socket
     for(temp = ai; temp != NULL; temp = temp->ai_next)
     {
-        // point d'ecoute dans le vide, pas encore connecter au server
+        // point d'ecoute dans le vide, pas encore connecter au Server
         _listener = socket(temp->ai_family, temp->ai_socktype, temp->ai_protocol);
         if (_listener < 0)
           continue;
@@ -51,7 +51,7 @@ server::_get_listener_socket(void)
         // En cas de crash, permet d'avoir un nouveau socket sur le meme port
         setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
-        // connexion entre le server et lepoint d'ecoute (socket)
+        // connexion entre le Server et lepoint d'ecoute (socket)
         if (bind(_listener, temp->ai_addr, temp->ai_addrlen) < 0) 
         {
             close(_listener);
@@ -69,7 +69,7 @@ server::_get_listener_socket(void)
 }
 
 void
-server::_add_new_client()
+Server::_add_new_client()
 {
     struct sockaddr_storage remoteaddr; // Client address
     socklen_t               addrlen;
@@ -90,11 +90,25 @@ server::_add_new_client()
 }
 
 void
-server::_handle_data(std::vector<struct pollfd>::iterator &it)
+Server::_parse_connexion(std::string buff)
 {
-    //TODO find buff size
-	char    buff[256];
+	std::cout<<"buffer = "<< buff<<std::endl;
+	// if (buff.compare(0,4, "PASS ") == 0)
+	// {
+		// _data_connexion.clear();
+	_data_connexion.push_back(buff);
+	// }
+	// std::vector<std::string>::iterator it = _data_connexion.begin();
+	// for (; it != _data_connexion.end(); it++)
+	std::cout<<"PASS = "<<_data_connexion[0]<<std::endl;
+}
 
+void
+Server::_handle_data(std::vector<struct pollfd>::iterator &it)
+{
+    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 character limit includes this delimiter, meaning that a message only has space for 510 useful characters.
+	char    buff[512];
+	// std::stringstream ss;
     // If not the listener, we're just a regular client
     int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
     int sender_fd = it->fd; 
@@ -105,7 +119,7 @@ server::_handle_data(std::vector<struct pollfd>::iterator &it)
         if (nbytes == 0) 
         {
             // Connection closed
-            printf("pollserver: socket %d hung up\n", sender_fd);
+            printf("pollServer: socket %d hung up\n", sender_fd);
         } else
             perror("recv"); 
         close(it->fd); // Bye!  
@@ -113,14 +127,17 @@ server::_handle_data(std::vector<struct pollfd>::iterator &it)
     } 
     else 
     {
-        std::cout << "msg du client fd " << it->fd << std::endl;
+        std::cout << "[client msg] " << "fd = " << it->fd << " | ";
         std::cout << std::string(buff, 0, nbytes) << std::endl;
+		// ss << buff;
+		std::string ss1 = buff;
+        _parse_connexion(ss1);
         // if (send(dest_fd, buff, nbytes, 0) == -1)
     }
 }
 
 void    
-server::_poll_loop(void)
+Server::_poll_loop(void)
 {
     struct pollfd first;
 
