@@ -33,22 +33,22 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 
 	memset(&buff, 0, sizeof(buff));
     // If not the listener, we're just a regular client
-    int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
-    int sender_fd = it->fd; 
+    int nbytes = recv(it->fd, buff, sizeof(buff), 0);
+    int sender_fd = it->fd;
 
-    if (nbytes <= 0) 
+    if (nbytes <= 0)
     {
         // Got error or connection closed by client
-        if (nbytes == 0) 
+        if (nbytes == 0)
         {
             // Connection closed
             printf("pollServer: socket %d hung up\n", sender_fd);
         } else
-            perror("recv"); 
-        close(it->fd); // Bye!  
-        _pfds.erase(it); 
-    } 
-    else 
+            perror("recv");
+        close(it->fd); // Bye!
+        _pfds.erase(it);
+    }
+    else
     {
         std::cout << PURPLE << "[client] " << "fd = " << it->fd << " | "
                      << std::string(buff, 0, nbytes) << RESET << std::endl ;
@@ -61,8 +61,6 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 		// 		return;
 		// 	}
 		// }
-			
-        // if (send(dest_fd, buff, nbytes, 0) == -1)
     }
 }
 
@@ -73,7 +71,7 @@ Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
     socklen_t               addrlen;
     int						newfd; // Newly accept()ed socket descriptor
 
-    // If listener is ready to read, handle new connection  
+    // If listener is ready to read, handle new connection
     addrlen = sizeof(remoteaddr);
     newfd = accept(_listener, (struct sockaddr *)&remoteaddr,&addrlen);
     if (newfd == -1)
@@ -82,14 +80,14 @@ Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
     {
         struct pollfd new_poll_fd;
         new_poll_fd.fd = newfd; // the socket descriptor
-        new_poll_fd.events = POLLIN; 
+        new_poll_fd.events = POLLIN;
         new_pollfds.push_back(new_poll_fd);
 		Client client(newfd);
 		_clients.insert(std::pair<int,Client>(newfd, client));
     }
 }
 
-void    
+void
 Server::_poll_loop(void)
 {
     struct pollfd first;
@@ -98,33 +96,33 @@ Server::_poll_loop(void)
     first.events = POLLIN; // Report ready to read on incoming connection
     _pfds.push_back(first);
 
-    for(;;) 
+    for(;;)
     {
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
 		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
         int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
-		
-        if (poll_count == -1) 
+
+        if (poll_count == -1)
         {
             perror("poll");
             exit(1);
-        }   
+        }
         std::vector<struct pollfd>::iterator end = _pfds.end();
         for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
-        { 
+        {
             // Check if someone's ready to read
             if (it->revents & POLLIN)
             {
-                if (it->fd == _listener) 
+                if (it->fd == _listener)
                     _add_new_client(new_pollfds);
-                else 
+                else
                     _handle_data(it);
             }
         }
         _pfds.insert(_pfds.end(), new_pollfds.begin(), new_pollfds.end()); // Add the range of NEW_pollfds in poll_fds (helps recalculating poll_fds.end() in the for loop)
     }
-}  
+}
 
 void
 Server::_get_listener_socket(void)
@@ -155,7 +153,7 @@ Server::_get_listener_socket(void)
         setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
         // connexion entre le Server et lepoint d'ecoute (socket)
-        if (bind(_listener, temp->ai_addr, temp->ai_addrlen) < 0) 
+        if (bind(_listener, temp->ai_addr, temp->ai_addrlen) < 0)
         {
             close(_listener);
             continue;

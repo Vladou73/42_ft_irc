@@ -32,9 +32,9 @@ public:
     // =============================================================================
 	// METHODS =====================================================================
 	void	parse_connexion(std::string buff, std::string password, std::map<int, Client>  &client);
-	bool	check_connexion(std::string password, std::map<int, Client> &client);
-	bool	client_save(std::string password, std::map<int, Client>  &client);
-	
+	bool	check_connexion(std::string password);
+	bool	client_save(std::string password);
+
 private:
 	bool	_check_nick( std::map<int, Client> &);
 	bool	_check_user();
