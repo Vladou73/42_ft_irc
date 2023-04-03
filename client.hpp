@@ -1,7 +1,7 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-# include "ft_irc.hpp"
+# include "utils/ft_irc.hpp"
 
 class Client
 {
@@ -11,13 +11,14 @@ private:
 
 	std::string					_nick;
 	std::string					_user;
-	// int							_client_id;
+	int							_client_id;
 	std::vector<std::string>	_data_connexion;
 
 public:
 	// =============================================================================
 	// CONSTRUCTORS ================================================================
     Client();
+	Client(int client_id);
 
 	// =============================================================================
 	// DESTRUCTORS =================================================================
@@ -30,11 +31,12 @@ public:
 
     // =============================================================================
 	// METHODS =====================================================================
-	void	parse_connexion(std::string buff);
-	bool	check_connexion(std::string password);
+	void	parse_connexion(std::string buff, std::string password, std::map<int, Client>  &client);
+	bool	check_connexion(std::string password, std::map<int, Client> &client);
+	bool	client_save(std::string password, std::map<int, Client>  &client);
 	
 private:
-	bool	_check_nick();
+	bool	_check_nick( std::map<int, Client> &);
 	bool	_check_user();
 
 

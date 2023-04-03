@@ -15,7 +15,9 @@ Server::Server(char **av) : _pwd(av[2]), _server_port(av[1])
 // =============================================================================
 // DESTRUCTORS =================================================================
 Server::~Server()
-{}
+{
+
+}
 
 // =============================================================================
 // MODIFIERS ===================================================================
@@ -23,6 +25,107 @@ Server::~Server()
 
 // =============================================================================
 // METHODS =====================================================================
+void
+Server::_handle_data(std::vector<struct pollfd>::iterator &it)
+{
+    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 character limit includes this delimiter, meaning that a message only has space for 510 useful characters.
+	char    buff[100000]; //TODO CHECK LE BUFFER SIZE
+
+	memset(&buff, 0, sizeof(buff));
+    // If not the listener, we're just a regular client
+    int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
+    int sender_fd = it->fd; 
+
+    if (nbytes <= 0) 
+    {
+        // Got error or connection closed by client
+        if (nbytes == 0) 
+        {
+            // Connection closed
+            printf("pollServer: socket %d hung up\n", sender_fd);
+        } else
+            perror("recv"); 
+        close(it->fd); // Bye!  
+        _pfds.erase(it); 
+    } 
+    else 
+    {
+        std::cout << PURPLE << "[client] " << "fd = " << it->fd << " | "
+                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
+		std::string ss1 = buff;
+
+		if (_clients[sender_fd].getDataConnexion().size() < 3)
+        	_clients[sender_fd].parse_connexion(ss1, _pwd, _clients);
+		// else {
+		// 	if (_clients[sender_fd].client_save(_pwd, _clients) == true) {
+		// 		return;
+		// 	}
+		// }
+			
+        // if (send(dest_fd, buff, nbytes, 0) == -1)
+    }
+}
+
+void
+Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
+{
+    struct sockaddr_storage remoteaddr; // Client address
+    socklen_t               addrlen;
+    int						newfd; // Newly accept()ed socket descriptor
+
+    // If listener is ready to read, handle new connection  
+    addrlen = sizeof(remoteaddr);
+    newfd = accept(_listener, (struct sockaddr *)&remoteaddr,&addrlen);
+    if (newfd == -1)
+        perror("accept");
+    else
+    {
+        struct pollfd new_poll_fd;
+        new_poll_fd.fd = newfd; // the socket descriptor
+        new_poll_fd.events = POLLIN; 
+        new_pollfds.push_back(new_poll_fd);
+		Client client(newfd);
+		_clients.insert(std::pair<int,Client>(newfd, client));
+    }
+}
+
+void    
+Server::_poll_loop(void)
+{
+    struct pollfd first;
+
+    first.fd = _listener; // the socket descriptor
+    first.events = POLLIN; // Report ready to read on incoming connection
+    _pfds.push_back(first);
+
+    for(;;) 
+    {
+        std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
+
+		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
+        int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
+		
+        if (poll_count == -1) 
+        {
+            perror("poll");
+            exit(1);
+        }   
+        std::vector<struct pollfd>::iterator end = _pfds.end();
+        for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
+        { 
+            // Check if someone's ready to read
+            if (it->revents & POLLIN)
+            {
+                if (it->fd == _listener) 
+                    _add_new_client(new_pollfds);
+                else 
+                    _handle_data(it);
+            }
+        }
+        _pfds.insert(_pfds.end(), new_pollfds.begin(), new_pollfds.end()); // Add the range of NEW_pollfds in poll_fds (helps recalculating poll_fds.end() in the for loop)
+    }
+}  
+
 void
 Server::_get_listener_socket(void)
 {
@@ -65,103 +168,5 @@ Server::_get_listener_socket(void)
     {
         std::cerr << "error getting listening socket\n";
         exit (1);
-    }
-}
-
-void
-Server::_add_new_client()
-{
-    struct sockaddr_storage remoteaddr; // Client address
-    socklen_t               addrlen;
-    int						newfd; // Newly accept()ed socket descriptor
-
-    // If listener is ready to read, handle new connection  
-    addrlen = sizeof(remoteaddr);
-    newfd = accept(_listener, (struct sockaddr *)&remoteaddr,&addrlen);
-    if (newfd == -1)
-        perror("accept");
-    else
-    {
-        struct pollfd new_poll_fd;
-        new_poll_fd.fd = newfd; // the socket descriptor
-        new_poll_fd.events = POLLIN; 
-        _pfds.push_back(new_poll_fd);
-		Client client;
-		_clients.insert(std::pair<int,Client>(newfd, client));
-    }
-}
-
-void
-Server::_handle_data(std::vector<struct pollfd>::iterator &it)
-{
-    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 character limit includes this delimiter, meaning that a message only has space for 510 useful characters.
-	char    buff[100000]; //TODO CHECK LE BUFFER SIZE
-
-	memset(&buff, 0, sizeof(buff));
-    // If not the listener, we're just a regular client
-    int nbytes = recv(it->fd, buff, sizeof(buff), 0);  
-    int sender_fd = it->fd; 
-
-    if (nbytes <= 0) 
-    {
-        // Got error or connection closed by client
-        if (nbytes == 0) 
-        {
-            // Connection closed
-            printf("pollServer: socket %d hung up\n", sender_fd);
-        } else
-            perror("recv"); 
-        close(it->fd); // Bye!  
-        _pfds.erase(it); 
-    } 
-    else 
-    {
-        std::cout << "[client] " << "fd = " << it->fd << " | ";
-        std::cout << std::string(buff, 0, nbytes) << std::endl;
-		std::string ss1 = buff;
-
-		if (_clients[sender_fd].getDataConnexion().size() < 3)
-        	_clients[sender_fd].parse_connexion(ss1);
-		else {
-			if (_clients[sender_fd].check_connexion(_pwd) == true) {
-				return;
-			}
-		}
-			
-        // if (send(dest_fd, buff, nbytes, 0) == -1)
-    }
-}
-
-void    
-Server::_poll_loop(void)
-{
-    struct pollfd first;
-
-    first.fd = _listener; // the socket descriptor
-    first.events = POLLIN; // Report ready to read on incoming connection
-    _pfds.push_back(first);
-
-    for(;;) 
-    {
-		std::cout << "[server] is listening in fd = "<< _listener << std::endl;
-        int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
-		
-        if (poll_count == -1) 
-        {
-            perror("poll");
-            exit(1);
-        }   
-        std::vector<struct pollfd>::iterator end = _pfds.end();
-        for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
-        { 
-            // Check if someone's ready to read
-            if (it->revents & POLLIN)
-            {
-                if (it->fd == _listener) 
-                    _add_new_client();
-                else 
-                    _handle_data(it);
-            }
-        }
     }
 }

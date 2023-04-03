@@ -1,11 +1,13 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "ft_irc.hpp"
+# include "utils/ft_irc.hpp"
 # include "client.hpp"
 
 class Server
 {
+public:
+    friend class Client;
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
@@ -14,8 +16,8 @@ private:
 	const char *				_server_port;
     std::vector<struct pollfd>	_pfds;
     // Client *client;
-	std::map<int, Client>	_clients;
-
+protected:
+	std::map<int, Client>	    _clients;
 
 public:
 	// =============================================================================
@@ -39,7 +41,7 @@ private:
     void    _poll_loop(void);
     void    _add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size);
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
-    void    _add_new_client();
+    void    _add_new_client(std::vector<struct pollfd> &);
     void    _handle_data(std::vector<struct pollfd>::iterator &it);
 };
 
