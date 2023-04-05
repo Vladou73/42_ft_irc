@@ -14,6 +14,7 @@ private:
 	std::string					_client_id_str;
 	int							_client_id;
 	std::vector<std::string>	_data_connexion;
+	std::string					_buff;
 
 public:
 	// =============================================================================
@@ -29,6 +30,9 @@ public:
 	// GETTERS / SETTERS ===========================================================
 	std::vector<std::string>	getDataConnexion();
 	std::string 				getUser();
+	std::string 				getBuff();
+	void		 				setBuff(std::string ss1);
+	void						clearBuff();
 
     // =============================================================================
 	// METHODS =====================================================================

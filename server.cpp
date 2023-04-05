@@ -53,24 +53,27 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             perror("recv");
         close(it->fd); // Bye!
         _pfds.erase(it);
-
     }
     else
     {
         std::cout << PURPLE << "[client] " << "fd = " << it->fd << " | "
                      << std::string(buff, 0, nbytes) << RESET << std::endl ;
 		std::string ss1 = buff;
+        _clients[sender_fd].setBuff(ss1);
 
-		if (_clients[sender_fd].getDataConnexion().size() < 3)
+        if (*(_clients[sender_fd].getBuff().end() - 1) == '\n')
         {
-        	_clients[sender_fd].parse_connexion(ss1, _pwd, _clients, _count_clients);
+            if (_clients[sender_fd].getDataConnexion().size() < 3)
+            {
+                _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
+            }
+            // else {
+            // 	if (_clients[sender_fd].client_save(_pwd, _clients) == true) {
+            // 		return;
+            // 	}
+            // }
+            _clients[sender_fd].clearBuff();
         }
-
-		// else {
-		// 	if (_clients[sender_fd].client_save(_pwd, _clients) == true) {
-		// 		return;
-		// 	}
-		// }
     }
 }
 
@@ -106,10 +109,22 @@ Server::_poll_loop(void)
     first.events = POLLIN; // Report ready to read on incoming connection
     _pfds.push_back(first);
 
-    // signal(SIGINT, signalHandler);
+    // Redirect standard input to the socket file descriptor
+    if (dup2(_listener, STDIN_FILENO) == -1) {
+        std::cout<<"Dup2 fail!\n";
+        // Handle error
+    }
+
+    // Read input from the socket using std::cin
+    // while (std::getline(std::cin, input)) {
+        // Process input from the socket here...
+    // }
+
+    // return 0;
 
     for(;;)
     {
+
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
 		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
@@ -123,6 +138,9 @@ Server::_poll_loop(void)
         std::vector<struct pollfd>::iterator end = _pfds.end();
         for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
         {
+            std::string input;
+            std::getline(std::cin, input);
+            // std::cout<<"input = "<<input<<std::endl;
             // Check if someone's ready to read
             if (it->revents & POLLIN)
             {

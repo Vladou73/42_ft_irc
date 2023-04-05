@@ -7,7 +7,7 @@ Client::Client()
 
 Client::Client(int client_id) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
-		_client_id(client_id), _data_connexion(0)
+		_client_id(client_id), _data_connexion(0), _buff()
 {}
 
 
@@ -31,6 +31,24 @@ Client::getUser()
     return _user;
 }
 
+std::string
+Client::getBuff()
+{
+    return _buff;
+}
+
+void
+Client::setBuff(std::string ss1)
+{
+	_buff = _buff + ss1;
+}
+
+void
+Client::clearBuff()
+{
+	_buff.clear();
+}
+
 
 // =============================================================================
 // METHODS =====================================================================
@@ -40,6 +58,7 @@ bool	Client::_check_nick(std::map<int, Client> &client)
 	//TODO verifier quoi renvoyer en cas de probleme sur les nicknames
 	// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
 
+	//TODO verifier avec irssi le nombre max de caracteres
 	// if(_data_connexion[1].size() >= 9)
 	// {
 	// 	send (_client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
@@ -116,7 +135,7 @@ Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Cl
 	while(getline(strstream, buff, '\n')){
 		if (*(buff.end() - 1) == '\r')
 			buff.erase(buff.end() - 1);
-		std::cout << buff << std::endl;
+		// std::cout << buff << std::endl;
 		if (buff.size() < 6)
 			_data_connexion.clear();
 		else if (buff.compare(0, 5, "PASS ") == 0)
@@ -157,7 +176,7 @@ Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Cl
 void
 Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client, int &count_clients)
 {
-	buff.erase(buff.end() - 1);
+	// buff.erase(buff.end() - 1);
 
 	parse_irssi(buff, password, client, count_clients);
 }
