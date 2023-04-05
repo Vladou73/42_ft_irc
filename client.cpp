@@ -40,11 +40,11 @@ bool	Client::_check_nick(std::map<int, Client> &client)
 	//TODO verifier quoi renvoyer en cas de probleme sur les nicknames
 	// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
 
-	if(_data_connexion[1].size() >= 9)
-	{
-		send (_client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
-		return false;
-	}
+	// if(_data_connexion[1].size() >= 9)
+	// {
+	// 	send (_client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
+	// 	return false;
+	// }
 	std::map<int, Client>::iterator end = client.end();
 	for (std::map<int, Client>::iterator it = client.begin(); it != end; it++)
 	{
@@ -56,6 +56,7 @@ bool	Client::_check_nick(std::map<int, Client> &client)
 		}
 	}
 	_nick = _data_connexion[1];
+	std::cout << "_nick="  << _nick << std::endl;
 	send (_client_id, USER_ID(_data_connexion[1], _data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1], _data_connexion[1]).c_str()), 0);
 	return true;
 }
@@ -98,46 +99,65 @@ Client::check_connexion(std::string password)
 		return false;
 	}
 	_user = _data_connexion[2];
+	std::cout << "_user=" << _user << std::endl;
 	send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
 	send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
 	return true;
 }
 
 void
+Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients)
+{
+
+	std::string buff;
+	std::stringstream strstream(big_buff);
+
+
+	while(getline(strstream, buff, '\n')){
+		if (*(buff.end() - 1) == '\r')
+			buff.erase(buff.end() - 1);
+		std::cout << buff << std::endl;
+		if (buff.size() < 6)
+			_data_connexion.clear();
+		else if (buff.compare(0, 5, "PASS ") == 0)
+		{
+			_data_connexion.clear();
+			_data_connexion.push_back(buff.substr(5, std::string::npos));
+		}
+		else if (buff.compare(0, 5, "NICK ") == 0)
+		{
+			if (_data_connexion.size() == 1)
+			{
+				_data_connexion.push_back(buff.substr(5, std::string::npos));
+				if ( _check_nick(client) == false)
+					_data_connexion.pop_back();
+			}
+			else
+				_data_connexion.clear();
+		}
+		else if (buff.compare(0, 5, "USER ") == 0)
+		{
+			if (_data_connexion.size() == 2)
+			{
+				_data_connexion.push_back(buff.substr(5, std::string::npos));
+				if (check_connexion(password) == true) {
+					count_clients++;
+					std::cout << GREEN << "[server] clients connected = " << count_clients << std::endl;
+				}
+			}
+			else
+				_data_connexion.clear();
+		}
+		else
+			_data_connexion.clear();
+	}
+}
+
+
+void
 Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client, int &count_clients)
 {
 	buff.erase(buff.end() - 1);
-	if (buff.size() < 6)
-		_data_connexion.clear();
-	else if (buff.compare(0, 5, "PASS ") == 0)
-	{
-		_data_connexion.clear();
-		_data_connexion.push_back(buff.substr(5, std::string::npos));
-	}
-	else if (buff.compare(0, 5, "NICK ") == 0)
-	{
-		if (_data_connexion.size() == 1)
-		{
-			_data_connexion.push_back(buff.substr(5, std::string::npos));
-			if ( _check_nick(client) == false)
-				_data_connexion.pop_back();
-		}
-		else
-			_data_connexion.clear();
-	}
-	else if (buff.compare(0, 5, "USER ") == 0)
-	{
-		if (_data_connexion.size() == 2)
-		{
-			_data_connexion.push_back(buff.substr(5, std::string::npos));
-			if (check_connexion(password) == true) {
-				count_clients++;
-				std::cout << GREEN << "[server] clients connected = " << count_clients << std::endl;
-			}
-		}
-		else
-			_data_connexion.clear();
-	}
-	else
-		_data_connexion.clear();
+
+	parse_irssi(buff, password, client, count_clients);
 }

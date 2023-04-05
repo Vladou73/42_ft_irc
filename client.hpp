@@ -33,6 +33,7 @@ public:
     // =============================================================================
 	// METHODS =====================================================================
 	void	parse_connexion(std::string buff, std::string password, std::map<int, Client>  &client, int &count_clients);
+	void	parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients);
 	bool	check_connexion(std::string password);
 	bool	client_save(std::string password);
 
