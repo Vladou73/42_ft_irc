@@ -59,7 +59,6 @@ bool	Client::_check_user()
 	//TODO verifier quoi renvoyer en cas de probleme sur les users
 	// 4 informations
 	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
-	// std::string low_args = ":localhost 461 " + _data_connexion[1] + " USER :Not enough parameters.\n";
 	std::string temp;
 	std::stringstream X(_data_connexion[2]);
 	int i = 0;
