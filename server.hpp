@@ -18,6 +18,7 @@ private:
     // Client *client;
 protected:
 	std::map<int, Client>	    _clients;
+    int                         _count_clients;
 
 public:
 	// =============================================================================
@@ -56,9 +57,9 @@ private:
 /*
 int listener
 
-struct addrinfo hints : 
+struct addrinfo hints :
 
-ai_family = AF_UNSPEC 
+ai_family = AF_UNSPEC
 ai_family: This parameter specifies the desired address family. It can be set to AF_INET for IPv4, AF_INET6 for IPv6, or AF_UNSPEC for either IPv4 or IPv6.
 
 ai_socktype = SOCK_STREAM

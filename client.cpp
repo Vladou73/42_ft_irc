@@ -5,7 +5,9 @@
 Client::Client()
 {}
 
-Client::Client(int client_id) : _client_id_str(change_to_str(client_id)), _client_id(client_id)
+Client::Client(int client_id) : _nick(), _user(),
+		_client_id_str(change_to_str(client_id)),
+		_client_id(client_id), _data_connexion(0)
 {}
 
 
@@ -23,6 +25,12 @@ Client::getDataConnexion()
     return _data_connexion;
 }
 
+std::string
+Client::getUser()
+{
+    return _user;
+}
+
 
 // =============================================================================
 // METHODS =====================================================================
@@ -33,14 +41,13 @@ bool	Client::_check_nick(std::map<int, Client> &client)
 	// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
 
 	if(_data_connexion[1].size() >= 9)
-	{ 
+	{
 		send (_client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
 		return false;
 	}
 	std::map<int, Client>::iterator end = client.end();
 	for (std::map<int, Client>::iterator it = client.begin(); it != end; it++)
 	{
-		std::cout << "it->second = "<< it->second._nick << std::endl;
 		if (it->second._nick == _data_connexion[1])
 		{
 			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1],_data_connexion[1]).c_str()), 0);
@@ -68,7 +75,8 @@ bool	Client::_check_user()
 			i++;
 	if (i < 4)
 	{
-		send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1], "USER").c_str()), 0);
+		send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
+
 		return false;
 	}
 	return true;
@@ -96,7 +104,7 @@ Client::check_connexion(std::string password)
 }
 
 void
-Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client)
+Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client, int &count_clients)
 {
 	buff.erase(buff.end() - 1);
 	if (buff.size() < 6)
@@ -122,7 +130,10 @@ Client::parse_connexion(std::string buff, std::string password, std::map<int, Cl
 		if (_data_connexion.size() == 2)
 		{
 			_data_connexion.push_back(buff.substr(5, std::string::npos));
-			check_connexion(password);
+			if (check_connexion(password) == true) {
+				count_clients++;
+				std::cout << GREEN << "[server] clients connected = " << count_clients << std::endl;
+			}
 		}
 		else
 			_data_connexion.clear();

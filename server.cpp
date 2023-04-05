@@ -5,7 +5,9 @@
 Server::Server() : _server_port("6667")
 {}
 
-Server::Server(char **av) : _pwd(av[2]), _server_port(av[1])
+Server::Server(char **av) : _pwd(av[2]), _listener(0),
+    _server_port(av[1]), _pfds(0),
+    _clients(), _count_clients(0)
 {
     _get_listener_socket();
 	_poll_loop();
@@ -43,10 +45,15 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
         {
             // Connection closed
             printf("pollServer: socket %d hung up\n", sender_fd);
+            if (!_clients[sender_fd].getUser().empty())
+                _count_clients--;
+            _clients.erase(sender_fd);
+           std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
         } else
             perror("recv");
         close(it->fd); // Bye!
         _pfds.erase(it);
+
     }
     else
     {
@@ -55,7 +62,10 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 		std::string ss1 = buff;
 
 		if (_clients[sender_fd].getDataConnexion().size() < 3)
-        	_clients[sender_fd].parse_connexion(ss1, _pwd, _clients);
+        {
+        	_clients[sender_fd].parse_connexion(ss1, _pwd, _clients, _count_clients);
+        }
+
 		// else {
 		// 	if (_clients[sender_fd].client_save(_pwd, _clients) == true) {
 		// 		return;
@@ -95,6 +105,8 @@ Server::_poll_loop(void)
     first.fd = _listener; // the socket descriptor
     first.events = POLLIN; // Report ready to read on incoming connection
     _pfds.push_back(first);
+
+    // signal(SIGINT, signalHandler);
 
     for(;;)
     {

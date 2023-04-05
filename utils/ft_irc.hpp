@@ -19,6 +19,7 @@
 # include <map>
 # include <iomanip>
 # include <cstring>
+# include <csignal>
 
 # include "colors.hpp"
 # include "messages.hpp"
