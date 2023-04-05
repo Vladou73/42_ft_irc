@@ -11,6 +11,7 @@ private:
 
 	std::string					_nick;
 	std::string					_user;
+	std::string					_client_id_str;
 	int							_client_id;
 	std::vector<std::string>	_data_connexion;
 

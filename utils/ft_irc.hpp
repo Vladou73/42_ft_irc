@@ -17,15 +17,12 @@
 # include <sstream>
 # include <vector>
 # include <map>
-#include <iomanip>
+# include <iomanip>
+# include <cstring>
 
 # include "colors.hpp"
-
-
-
- 
-
-# define PORT "9034"
+# include "messages.hpp"
+# include "function_utils.hpp"
 
 
 #endif

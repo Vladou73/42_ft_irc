@@ -1,8 +1,9 @@
 NAME =	ircserv
 
 SRCS =	main.cpp\
+		utils/function_utils.cpp\
 		server.cpp\
-		client.cpp
+		client.cpp\
 
 CC = c++
 
