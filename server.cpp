@@ -7,7 +7,7 @@ Server::Server() : _server_port("6667")
 
 Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _server_port(av[1]), _pfds(0),
-    _clients(), _count_clients(0)
+    _clients(), _count_clients(0), _channels()
 {
     _get_listener_socket();
 	_poll_loop();

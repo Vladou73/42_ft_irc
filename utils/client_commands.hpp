@@ -4,6 +4,9 @@
 # include "ft_irc.hpp"
 
 void
-ping(bool connected, std::vector<std::string> parsed_cmds, int client_id, std::string nickname);
+ping(bool connected, std::vector<std::string> , int client_id, std::string nickname);
+
+void
+join(bool connected, std::vector<std::string> parsed_cmds, int client_id, std::string nickname);
 
 #endif

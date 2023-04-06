@@ -5,6 +5,8 @@ SRCS =	main.cpp\
 		server.cpp\
 		client.cpp\
 		client_commands.cpp\
+		channel.cpp\
+		channel_commands.cpp\
 
 CC = c++
 

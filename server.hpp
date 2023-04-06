@@ -3,11 +3,13 @@
 
 # include "utils/ft_irc.hpp"
 # include "client.hpp"
+# include "channel.hpp"
 
 class Server
 {
 public:
     friend class Client;
+    friend class Channel;
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
@@ -19,6 +21,7 @@ private:
 protected:
 	std::map<int, Client>	    _clients;
     int                         _count_clients;
+    std::vector<Channel>        _channels;
 
 public:
 	// =============================================================================
