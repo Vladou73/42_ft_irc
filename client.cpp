@@ -7,7 +7,8 @@ Client::Client()
 
 Client::Client(int client_id) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
-		_client_id(client_id), _data_connexion(0), _buff()
+		_client_id(client_id), _data_connexion(0),
+		_buff(), _parsed_cmd(), _connected(false)
 {}
 
 
@@ -69,14 +70,14 @@ bool	Client::_check_nick(std::map<int, Client> &client)
 	{
 		if (it->second._nick == _data_connexion[1])
 		{
-			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1],_data_connexion[1]).c_str()), 0);
-			send (_client_id, USER_ID(_data_connexion[1], _data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1], _data_connexion[1]).c_str()), 0);
+			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1]).c_str()), 0);
+			send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
 			return (false);
 		}
 	}
 	_nick = _data_connexion[1];
 	std::cout << "_nick="  << _nick << std::endl;
-	send (_client_id, USER_ID(_data_connexion[1], _data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1], _data_connexion[1]).c_str()), 0);
+	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
 	return true;
 }
 
@@ -121,21 +122,21 @@ Client::check_connexion(std::string password)
 	std::cout << "_user=" << _user << std::endl;
 	send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
 	send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
+	//TODO : ajouter toute la liste des RPL à envoyer à la connexion https://github.com/Vladou73/42_ft_irc/wiki/Commandes-serveur#replies
+	_connected = true;
 	return true;
 }
 
 void
 Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients)
 {
-
 	std::string buff;
 	std::stringstream strstream(big_buff);
 
-
-	while(getline(strstream, buff, '\n')){
+	while(getline(strstream, buff, '\n'))
+	{
 		if (*(buff.end() - 1) == '\r')
 			buff.erase(buff.end() - 1);
-		// std::cout << buff << std::endl;
 		if (buff.size() < 6)
 			_data_connexion.clear();
 		else if (buff.compare(0, 5, "PASS ") == 0)
@@ -172,11 +173,57 @@ Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Cl
 	}
 }
 
-
 void
 Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client, int &count_clients)
 {
-	// buff.erase(buff.end() - 1);
-
 	parse_irssi(buff, password, client, count_clients);
+}
+
+void
+Client::search_command()
+{
+	if (_parsed_cmd[0] == "PING")
+		ping(_connected, _parsed_cmd, _client_id, _nick);
+	else
+		std::cout << "default\n";
+}
+
+void
+Client::parse_command(std::string buff)
+{
+	std::stringstream	strstream(buff);
+	std::string 		line;
+	std::string			msg;
+	bool				last_arg = false;
+	
+	if (!_parsed_cmd.empty())
+		_parsed_cmd.clear();
+	
+	while(getline(strstream, line, ' '))
+	{
+		if (line[0] == ':')
+		{
+			last_arg = true;
+			line.erase(line.begin()); 
+		}
+		if (*(line.end() - 1) == '\n') 
+		{
+			line.erase(line.end() - 1);
+			if (*(line.end() - 1) == '\r')
+				line.erase(line.end() - 1);
+		}
+		if (last_arg == false)
+			_parsed_cmd.push_back(line);
+		else
+			msg += line + " ";
+	}
+	if (!msg.empty())
+		_parsed_cmd.push_back(msg);
+	
+	search_command();
+
+	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
+	// {
+	// 	std::cout << "'" << *it << "'" << std::endl;
+	// }
 }

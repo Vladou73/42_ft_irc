@@ -67,11 +67,9 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             {
                 _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
             }
-            // else {
-            // 	if (_clients[sender_fd].client_save(_pwd, _clients) == true) {
-            // 		return;
-            // 	}
-            // }
+            else {
+            	_clients[sender_fd].parse_command(_clients[sender_fd].getBuff());
+            }
             _clients[sender_fd].clearBuff();
         }
     }

@@ -15,6 +15,8 @@ private:
 	int							_client_id;
 	std::vector<std::string>	_data_connexion;
 	std::string					_buff;
+	std::vector<std::string>	_parsed_cmd;
+	bool						_connected;							
 
 public:
 	// =============================================================================
@@ -40,6 +42,8 @@ public:
 	void	parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients);
 	bool	check_connexion(std::string password);
 	bool	client_save(std::string password);
+	void	parse_command(std::string buff);
+	void	search_command(void);
 
 private:
 	bool	_check_nick( std::map<int, Client> &);
