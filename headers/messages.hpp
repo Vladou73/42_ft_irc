@@ -26,4 +26,6 @@
 
 # define ERR_NONICKNAMEGIVEN ":localhost 431 :There is no nickname.\r\n"
 
+# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
+
 #endif

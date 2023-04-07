@@ -8,6 +8,8 @@ class Server;
 
 class Client
 {
+    friend class Channel;
+
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
@@ -57,6 +59,7 @@ public:
 	void nick();
 	bool check_nick();
 	void user();
+	void join();
 
 
 

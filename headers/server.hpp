@@ -3,9 +3,10 @@
 
 # include "ft_irc.hpp"
 # include "client.hpp"
-// # include "channel.hpp"
+# include "channel.hpp"
 
 class Client;
+class Channel;
 
 class Server
 {
@@ -21,9 +22,9 @@ private:
     std::vector<struct pollfd>	_pfds;
     // Client *client;
 protected:
-	std::map<int, Client>	    _clients;
-    int                         _count_clients;
-    // std::vector<Channel>        _channels;
+	std::map<int, Client>	                _clients;
+    int                                     _count_clients;
+    std::map<std::string, Channel *>        _channels;
 
 public:
 	// =============================================================================
