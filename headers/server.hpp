@@ -1,7 +1,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "utils/ft_irc.hpp"
+# include "ft_irc.hpp"
 # include "client.hpp"
 // # include "channel.hpp"
 

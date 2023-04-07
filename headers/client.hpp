@@ -1,7 +1,7 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-# include "utils/ft_irc.hpp"
+# include "ft_irc.hpp"
 # include "server.hpp"
 
 class Server;
@@ -46,8 +46,19 @@ public:
 	void	parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &clients, int &count_clients);
 	bool	check_connexion(std::string password);
 	bool	client_save(std::string password);
-	void	parse_command(std::string buff, std::string pwd);
-	void	search_command(std::string password);
+	void	parse_command(std::string buff);
+	void	search_command();
+
+
+    // =============================================================================
+	// COMMANDS =====================================================================
+	void ping();
+	void pass();
+	void nick();
+	bool check_nick();
+	void user();
+
+
 
 private:
 	bool	_check_user();

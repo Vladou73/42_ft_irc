@@ -1,4 +1,4 @@
-# include "utils/channel_commands.hpp"
+# include "../headers/channel_commands.hpp"
 
 // void
 // join(bool connected, std::vector<std::string> parsed_cmds, int client_id, std::string nickname)

@@ -1,6 +1,6 @@
-#include "server.hpp"
-#include "client.hpp"
-#include "utils/ft_irc.hpp"
+#include "../headers/server.hpp"
+#include "../headers/client.hpp"
+#include "../headers/ft_irc.hpp"
 
 
 int main (int ac, char **av)

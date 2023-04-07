@@ -1,4 +1,4 @@
-# include "client.hpp"
+# include "../headers/client.hpp"
 
 // =============================================================================
 // CONSTRUCTORS ================================================================
@@ -108,14 +108,16 @@ Client::check_connexion(std::string password)
 }
 
 void
-Client::search_command(std::string password)
+Client::search_command()
 {
 	if (_parsed_cmd[0] == "PASS")
-		pass(_data_connexion, _connected, password, _parsed_cmd, _client_id, _nick);
+		pass();
 	else if (_parsed_cmd[0] == "NICK")
-		nick(_data_connexion, _connected, _parsed_cmd, _client_id, _nick, _server->_clients);
+		nick();
+	else if (_parsed_cmd[0] == "USER")
+		user();
 	else if (_parsed_cmd[0] == "PING")
-		ping(_connected, _parsed_cmd, _client_id, _nick);
+		ping();
 	// else if (_parsed_cmd[0]== "JOIN")
 	// 	join(_connected, _parsed_cmd, _client_id, _nick);
 	else
@@ -123,7 +125,7 @@ Client::search_command(std::string password)
 }
 
 void
-Client::parse_command(std::string buff, std::string pwd)
+Client::parse_command(std::string buff)
 {
 	std::stringstream	strstream(buff);
 	std::string 		line;
@@ -156,7 +158,7 @@ Client::parse_command(std::string buff, std::string pwd)
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 	
-	search_command(pwd);
+	search_command();
 
 	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
 	// {
