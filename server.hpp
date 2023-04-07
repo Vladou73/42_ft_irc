@@ -3,7 +3,9 @@
 
 # include "utils/ft_irc.hpp"
 # include "client.hpp"
-# include "channel.hpp"
+// # include "channel.hpp"
+
+class Client;
 
 class Server
 {
@@ -21,7 +23,7 @@ private:
 protected:
 	std::map<int, Client>	    _clients;
     int                         _count_clients;
-    std::vector<Channel>        _channels;
+    // std::vector<Channel>        _channels;
 
 public:
 	// =============================================================================

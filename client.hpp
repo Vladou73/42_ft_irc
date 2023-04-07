@@ -2,6 +2,9 @@
 # define CLIENT_HPP
 
 # include "utils/ft_irc.hpp"
+# include "server.hpp"
+
+class Server;
 
 class Client
 {
@@ -15,13 +18,14 @@ private:
 	std::vector<std::string>	_data_connexion;
 	std::string					_buff;
 	std::vector<std::string>	_parsed_cmd;
-	bool						_connected;							
+	bool						_connected;
+	Server						*_server;					
 
 public:
 	// =============================================================================
 	// CONSTRUCTORS ================================================================
     Client();
-	Client(int client_id);
+	Client(int client_id, Server *server);
 
 	// =============================================================================
 	// DESTRUCTORS =================================================================
@@ -31,21 +35,21 @@ public:
 	// GETTERS / SETTERS ===========================================================
 	std::vector<std::string>	getDataConnexion();
 	std::string 				getUser();
+	std::string 				getNick();
 	std::string 				getBuff();
 	void		 				setBuff(std::string ss1);
 	void						clearBuff();
 
     // =============================================================================
 	// METHODS =====================================================================
-	void	parse_connexion(std::string buff, std::string password, std::map<int, Client>  &client, int &count_clients);
-	void	parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients);
+	void	parse_connexion(std::string buff, std::string password, std::map<int, Client>  &clients, int &count_clients);
+	void	parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &clients, int &count_clients);
 	bool	check_connexion(std::string password);
 	bool	client_save(std::string password);
-	void	parse_command(std::string buff);
-	void	search_command(void);
+	void	parse_command(std::string buff, std::string pwd);
+	void	search_command(std::string password);
 
 private:
-	bool	_check_nick( std::map<int, Client> &);
 	bool	_check_user();
 
 

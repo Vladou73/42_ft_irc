@@ -7,7 +7,8 @@ Server::Server() : _server_port("6667")
 
 Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _server_port(av[1]), _pfds(0),
-    _clients(), _count_clients(0), _channels()
+    _clients(), _count_clients(0)
+    // , _channels()
 {
     _get_listener_socket();
 	_poll_loop();
@@ -63,13 +64,13 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 
         if (*(_clients[sender_fd].getBuff().end() - 1) == '\n')
         {
-            if (_clients[sender_fd].getDataConnexion().size() < 3)
-            {
-                _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
-            }
-            else {
-            	_clients[sender_fd].parse_command(_clients[sender_fd].getBuff());
-            }
+            // if (_clients[sender_fd].getDataConnexion().size() < 3)
+            // {
+            //     _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
+            // }
+            // else {
+            _clients[sender_fd].parse_command(_clients[sender_fd].getBuff(), _pwd);
+            // }
             _clients[sender_fd].clearBuff();
         }
     }
@@ -93,7 +94,7 @@ Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
         new_poll_fd.fd = newfd; // the socket descriptor
         new_poll_fd.events = POLLIN;
         new_pollfds.push_back(new_poll_fd);
-		Client client(newfd);
+		Client client(newfd, this);
 		_clients.insert(std::pair<int,Client>(newfd, client));
     }
 }

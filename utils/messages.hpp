@@ -20,5 +20,10 @@
 
 # define RPL_PONG(token) (":localhost PONG ircserv " + token + "\r\n")
 
+# define ERR_PASSWDMISMATCH ":localhost 464 :Password incorrect\r\n"
+
+# define ERR_ALREADYREGISTERED(nickname) (":localhost 462 " + nickname + " :You may not reregister\r\n")
+
+# define ERR_NONICKNAMEGIVEN ":localhost 431 :There is no nickname.\r\n"
 
 #endif

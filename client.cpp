@@ -5,10 +5,11 @@
 Client::Client()
 {}
 
-Client::Client(int client_id) : _nick(), _user(),
+Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
-		_buff(), _parsed_cmd(), _connected(false)
+		_buff(), _parsed_cmd(), _connected(false),
+		_server(server)
 {}
 
 
@@ -33,6 +34,12 @@ Client::getUser()
 }
 
 std::string
+Client::getNick()
+{
+    return _nick;
+}
+
+std::string
 Client::getBuff()
 {
     return _buff;
@@ -53,33 +60,6 @@ Client::clearBuff()
 
 // =============================================================================
 // METHODS =====================================================================
-bool	Client::_check_nick(std::map<int, Client> &client)
-{
-	//TODO verifier quoi checker sur les nicknames
-	//TODO verifier quoi renvoyer en cas de probleme sur les nicknames
-	// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
-
-	//TODO verifier avec irssi le nombre max de caracteres
-	// if(_data_connexion[1].size() >= 9)
-	// {
-	// 	send (_client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
-	// 	return false;
-	// }
-	std::map<int, Client>::iterator end = client.end();
-	for (std::map<int, Client>::iterator it = client.begin(); it != end; it++)
-	{
-		if (it->second._nick == _data_connexion[1])
-		{
-			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1]).c_str()), 0);
-			send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
-			return (false);
-		}
-	}
-	_nick = _data_connexion[1];
-	std::cout << "_nick="  << _nick << std::endl;
-	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
-	return true;
-}
 
 bool	Client::_check_user()
 {
@@ -128,70 +108,22 @@ Client::check_connexion(std::string password)
 }
 
 void
-Client::parse_irssi(std::string big_buff, std::string password, std::map<int, Client> &client, int &count_clients)
+Client::search_command(std::string password)
 {
-	std::string buff;
-	std::stringstream strstream(big_buff);
-
-	while(getline(strstream, buff, '\n'))
-	{
-		if (*(buff.end() - 1) == '\r')
-			buff.erase(buff.end() - 1);
-		if (buff.size() < 6)
-			_data_connexion.clear();
-		else if (buff.compare(0, 5, "PASS ") == 0)
-		{
-			_data_connexion.clear();
-			_data_connexion.push_back(buff.substr(5, std::string::npos));
-		}
-		else if (buff.compare(0, 5, "NICK ") == 0)
-		{
-			if (_data_connexion.size() == 1)
-			{
-				_data_connexion.push_back(buff.substr(5, std::string::npos));
-				if ( _check_nick(client) == false)
-					_data_connexion.pop_back();
-			}
-			else
-				_data_connexion.clear();
-		}
-		else if (buff.compare(0, 5, "USER ") == 0)
-		{
-			if (_data_connexion.size() == 2)
-			{
-				_data_connexion.push_back(buff.substr(5, std::string::npos));
-				if (check_connexion(password) == true) {
-					count_clients++;
-					std::cout << GREEN << "[server] clients connected = " << count_clients << std::endl;
-				}
-			}
-			else
-				_data_connexion.clear();
-		}
-		else
-			_data_connexion.clear();
-	}
-}
-
-void
-Client::parse_connexion(std::string buff, std::string password, std::map<int, Client> &client, int &count_clients)
-{
-	parse_irssi(buff, password, client, count_clients);
-}
-
-void
-Client::search_command()
-{
-	if (_parsed_cmd[0] == "PING")
+	if (_parsed_cmd[0] == "PASS")
+		pass(_data_connexion, _connected, password, _parsed_cmd, _client_id, _nick);
+	else if (_parsed_cmd[0] == "NICK")
+		nick(_data_connexion, _connected, _parsed_cmd, _client_id, _nick, _server->_clients);
+	else if (_parsed_cmd[0] == "PING")
 		ping(_connected, _parsed_cmd, _client_id, _nick);
-	else if (_parsed_cmd[0]== "JOIN")
-		join(_connected, _parsed_cmd, _client_id, _nick);
+	// else if (_parsed_cmd[0]== "JOIN")
+	// 	join(_connected, _parsed_cmd, _client_id, _nick);
 	else
 		std::cout << "default\n";
 }
 
 void
-Client::parse_command(std::string buff)
+Client::parse_command(std::string buff, std::string pwd)
 {
 	std::stringstream	strstream(buff);
 	std::string 		line;
@@ -214,15 +146,17 @@ Client::parse_command(std::string buff)
 			if (*(line.end() - 1) == '\r')
 				line.erase(line.end() - 1);
 		}
-		if (last_arg == false)
-			_parsed_cmd.push_back(line);
+		if (last_arg == false) {
+			if (line.length() > 0)
+				_parsed_cmd.push_back(line);
+		}
 		else
 			msg += line + " ";
 	}
-	if (!msg.empty())
+	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 	
-	search_command();
+	search_command(pwd);
 
 	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
 	// {

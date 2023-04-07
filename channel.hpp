@@ -9,6 +9,7 @@ class Channel
 	// ATTRIBUTS ===================================================================
 private:
     std::string			_name;
+	std::string			_topic;
 	std::vector<int>	_fd_users;
 
 
