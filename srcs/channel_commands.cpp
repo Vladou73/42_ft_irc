@@ -16,11 +16,11 @@ Client::join()
         std::map<std::string, Channel *>::iterator end = _server->_channels.end();
         if (_server->_channels.find(_parsed_cmd[1]) == end)
         {
-            Channel channel(_parsed_cmd[1]);
-            _server->_channels.insert(std::pair<std::string, Channel *>(_parsed_cmd[1], &channel));
+            Channel *channel = new Channel(_parsed_cmd[1]);
+            _server->_channels.insert(std::pair<std::string, Channel *>(_parsed_cmd[1], channel));
         }
-        _server->_channels.find(_parsed_cmd[1])->second->_client_in_chan.push_back(this);
-        std::cout<<"size = "<<_server->_channels.find(_parsed_cmd[1])->second->_client_in_chan.size()<<std::endl;
+        std::map<std::string, Channel *>::iterator it = _server->_channels.find(_parsed_cmd[1]);
+        it->second->_client_in_chan.push_back(this);
         for(size_t i = 0; i < _server->_channels.find(_parsed_cmd[1])->second->_client_in_chan.size(); i++)
         {
             send(_server->_channels.find(_parsed_cmd[1])->second->_client_in_chan[i]->_client_id, JOIN_CHAN(_nick, _parsed_cmd[1]).c_str(), JOIN_CHAN(_nick, _parsed_cmd[1]).size(), 0);
