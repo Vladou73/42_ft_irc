@@ -108,6 +108,8 @@ Client::user()
 		_data_connexion.push_back(append);
 		
 		_user = _data_connexion[2];
+		//? Je pense que c'est le user est le dernier arg de user
+		//? _user = _parsed_cmd[4];
 		
 		std::cout << "_user=" << _user << std::endl;
 		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
@@ -126,4 +128,28 @@ Client::user()
 	else
 		_data_connexion.clear(); //TODO :doit on clear egalement _nick et _pass ?
 
+}
+
+void
+Client::privmsg()
+{
+	std::string mess;
+	if (_parsed_cmd.size() == 3)
+	{
+		//TODO need the channels map
+		if (_parsed_cmd[1].at(0) == '#')
+		{
+			std::cout <<  "CHANEL MESSAGES \n";
+		}
+		mess = _parsed_cmd[2];
+		std::map<int, Client>::iterator end = _server->_clients.end();
+		for (std::map<int, Client>::iterator it = _server->_clients.begin(); it != end; it++)
+		{
+			std::cout << "nick = " << it->second.getNick() << std::endl;
+			std::cout << "data_connexio[1] = " << _data_connexion[1] << std::endl;
+			if (it->second.getNick() != _parsed_cmd[1])
+				send(it->first, ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str(), strlen(ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str()), 0);
+			send (it->first, RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str(), strlen(RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str()), 0);
+		}
+	}
 }
