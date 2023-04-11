@@ -162,7 +162,6 @@ Client::quit()
 		mess = _parsed_cmd[1];
 	else
 		mess = " ";
-
 	send (_client_id, RPL_QUIT(USER_ID2(_nick), mess).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), mess).c_str()), 0);
 	if (!_server->_clients[_client_id].getUser().empty())
         _server->_count_clients--;
