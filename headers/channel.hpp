@@ -2,15 +2,20 @@
 # define CHANNEL_HPP
 
 # include "ft_irc.hpp"
+# include "client.hpp"
+
+class Client;
 
 class Channel
 {
+    friend class Client;
+
     // =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
-    std::string			_name;
-	std::string			_topic;
-	std::vector<int>	_fd_users;
+    std::string				_name;
+	std::string				_topic;
+	std::vector<Client *>	_client_in_chan;
 
 
 public:
@@ -26,11 +31,11 @@ public:
 
     // =============================================================================
 	// GETTERS / SETTERS ===========================================================
-	void	setChan(int fd);
+	// void	setChan(int fd);
 
     // =============================================================================
 	// METHODS =====================================================================
-	void	delUser(int fd);
+	// void	delUser(int fd);
 
 };
 

@@ -8,6 +8,8 @@ class Server;
 
 class Client
 {
+    friend class Channel;
+
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
@@ -59,6 +61,7 @@ public:
 	void	user();
 	void	privmsg();
 	void	quit();
+	void 	join();
 
 
 
