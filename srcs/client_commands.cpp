@@ -111,8 +111,13 @@ Client::user()
 		
 		std::cout << "_user=" << _user << std::endl;
 		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
+		send(_client_id, RPL_YOURHOST(_nick).c_str(), strlen(RPL_YOURHOST(_nick).c_str()), 0);
+		// TODO : Date time (devra etre decommente)
+		// send(_client_id, RPL_CREATED(_nick, datetime).c_str(), strlen(RPL_CREATED(_nick, datetime).c_str()), 0);
+		// TODO : check user_mode/chan_mode/Chan_parm_mode (exemples in the messages file) (devra etre decommente)
+		// send(_client_id, RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
+		send(_client_id, RPL_ISUPPORT(_nick).c_str(), strlen(RPL_ISUPPORT(_nick).c_str()), 0);
 		send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
-		//TODO : ajouter toute la liste des RPL à envoyer à la connexion https://github.com/Vladou73/42_ft_irc/wiki/Commandes-serveur#replies
 		
 		_connected = true;
 		_server->_count_clients++;
