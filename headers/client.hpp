@@ -51,12 +51,13 @@ public:
 
 
     // =============================================================================
-	// COMMANDS =====================================================================
-	void ping();
-	void pass();
-	void nick();
-	bool check_nick();
-	void user();
+	// COMMANDS ====================================================================
+	void 	ping();
+	void 	pass();
+	void 	nick();
+	bool 	check_nick();
+	void	user();
+	void	privmsg();
 
 
 
