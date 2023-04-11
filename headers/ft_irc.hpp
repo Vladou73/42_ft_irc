@@ -2,8 +2,6 @@
 # define FT_IRC_HPP
 
 
-# include <iostream>
-# include <iterator>
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <netdb.h>
@@ -14,6 +12,9 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <poll.h>
+
+# include <iostream>
+# include <iterator>
 # include <sstream>
 # include <vector>
 # include <map>

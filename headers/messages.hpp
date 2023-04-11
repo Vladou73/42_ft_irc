@@ -8,6 +8,7 @@
 // =============================================================================
 // USER ID =====================================================================
 # define USER_ID(nickname) (":" + nickname + "!" + nickname + "@localhost\r\n")
+# define USER_ID2(nickname) (":" + nickname + "!" + nickname + "@localhost")
 
 
 // =============================================================================
@@ -57,6 +58,14 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " " + message + "\r\n")
 
 
+
+// =============================================================================
+// QUIT MESSAGES ===============================================================
+# define RPL_QUIT(user_id, reason) (user_id + " QUIT :Quit: " + reason + "\r\n")
+
+
+// =============================================================================
+// JOIN MESSAGES ===============================================================
 # define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
 
 #endif

@@ -60,6 +60,7 @@ public:
 	bool 	check_nick();
 	void	user();
 	void	privmsg();
+	void	quit();
 	void 	join();
 
 
