@@ -57,4 +57,6 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " " + message + "\r\n")
 
 
+# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
+
 #endif

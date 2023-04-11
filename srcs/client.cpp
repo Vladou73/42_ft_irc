@@ -61,51 +61,51 @@ Client::clearBuff()
 // =============================================================================
 // METHODS =====================================================================
 
-bool	Client::_check_user()
-{
-	//TODO verifier quoi checker sur les users
-	//TODO verifier quoi renvoyer en cas de probleme sur les users
-	// 4 informations
-	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
-	std::string temp;
-	std::stringstream X(_data_connexion[2]);
-	int i = 0;
+// bool	Client::_check_user()
+// {
+// 	//TODO verifier quoi checker sur les users
+// 	//TODO verifier quoi renvoyer en cas de probleme sur les users
+// 	// 4 informations
+// 	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
+// 	std::string temp;
+// 	std::stringstream X(_data_connexion[2]);
+// 	int i = 0;
 
-	while(getline(X, temp, ' '))
-		if (!temp.empty())
-			i++;
-	if (i < 4)
-	{
-		send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
+// 	while(getline(X, temp, ' '))
+// 		if (!temp.empty())
+// 			i++;
+// 	if (i < 4)
+// 	{
+// 		send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
 
-		return false;
-	}
-	return true;
-}
+// 		return false;
+// 	}
+// 	return true;
+// }
 
-bool
-Client::check_connexion(std::string password)
-{
-	std::string	pwd = password;
+// bool
+// Client::check_connexion(std::string password)
+// {
+// 	std::string	pwd = password;
 
-	if (_data_connexion[0] != pwd)
-	{
-		_data_connexion.clear();
-		return false;
-	}
-	else if (_check_user() == false)
-	{
-		_data_connexion.pop_back();
-		return false;
-	}
-	_user = _data_connexion[2];
-	std::cout << "_user=" << _user << std::endl;
-	send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
-	send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
-	//TODO : ajouter toute la liste des RPL à envoyer à la connexion https://github.com/Vladou73/42_ft_irc/wiki/Commandes-serveur#replies
-	_connected = true;
-	return true;
-}
+// 	if (_data_connexion[0] != pwd)
+// 	{
+// 		_data_connexion.clear();
+// 		return false;
+// 	}
+// 	else if (_check_user() == false)
+// 	{
+// 		_data_connexion.pop_back();
+// 		return false;
+// 	}
+// 	_user = _data_connexion[2];
+// 	std::cout << "_user=" << _user << std::endl;
+// 	send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
+// 	send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
+// 	//TODO : ajouter toute la liste des RPL à envoyer à la connexion https://github.com/Vladou73/42_ft_irc/wiki/Commandes-serveur#replies
+// 	_connected = true;
+// 	return true;
+// }
 
 void
 Client::search_command()
@@ -118,10 +118,10 @@ Client::search_command()
 		user();
 	else if (_parsed_cmd[0] == "PING")
 		ping();
-	else if (_parsed_cmd[0] == "PRIVMSG")
+	else if (_parsed_cmd[0]== "JOIN")
+		join();
+	else if (_parsed_cmd[0]== "PRIVMSG")
 		privmsg();
-	// else if (_parsed_cmd[0]== "JOIN")
-	// 	join(_connected, _parsed_cmd, _client_id, _nick);
 	else
 		std::cout << "default\n";
 }
