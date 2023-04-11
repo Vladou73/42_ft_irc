@@ -120,6 +120,8 @@ Client::search_command()
 		ping();
 	else if (_parsed_cmd[0] == "PRIVMSG")
 		privmsg();
+	else if (_parsed_cmd[0] == "QUIT")
+		quit();
 	// else if (_parsed_cmd[0]== "JOIN")
 	// 	join(_connected, _parsed_cmd, _client_id, _nick);
 	else
