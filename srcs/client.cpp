@@ -176,7 +176,6 @@ void
 Client::delete_client()
 {
 	std::cout << "delete client func\n";
-	_server->_clients.erase(_client_id);
 	std::vector<struct pollfd>::iterator it = _server->_pfds.begin();
 	std::vector<struct pollfd>::iterator end = _server->_pfds.end();
 	for (; it != end; it++)
@@ -187,5 +186,6 @@ Client::delete_client()
 			_server->_pfds.erase(it);
 		}
 	}
+	_server->_clients.erase(_client_id);
 	// clear_client();
 }

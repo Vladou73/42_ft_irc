@@ -22,7 +22,7 @@ private:
     std::vector<struct pollfd>	_pfds;
 
 protected:
-	std::map<int, Client *>	                _clients;
+	std::map<int, Client>	                _clients;
     int                                     _count_clients;
     std::map<std::string, Channel *>        _channels;
 
