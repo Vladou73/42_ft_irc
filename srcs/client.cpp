@@ -9,7 +9,7 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
-		_server(server)
+		_server(server), _socket_connected(true)
 {}
 
 
@@ -57,55 +57,20 @@ Client::clearBuff()
 	_buff.clear();
 }
 
+void
+Client::socketDisconnect()
+{
+    _socket_connected = false;
+}
+
+bool
+Client::getSocketConnexion()
+{
+    return _socket_connected;
+}
 
 // =============================================================================
 // METHODS =====================================================================
-
-// bool	Client::_check_user()
-// {
-// 	//TODO verifier quoi checker sur les users
-// 	//TODO verifier quoi renvoyer en cas de probleme sur les users
-// 	// 4 informations
-// 	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
-// 	std::string temp;
-// 	std::stringstream X(_data_connexion[2]);
-// 	int i = 0;
-
-// 	while(getline(X, temp, ' '))
-// 		if (!temp.empty())
-// 			i++;
-// 	if (i < 4)
-// 	{
-// 		send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
-
-// 		return false;
-// 	}
-// 	return true;
-// }
-
-// bool
-// Client::check_connexion(std::string password)
-// {
-// 	std::string	pwd = password;
-
-// 	if (_data_connexion[0] != pwd)
-// 	{
-// 		_data_connexion.clear();
-// 		return false;
-// 	}
-// 	else if (_check_user() == false)
-// 	{
-// 		_data_connexion.pop_back();
-// 		return false;
-// 	}
-// 	_user = _data_connexion[2];
-// 	std::cout << "_user=" << _user << std::endl;
-// 	send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
-// 	send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
-// 	//TODO : ajouter toute la liste des RPL à envoyer à la connexion https://github.com/Vladou73/42_ft_irc/wiki/Commandes-serveur#replies
-// 	_connected = true;
-// 	return true;
-// }
 
 void
 Client::search_command()
@@ -156,7 +121,6 @@ Client::parse_lines(std::string buff)
 	}
 }
 
-
 void
 Client::parse_command(std::string command)
 {
@@ -185,11 +149,43 @@ Client::parse_command(std::string command)
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 
-	search_command();
 
-	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
-	// {
-	// 	std::cout << "'" << *it << "'" << std::endl;
-	// }
+	for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
+	{
+		std::cout << "'" << *it << "'" << std::endl;
+	}
+
+	search_command();
 }
 
+
+// void
+// Client::clear_client()
+// {
+// 	_nick.clear();
+// 	_user.clear();
+// 	_client_id_str.clear();
+// 	_data_connexion.clear();
+// 	// _buff.clear();
+// 	_parsed_cmd.clear();
+// 	_server = NULL;
+// 	// delete this;
+// }
+
+void
+Client::delete_client()
+{
+	std::cout << "delete client func\n";
+	_server->_clients.erase(_client_id);
+	std::vector<struct pollfd>::iterator it = _server->_pfds.begin();
+	std::vector<struct pollfd>::iterator end = _server->_pfds.end();
+	for (; it != end; it++)
+	{
+		if (it->fd == _client_id)
+		{
+			std::cout << "it->fd" << it->fd << std::endl;
+			_server->_pfds.erase(it);
+		}
+	}
+	// clear_client();
+}

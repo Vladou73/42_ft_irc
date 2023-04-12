@@ -41,38 +41,28 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 
     if (nbytes <= 0)
     {
-        // Got error or connection closed by client
-        if (nbytes == 0)
+        if (nbytes == 0) // Got connection closed by client. Ici gestion du ctrl+C
         {
-            // Connection closed
-            printf("pollServer: socket %d hung up\n", sender_fd);
-            if (!_clients[sender_fd].getUser().empty())
+            std::cout << "pollServer: socket #" << sender_fd << " hung up" << std::endl; // Connection closed
+            if (!_clients[sender_fd]->getUser().empty())
                 _count_clients--;
-            _clients.erase(sender_fd);
            std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
-        } else
+        } else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
         close(it->fd); // Bye!
-        _pfds.erase(it);
+        _clients[sender_fd]->delete_client();
     }
     else
     {
-        std::cout << PURPLE << "[client] " << "fd = " << it->fd << " | "
-                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
+        std::cout   << PURPLE << "[client] " << "fd = " << it->fd << " | "
+                    << std::string(buff, 0, nbytes) << RESET << std::endl ;
 		std::string ss1 = buff;
-        _clients[sender_fd].setBuff(ss1);
-
-        if (*(_clients[sender_fd].getBuff().end() - 1) == '\n') //condition pour ctrl+D
+        _clients[sender_fd]->setBuff(ss1);
+        if (*(_clients[sender_fd]->getBuff().end() - 1) == '\n') //condition pour ctrl+D
         {
-            // if (_clients[sender_fd].getDataConnexion().size() < 3)
-            // {
-            //     _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
-            // }
-            // else {
-            _clients[sender_fd].parse_lines(_clients[sender_fd].getBuff());
-            // _clients[sender_fd].parse_command(_clients[sender_fd].getBuff());
-            // }
-            _clients[sender_fd].clearBuff();
+            _clients[sender_fd]->parse_lines(_clients[sender_fd]->getBuff());
+            if (_clients[sender_fd]->getSocketConnexion() == true)
+                _clients[sender_fd]->clearBuff();
         }
     }
 }
@@ -80,6 +70,7 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 void
 Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
 {
+    int             reuseaddr = 1;
     struct sockaddr_storage remoteaddr; // Client address
     socklen_t               addrlen;
     int						newfd; // Newly accept()ed socket descriptor
@@ -91,12 +82,14 @@ Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
         perror("accept");
     else
     {
+        // En cas de crash, permet d'avoir un nouveau socket sur le meme port
+        setsockopt(newfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(int));
         struct pollfd new_poll_fd;
         new_poll_fd.fd = newfd; // the socket descriptor
         new_poll_fd.events = POLLIN;
         new_pollfds.push_back(new_poll_fd);
-		Client client(newfd, this);
-		_clients.insert(std::pair<int,Client>(newfd, client));
+		Client *client = new Client(newfd, this);
+		_clients.insert(std::pair<int,Client*>(newfd, client));
     }
 }
 
@@ -114,14 +107,6 @@ Server::_poll_loop(void)
         std::cout<<"Dup2 fail!\n";
         // Handle error
     }
-
-    // Read input from the socket using std::cin
-    // while (std::getline(std::cin, input)) {
-        // Process input from the socket here...
-    // }
-
-    // return 0;
-
     for(;;)
     {
 
@@ -129,7 +114,6 @@ Server::_poll_loop(void)
 
 		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
         int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
-
         if (poll_count == -1)
         {
             perror("poll");
@@ -149,15 +133,30 @@ Server::_poll_loop(void)
                 else
                     _handle_data(it);
             }
+            // POLLERR :Condition d'erreur (uniquement en sortie).
+            // POLLHUP :Déconnexion (uniquement en sortie).
+            // POLLNVAL :Requête invalide : fd nest pas ouvert (uniquement en sortie)
+            else if (it->revents & POLLHUP)
+            {
+                std::cout << "Client at socket #" << it->fd << " disconnected." << std::endl;
+                _clients[it->fd]->socketDisconnect();
+                _clients[it->fd]->delete_client();
+            }
+            else if (it->revents & POLLERR || it->revents & POLLNVAL)
+            {
+                std::cout << "Invalid event on socket #" << it->fd << "." << std::endl;
+                _clients[it->fd]->socketDisconnect();
+            }
         }
         _pfds.insert(_pfds.end(), new_pollfds.begin(), new_pollfds.end()); // Add the range of NEW_pollfds in poll_fds (helps recalculating poll_fds.end() in the for loop)
     }
 }
 
+
 void
 Server::_get_listener_socket(void)
 {
-    int             yes = 1;
+    int             reuseaddr = 1;
     int             rv;
     struct addrinfo hints, *ai, *temp;
 
@@ -180,7 +179,7 @@ Server::_get_listener_socket(void)
           continue;
 
         // En cas de crash, permet d'avoir un nouveau socket sur le meme port
-        setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+        setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(int));
 
         // connexion entre le Server et lepoint d'ecoute (socket)
         if (bind(_listener, temp->ai_addr, temp->ai_addrlen) < 0)
