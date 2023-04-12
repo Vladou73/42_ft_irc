@@ -22,6 +22,7 @@ private:
 	std::vector<std::string>	_parsed_cmd;
 	bool						_connected;
 	Server						*_server;
+	bool						_socket_connected;
 
 public:
 	// =============================================================================
@@ -41,6 +42,8 @@ public:
 	std::string 				getBuff();
 	void		 				setBuff(std::string ss1);
 	void						clearBuff();
+	bool						getSocketConnexion();
+	void						socketDisconnect();
 
     // =============================================================================
 	// METHODS =====================================================================
@@ -51,6 +54,8 @@ public:
 	void	parse_command(std::string buff);
 	void	parse_lines(std::string buff);
 	void	search_command();
+	void	clear_client();
+	void	delete_client();
 
 
     // =============================================================================

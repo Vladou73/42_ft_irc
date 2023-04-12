@@ -20,7 +20,7 @@ private:
 	int							_listener;
 	const char *				_server_port;
     std::vector<struct pollfd>	_pfds;
-    // Client *client;
+
 protected:
 	std::map<int, Client>	                _clients;
     int                                     _count_clients;
@@ -50,6 +50,8 @@ private:
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
     void    _add_new_client(std::vector<struct pollfd> &);
     void    _handle_data(std::vector<struct pollfd>::iterator &it);
+    void    _rm_deconnected_clients();
+
 };
 
 

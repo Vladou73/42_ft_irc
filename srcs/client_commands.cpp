@@ -9,12 +9,19 @@ Client::ping()
     if (_parsed_cmd.size() == 1)
         send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PING").c_str(), ERR_NEEDMOREPARAMS(_nick, "PING").size(), 0);
     else if (_connected == true)
-        send(_client_id, RPL_PONG(_parsed_cmd[1]).c_str(), RPL_PONG(_parsed_cmd[1]).size(), 0);        
+        send(_client_id, RPL_PONG(_parsed_cmd[1]).c_str(), RPL_PONG(_parsed_cmd[1]).size(), 0);
 }
 
 void
 Client::pass()
 {
+	// std::cout << _parsed_cmd[0] << std::endl;
+	// std::cout << _parsed_cmd[1] << std::endl;
+    if (_parsed_cmd.size() == 1)
+	{
+        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PASS").c_str(), ERR_NEEDMOREPARAMS(_nick, "PASS").size(), 0);
+		return;
+	}
     if (_connected == true)
     {
         send(_client_id, ERR_ALREADYREGISTERED(_nick).c_str(), ERR_ALREADYREGISTERED(_nick).size(), 0);
@@ -32,7 +39,7 @@ Client::pass()
     _data_connexion.push_back(_parsed_cmd[1]);
 }
 
-bool	
+bool
 Client::check_nick()
 {
 	//TODO verifier quoi checker sur les nicknames
@@ -60,7 +67,7 @@ Client::check_nick()
 		_nick = _data_connexion[1];
 	else
 		_nick = _parsed_cmd[1];
-	std::cout << "_nick="  << _nick << std::endl;
+	// std::cout << "_nick="  << _nick << std::endl;
 	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
 	return true;
 }
@@ -68,7 +75,6 @@ Client::check_nick()
 void
 Client::nick()
 {
-	std::cout << "'"<< _parsed_cmd[1] << "'" << std::endl;
 	if (_parsed_cmd.size() == 1)
 	{
 		send (_client_id, ERR_NONICKNAMEGIVEN, strlen(ERR_NONICKNAMEGIVEN), 0);
@@ -89,7 +95,7 @@ Client::user()
 {
 	if (_connected == true)
 		return;
-	
+
 	//TODO verifier quoi checker sur les users
 	//TODO verifier quoi renvoyer en cas de probleme sur les users
 	// 4 informations
@@ -106,12 +112,12 @@ Client::user()
 		for (size_t i = 1; i < _parsed_cmd.size(); i++)
 			append += _parsed_cmd[i];
 		_data_connexion.push_back(append);
-		
+
 		_user = _data_connexion[2];
 		//? Je pense que c'est le user est le dernier arg de user
 		//? _user = _parsed_cmd[4];
-		
-		std::cout << "_user=" << _user << std::endl;
+
+		// std::cout << "_user=" << _user << std::endl;
 		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
 		send(_client_id, RPL_YOURHOST(_nick).c_str(), strlen(RPL_YOURHOST(_nick).c_str()), 0);
 		// TODO : Date time (devra etre decommente)
@@ -120,14 +126,13 @@ Client::user()
 		// send(_client_id, RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
 		send(_client_id, RPL_ISUPPORT(_nick).c_str(), strlen(RPL_ISUPPORT(_nick).c_str()), 0);
 		send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
-		
+
 		_connected = true;
 		_server->_count_clients++;
 		std::cout << GREEN << "[server] clients connected = " << _server->_count_clients << std::endl;
 	}
 	else
 		_data_connexion.clear(); //TODO :doit on clear egalement _nick et _pass ?
-
 }
 
 void
@@ -157,13 +162,16 @@ Client::privmsg()
 void
 Client::quit()
 {
+	//TODO : ajouter la suppression du client dans les channels
 	std::string mess;
 	if (_parsed_cmd.size() == 2)
 		mess = _parsed_cmd[1];
 	else
 		mess = " ";
-	send (_client_id, RPL_QUIT(USER_ID2(_nick), mess).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), mess).c_str()), 0);
-	if (!_server->_clients[_client_id].getUser().empty())
+	send(_client_id, RPL_QUIT(USER_ID2(_nick), mess).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), mess).c_str()), 0);
+	if (!_server->_clients[_client_id]._user.empty())
         _server->_count_clients--;
-	_server->_clients.erase(_client_id);
+
+	_socket_connected = false;
+	close(_client_id);
 }
