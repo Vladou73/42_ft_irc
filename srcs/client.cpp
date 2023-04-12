@@ -110,6 +110,9 @@ Client::clearBuff()
 void
 Client::search_command()
 {
+	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
+	// 	std::cout << *it << std::endl;
+
 	if (_parsed_cmd[0] == "PASS")
 		pass();
 	else if (_parsed_cmd[0] == "NICK")
@@ -125,45 +128,63 @@ Client::search_command()
 	else if (_parsed_cmd[0] == "QUIT")
 		quit();
 	else if (_parsed_cmd[0]== "JOIN")
-	  join(_connected, _parsed_cmd, _client_id, _nick);
+	  join();
 	else
 		std::cout << "default\n";
 }
 
 void
-Client::parse_command(std::string buff)
+Client::parse_lines(std::string buff)
 {
-	std::stringstream	strstream(buff);
-	std::string 		line;
+	std::stringstream			strstream(buff);
+	std::vector<std::string>	buff_lines;
+	std::string 				line;
+
+	while(getline(strstream, line, '\n'))
+	{
+		if (*(line.end() - 1) == '\n')
+			line.erase(line.end() - 1);
+		if (*(line.end() - 1) == '\r')
+			line.erase(line.end() - 1);
+		buff_lines.push_back(line);
+	}
+
+	for (std::vector<std::string>::iterator it = buff_lines.begin(); it != buff_lines.end(); it++)
+	{
+		// std::cout << "'" << *it << "'" << std::endl;
+		parse_command(*it);
+	}
+}
+
+
+void
+Client::parse_command(std::string command)
+{
+	std::stringstream	strstream(command);
+	std::string 		word;
 	std::string			msg;
 	bool				last_arg = false;
-	
+
 	if (!_parsed_cmd.empty())
 		_parsed_cmd.clear();
-	
-	while(getline(strstream, line, ' '))
+
+	while(getline(strstream, word, ' '))
 	{
-		if (line[0] == ':')
+		if (word[0] == ':')
 		{
 			last_arg = true;
-			line.erase(line.begin()); 
-		}
-		if (*(line.end() - 1) == '\n') 
-		{
-			line.erase(line.end() - 1);
-			if (*(line.end() - 1) == '\r')
-				line.erase(line.end() - 1);
+			word.erase(word.begin());
 		}
 		if (last_arg == false) {
-			if (line.length() > 0)
-				_parsed_cmd.push_back(line);
+			if (word.length() > 0)
+				_parsed_cmd.push_back(word);
 		}
 		else
-			msg += line + " ";
+			msg += word + " ";
 	}
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
-	
+
 	search_command();
 
 	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
@@ -171,3 +192,4 @@ Client::parse_command(std::string buff)
 	// 	std::cout << "'" << *it << "'" << std::endl;
 	// }
 }
+

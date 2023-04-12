@@ -62,14 +62,15 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 		std::string ss1 = buff;
         _clients[sender_fd].setBuff(ss1);
 
-        if (*(_clients[sender_fd].getBuff().end() - 1) == '\n')
+        if (*(_clients[sender_fd].getBuff().end() - 1) == '\n') //condition pour ctrl+D
         {
             // if (_clients[sender_fd].getDataConnexion().size() < 3)
             // {
             //     _clients[sender_fd].parse_connexion(_clients[sender_fd].getBuff(), _pwd, _clients, _count_clients);
             // }
             // else {
-            _clients[sender_fd].parse_command(_clients[sender_fd].getBuff());
+            _clients[sender_fd].parse_lines(_clients[sender_fd].getBuff());
+            // _clients[sender_fd].parse_command(_clients[sender_fd].getBuff());
             // }
             _clients[sender_fd].clearBuff();
         }

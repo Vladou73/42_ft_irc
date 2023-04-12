@@ -21,7 +21,7 @@ private:
 	std::string					_buff;
 	std::vector<std::string>	_parsed_cmd;
 	bool						_connected;
-	Server						*_server;					
+	Server						*_server;
 
 public:
 	// =============================================================================
@@ -49,6 +49,7 @@ public:
 	bool	check_connexion(std::string password);
 	bool	client_save(std::string password);
 	void	parse_command(std::string buff);
+	void	parse_lines(std::string buff);
 	void	search_command();
 
 
