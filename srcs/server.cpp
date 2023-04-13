@@ -7,8 +7,8 @@ Server::Server() : _server_port("6667")
 
 Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _server_port(av[1]), _pfds(0),
-    _clients(), _count_clients(0)
-    , _channels()
+    _clients(), _count_clients(0),
+    _channels()
 {
     _get_listener_socket();
 	_poll_loop();
@@ -54,6 +54,18 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
     }
     else
     {
+        //DEBUG : visualiser les channels existants
+        std::cout << std::endl << "*****CHANNELS***** " << std::endl;
+        for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
+        {
+            std::cout << std::endl << "channel " << it->first << std::endl;
+            std::map<int, Client *> clients = it->second.getClients();
+            for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
+            {
+                std::cout << "client " << client->second->getNick() << std::endl;
+            }
+        }
+
         std::cout   << PURPLE << "[client] " << "fd = " << it->fd << " | "
                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
 		std::string ss1 = buff;

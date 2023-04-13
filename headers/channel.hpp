@@ -15,7 +15,7 @@ class Channel
 private:
     std::string				_name;
 	std::string				_topic;
-	std::vector<Client *>	_client_in_chan;
+	std::map<int, Client *>	_clients;
 
 
 public:
@@ -32,6 +32,7 @@ public:
     // =============================================================================
 	// GETTERS / SETTERS ===========================================================
 	// void	setChan(int fd);
+	std::map<int, Client *> getClients();
 
     // =============================================================================
 	// METHODS =====================================================================

@@ -24,7 +24,7 @@ private:
 protected:
 	std::map<int, Client>	                _clients;
     int                                     _count_clients;
-    std::map<std::string, Channel *>        _channels;
+    std::map<std::string, Channel>          _channels;
 
 public:
 	// =============================================================================
