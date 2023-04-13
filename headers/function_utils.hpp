@@ -4,7 +4,9 @@
 # include <string>
 # include <iostream>
 # include <sstream>
+# include "ft_irc.hpp"
 
-std::string change_to_str(int a);
+std::string                 change_to_str(int a);
+std::vector<std::string>    parse_commas(std::string buff);
 
 #endif

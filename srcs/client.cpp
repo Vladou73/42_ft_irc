@@ -92,8 +92,8 @@ Client::search_command()
 		privmsg();
 	else if (_parsed_cmd[0] == "QUIT")
 		quit();
-	else if (_parsed_cmd[0]== "JOIN")
-	  join();
+	else if (_parsed_cmd[0]== "PART")
+	  	part();
 	else
 		std::cout << "default\n";
 }

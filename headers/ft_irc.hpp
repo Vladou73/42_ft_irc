@@ -26,6 +26,5 @@
 # include "colors.hpp"
 # include "messages.hpp"
 # include "function_utils.hpp"
-# include "client_commands.hpp"
 
 #endif

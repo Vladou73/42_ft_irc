@@ -68,4 +68,15 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // JOIN MESSAGES ===============================================================
 # define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
 
+
+
+
+// =============================================================================
+// PART MESSAGES ===============================================================
+# define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
+# define ERR_NOTONCHANNEL(nickname, chan_name) ("442 " + nickname + " " + chan_name + " :You're not on that channel\r\n")
+# define RPL_PART(chan_name) ("successfuly left channel " + chan_name + "\r\n")
+# define RPL_PART2(nickname, chan_name) (nickname + " left the channel " + chan_name + "\r\n")
+
+
 #endif

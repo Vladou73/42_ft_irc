@@ -68,7 +68,7 @@ public:
 	void	privmsg();
 	void	quit();
 	void 	join();
-
+	void	part();
 
 
 private:

@@ -1,23 +1,22 @@
-# include "../../headers/channel_commands.hpp"
 # include "../../headers/client.hpp"
 # include "../../headers/channel.hpp"
 # include "../../headers/ft_irc.hpp"
 
 //https://github.com/Vladou73/42_ft_irc/wiki/5-Channel-operations#command-join
 
-std::vector<std::string>
-parse_commas(std::string buff)
-{
-    std::stringstream			strstream(buff);
-	std::vector<std::string>	parsed_buff;
-	std::string 				word;
+// std::vector<std::string>
+// parse_commas(std::string buff)
+// {
+//     std::stringstream			strstream(buff);
+// 	std::vector<std::string>	parsed_buff;
+// 	std::string 				word;
 
-	while(getline(strstream, word, ','))
-	{
-		parsed_buff.push_back(word);
-	}
-    return parsed_buff;
-}
+// 	while(getline(strstream, word, ','))
+// 	{
+// 		parsed_buff.push_back(word);
+// 	}
+//     return parsed_buff;
+// }
 
 void
 Client::join()
