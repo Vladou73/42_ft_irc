@@ -3,10 +3,10 @@
 
 // =============================================================================
 // CONSTRUCTORS ================================================================
-Channel::Channel() : _name(), _topic(), _client_in_chan() 
+Channel::Channel() : _name(), _topic(), _clients() 
 {}
 
-Channel::Channel(std::string name) : _name(name), _topic(), _client_in_chan() 
+Channel::Channel(std::string name) : _name(name), _topic(), _clients() 
 {}
 
 
@@ -22,7 +22,11 @@ Channel::~Channel()
 // {
 //     _fd_users.push_back(fd);
 // }
-
+std::map<int, Client *>
+Channel::getClients()
+{
+    return _clients;
+}
 
 // // =============================================================================
 // // METHODS =====================================================================

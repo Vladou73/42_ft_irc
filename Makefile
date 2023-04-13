@@ -6,7 +6,9 @@ SRCS =	srcs/main.cpp\
 		srcs/client.cpp\
 		srcs/client_commands.cpp\
 		srcs/channel.cpp\
-		srcs/channel_commands.cpp\
+		srcs/channel_commands/join.cpp\
+
+# srcs/channel_commands.cpp\
 
 CC = c++
 
