@@ -76,7 +76,6 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // ==============================================================================
 // TOPIC MESSAGES ===============================================================
 # define ERR_NOTONCHANNEL(nickname, chan_name) ("442 " + nickname + " " + chan_name + " :You're not on that channel\r\n")
-// # define ERR_CHANNOTFOUND(nickname) (nickname + " :This channel does not exist\r\n")
 # define RPL_NOTOPIC(nickname) ("331 " + nickname + " :No topic is set\r\n")
 # define RPL_TOPIC(nickname, channel, topic) (":localhost 332 " + nickname + " " + channel + " :"+ topic + "\r\n")
 

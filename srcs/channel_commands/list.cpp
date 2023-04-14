@@ -38,6 +38,16 @@ Client::list()
         	std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
         	for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
 			{
+				if (check_channel_name(*it) == false)
+				{
+					send(_client_id, ERR_INVALIDCHANNAME(*it).c_str(), ERR_INVALIDCHANNAME(*it).size(), 0);
+					continue;
+				}
+				if (_server->_channels.find(*it) == _server->_channels.end())
+				{
+					send(_client_id, ERR_NOSUCHCHANNEL(_nick, *it).c_str(), ERR_NOSUCHCHANNEL(_nick, *it).size(), 0);
+					continue ;
+				}
 				std::map<std::string, Channel>::iterator chan = _server->_channels.find(*it);
 				std::stringstream ss;
 				ss << chan->second._clients.size();
