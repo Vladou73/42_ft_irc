@@ -49,6 +49,8 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
            std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
         } else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
+        _clients[sender_fd].setQuitMsg("abrupt client aborting");
+        send(sender_fd, ERROR(_clients[sender_fd].getQuitMsg()).c_str(), ERROR(_clients[sender_fd].getQuitMsg()).size(), 0);
         _clients[sender_fd].delete_client();
         close(it->fd);
     }

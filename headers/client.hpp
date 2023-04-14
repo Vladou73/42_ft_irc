@@ -47,6 +47,8 @@ public:
 	void						clearBuff();
 	bool						getSocketConnexion();
 	void						socketDisconnect();
+	void						setQuitMsg(std::string);
+	std::string					getQuitMsg();
 
     // =============================================================================
 	// METHODS =====================================================================

@@ -71,6 +71,18 @@ Client::getSocketConnexion()
     return _socket_connected;
 }
 
+void
+Client::setQuitMsg(std::string msg)
+{
+	_quit_msg = msg;
+}
+
+std::string
+Client::getQuitMsg()
+{
+	return _quit_msg;
+}
+
 // =============================================================================
 // METHODS =====================================================================
 
