@@ -66,6 +66,8 @@ Client::topic()
 			send(_client_id, RPL_NOTOPIC(_nick).c_str(), RPL_NOTOPIC(_nick).size(), 0);
 			return ;
 		}
+        send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
 		send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);	
+        send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
 	}
 }
