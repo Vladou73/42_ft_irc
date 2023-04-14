@@ -58,6 +58,7 @@ public:
 	void	search_command();
 	void	clear_client();
 	void	delete_client();
+	void	delete_client_from_chans(std::string);
 
 
     // =============================================================================
