@@ -70,6 +70,7 @@ public:
 	void	privmsg();
 	void	quit();
 	void 	join();
+	void	part();
 	void 	topic();
 	void	list();
 

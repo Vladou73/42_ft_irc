@@ -92,6 +92,8 @@ Client::search_command()
 		privmsg();
 	else if (_parsed_cmd[0] == "QUIT")
 		quit();
+	else if (_parsed_cmd[0]== "PART")
+	  	part();
 	else if (_parsed_cmd[0]== "TOPIC")
 	  topic();
 	else if (_parsed_cmd[0]== "LIST")

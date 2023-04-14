@@ -1,23 +1,8 @@
-# include "../../headers/channel_commands.hpp"
 # include "../../headers/client.hpp"
 # include "../../headers/channel.hpp"
 # include "../../headers/ft_irc.hpp"
 
 //https://github.com/Vladou73/42_ft_irc/wiki/5-Channel-operations#command-join
-
-std::vector<std::string>
-parse_commas(std::string buff)
-{
-    std::stringstream			strstream(buff);
-	std::vector<std::string>	parsed_buff;
-	std::string 				word;
-
-	while(getline(strstream, word, ','))
-	{
-		parsed_buff.push_back(word);
-	}
-    return parsed_buff;
-}
 
 void
 Client::join()
@@ -36,6 +21,11 @@ Client::join()
         std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
         for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
         {
+            if (check_channel_name(*it) == false)
+            {
+            	send(_client_id, ERR_INVALIDCHANNAME(*it).c_str(), ERR_INVALIDCHANNAME(*it).size(), 0);
+                continue;
+            }
 
             //Si le channel n'existe pas encore, le crée
             std::map<std::string, Channel>::iterator end = _server->_channels.end();

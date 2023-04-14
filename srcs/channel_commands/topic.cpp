@@ -1,4 +1,3 @@
-# include "../../headers/channel_commands.hpp"
 # include "../../headers/client.hpp"
 # include "../../headers/channel.hpp"
 # include "../../headers/ft_irc.hpp"
@@ -14,7 +13,7 @@
    channel will be changed, if this action is allowed for the user
    requesting it.  If the <topic> parameter is an empty string, the
    topic for that channel will be removed.
-   
+
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
@@ -42,14 +41,16 @@ Client::topic()
     if (_connected == true)
 	{
 		std::map<std::string, Channel>::iterator chan = _server->_channels.find(_parsed_cmd[1]);
+		std::string chan_name = chan->first;
+
 		if (chan == _server->_channels.end())
 		{
-	    	send(_client_id, ERR_CHANNOTFOUND(_nick).c_str(), ERR_CHANNOTFOUND(_nick).size(), 0);
+	    	send(_client_id, ERR_NOSUCHCHANNEL(_nick, chan_name).c_str(), ERR_NOSUCHCHANNEL(_nick, chan_name).size(), 0);
 			return ;
 		}
 		if (check_on_chan(_canals, _parsed_cmd[1]) == false)
 		{
-	    	send(_client_id, ERR_NOTONCHANNEL(_nick).c_str(), ERR_NOTONCHANNEL(_nick).size(), 0);
+	    	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
 			return ;
 		}
 		if (_operator == true)
@@ -67,7 +68,7 @@ Client::topic()
 			return ;
 		}
         send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
-		send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);	
+		send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);
         send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
 	}
 }

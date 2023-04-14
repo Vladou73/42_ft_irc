@@ -27,7 +27,7 @@
 
 // =============================================================================
 // WELCOME MESSAGES ============================================================
-# define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n" 
+# define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n"
 # define SEPARATOR "-------------------------------------------------\r\n"
 # define SEPARATOR_END "-------------------------------------------------\r\n\n"
 # define RPL_WELCOME(user_id, nickname) (":localhost 001 " + nickname + " :Welcome to the Internet Relay Network " + user_id + "\r\n")
@@ -71,10 +71,11 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
 # define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
 
+
 // ==============================================================================
 // TOPIC MESSAGES ===============================================================
-# define ERR_NOTONCHANNEL(nickname) ("442 " + nickname + " :You're not on that channel\r\n")
-# define ERR_CHANNOTFOUND(nickname) (nickname + " :This channel does not exist\r\n")
+# define ERR_NOTONCHANNEL(nickname, chan_name) ("442 " + nickname + " " + chan_name + " :You're not on that channel\r\n")
+// # define ERR_CHANNOTFOUND(nickname) (nickname + " :This channel does not exist\r\n")
 # define RPL_NOTOPIC(nickname) ("331 " + nickname + " :No topic is set\r\n")
 # define RPL_TOPIC(nickname, channel, topic) (":localhost 332 " + nickname + " " + channel + " :"+ topic + "\r\n")
 
@@ -83,5 +84,12 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users Name\r\n")
 # define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " Channel " + chan + " " + number + " :" + topic + "\r\n")
 # define RPL_LISTEND(nickname) (":localhost 323 " + nickname + " :End of /LIST\r\n")
+
+// =============================================================================
+// PART MESSAGES ===============================================================
+# define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
+# define RPL_PART(chan_name) ("successfuly left channel " + chan_name + "\r\n")
+# define RPL_PART2(nickname, chan_name) (nickname + " left the channel " + chan_name + "\r\n")
+# define ERR_INVALIDCHANNAME(chan_name) (chan_name + ": this channel name is invalid \r\n")
 
 #endif
