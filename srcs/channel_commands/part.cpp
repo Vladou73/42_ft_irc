@@ -45,7 +45,15 @@ Client::part()
             }
             else
             {
-                chan->second._clients.erase(_client_id);
+                chan->second._clients.erase(_client_id); //Dans le channel, suppression du client
+                for (std::vector<std::string>::iterator it = _canals.begin(); it != _canals.end(); it++) // Dans le client, suppression du nom du canal du vector _canals
+                {
+                    if (*it == chan_name)
+                    {
+                        _canals.erase(it);
+                        break;
+                    }
+                }
                 send(_client_id, RPL_PART(chan_name, part_msg).c_str(), RPL_PART(chan_name, part_msg).size(), 0);
 
                 //msg aux autres clients du channel
