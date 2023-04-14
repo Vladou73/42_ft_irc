@@ -25,6 +25,7 @@ private:
 	bool						_socket_connected;
 	bool						_operator;
 	std::vector<std::string>	_canals;
+	std::string					_quit_msg;
 
 public:
 	// =============================================================================

@@ -62,6 +62,9 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 
 // =============================================================================
 // QUIT MESSAGES ===============================================================
+// The QUIT command is used to terminate a client’s connection to the server.
+// The server acknowledges this by replying with an ERROR message and closing the connection to the client.
+# define ERROR(user_id, reason) ("ERROR : " + reason + "\r\n")
 # define RPL_QUIT(user_id, reason) (user_id + " QUIT :Quit: " + reason + "\r\n")
 
 

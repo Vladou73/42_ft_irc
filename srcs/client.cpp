@@ -9,7 +9,9 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
-		_server(server), _socket_connected(true), _operator(false), _canals()
+		_server(server), _socket_connected(true),
+		_operator(false), _canals(),
+		_quit_msg()
 {}
 
 
@@ -173,6 +175,7 @@ Client::parse_command(std::string command)
 void
 Client::delete_client_from_chans(std::string mess)
 {
+	(void)mess;
 	for (std::map<std::string, Channel>::iterator chan = _server->_channels.begin(); chan != _server->_channels.end(); chan++)
 	{
 		if (chan->second._clients.find(_client_id) != chan->second._clients.end())
@@ -183,8 +186,7 @@ Client::delete_client_from_chans(std::string mess)
 				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
 			{
 				std::cout << client->first << "\n";
-				send(client->first, RPL_QUIT(USER_ID2(_nick), mess).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), mess).c_str()), 0);
-
+				send(client->first, RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str()), 0);
 			}
 		}
 	}
