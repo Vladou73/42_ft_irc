@@ -19,10 +19,14 @@ Client::part()
         for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
         {
             std::string chan_name = *it;
+            if (check_channel_name(chan_name) == false)
+            {
+            	send(_client_id, ERR_INVALIDCHANNAME(chan_name).c_str(), ERR_INVALIDCHANNAME(chan_name).size(), 0);
+                continue;
+            }
 
-            //Si le channel n'existe pas, renvoyer une erreur
             std::map<std::string, Channel>::iterator end = _server->_channels.end();
-            if (_server->_channels.find(chan_name) == end)
+            if (_server->_channels.find(chan_name) == end) //Si le channel n'existe pas, renvoyer une erreur
             {
             	send(_client_id, ERR_NOSUCHCHANNEL(_nick, chan_name).c_str(), ERR_NOSUCHCHANNEL(_nick, chan_name).size(), 0);
                 continue;

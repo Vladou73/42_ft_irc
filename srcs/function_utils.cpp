@@ -22,3 +22,17 @@ parse_commas(std::string buff)
 	}
     return parsed_buff;
 }
+
+bool
+check_channel_name(std::string name)
+{
+	if (name.size() < 1)
+		return false;
+	if (name[0] != '#' && name[0] != '&') //channel names must be identified by # or &
+		return false;
+	if (name.find("^G") != std::string::npos
+		|| name.find(" ") != std::string::npos
+		|| name.find(",") != std::string::npos)
+		return false;
+    return true;
+}
