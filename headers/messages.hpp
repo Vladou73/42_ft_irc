@@ -88,8 +88,9 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // =============================================================================
 // PART MESSAGES ===============================================================
 # define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
-# define RPL_PART(chan_name) ("successfuly left channel " + chan_name + "\r\n")
-# define RPL_PART2(nickname, chan_name) (nickname + " left the channel " + chan_name + "\r\n")
 # define ERR_INVALIDCHANNAME(chan_name) (chan_name + ": this channel name is invalid \r\n")
+# define RPL_PART(chan_name, msg) ("successfuly left channel " + chan_name + " :" + msg + "\r\n")
+# define RPL_PART2(nickname, chan_name, msg) (nickname + " left the channel " + chan_name + " :" + msg + "\r\n")
+
 
 #endif

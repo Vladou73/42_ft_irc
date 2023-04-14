@@ -14,6 +14,10 @@ Client::part()
     }
     if (_connected == true)
     {
+        std::string part_msg = "";
+        if (_parsed_cmd.size() > 2) //recuperation du message dans la commande
+            part_msg = _parsed_cmd[2];
+
         //parsing du 1er argument qui contient la liste des channels envoyés pour le PART
         std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
         for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
@@ -42,12 +46,12 @@ Client::part()
             else
             {
                 chan->second._clients.erase(_client_id);
-                send(_client_id, RPL_PART(chan_name).c_str(), RPL_PART(chan_name).size(), 0);
+                send(_client_id, RPL_PART(chan_name, part_msg).c_str(), RPL_PART(chan_name, part_msg).size(), 0);
 
                 //msg aux autres clients du channel
                 for (std::map<int, Client*>::iterator client = _server->_channels.find(chan_name)->second._clients.begin();
                     client != _server->_channels.find(chan_name)->second._clients.end(); client++)
-                	send(client->second->_client_id, RPL_PART2(_nick, chan_name).c_str(), RPL_PART2(_nick, chan_name).size(), 0);
+                	send(client->second->_client_id, RPL_PART2(_nick, chan_name, part_msg).c_str(), RPL_PART2(_nick, chan_name, part_msg).size(), 0);
             }
         }
     }
