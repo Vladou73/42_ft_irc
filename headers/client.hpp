@@ -23,7 +23,9 @@ private:
 	bool						_connected;
 	Server						*_server;
 	bool						_socket_connected;
+	bool						_operator;
 	std::vector<std::string>	_canals;
+	std::string					_quit_msg;
 
 public:
 	// =============================================================================
@@ -45,6 +47,8 @@ public:
 	void						clearBuff();
 	bool						getSocketConnexion();
 	void						socketDisconnect();
+	void						setQuitMsg(std::string);
+	std::string					getQuitMsg();
 
     // =============================================================================
 	// METHODS =====================================================================
@@ -57,6 +61,7 @@ public:
 	void	search_command();
 	void	clear_client();
 	void	delete_client();
+	void	delete_client_from_chans(std::string);
 
 
     // =============================================================================
