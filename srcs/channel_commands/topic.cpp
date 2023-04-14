@@ -53,7 +53,7 @@ Client::topic()
 	    	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
 			return ;
 		}
-		if (_operator == true)
+		if (chan->second._id_operator == _client_id)
 		{
 			if (_parsed_cmd.size() > 2)
 			{

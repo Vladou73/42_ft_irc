@@ -67,9 +67,10 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 
 // =============================================================================
 // JOIN MESSAGES ===============================================================
-# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
+# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost JOIN" + chan_name + "\r\n")
 # define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
 # define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
+# define ERR_ALREADYINCHAN(nickname, chan) (":localhost " + nickname + " :You are already in the channel " + chan + "\r\n")
 
 
 // ==============================================================================

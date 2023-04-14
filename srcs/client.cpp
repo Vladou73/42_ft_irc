@@ -9,7 +9,7 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
-		_server(server), _socket_connected(true), _operator(false), _canals()
+		_server(server), _socket_connected(true), _canals()
 {}
 
 
