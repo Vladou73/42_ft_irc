@@ -153,12 +153,6 @@ Client::parse_command(std::string command)
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 
-
-	for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
-	{
-		std::cout << "'" << *it << "'" << std::endl;
-	}
-
 	search_command();
 }
 

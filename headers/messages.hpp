@@ -28,7 +28,8 @@
 // =============================================================================
 // WELCOME MESSAGES ============================================================
 # define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n"
-
+# define SEPARATOR "-------------------------------------------------\r\n"
+# define SEPARATOR_END "-------------------------------------------------\r\n\n"
 # define RPL_WELCOME(user_id, nickname) (":localhost 001 " + nickname + " :Welcome to the Internet Relay Network " + user_id + "\r\n")
 # define RPL_YOURHOST(nickname) (":localhost 002 " + nickname + " :Your host is ircserv (localhost), running version1.1\r\n")
 /*

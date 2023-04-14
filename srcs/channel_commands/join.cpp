@@ -15,6 +15,7 @@ Client::join()
     if (_connected == true)
     {
         //parsing du 1er argument qui contient la liste des channels envoyés pour le JOIN
+        send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
 		std::string	mess_op("You are the Operator of this Channel !\n");
 		std::string	clients_list;
         std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
@@ -73,5 +74,6 @@ Client::join()
 				}
             }
         }
+        send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
     }
 }

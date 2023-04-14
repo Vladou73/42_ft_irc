@@ -14,8 +14,6 @@ Client::ping()
 void
 Client::pass()
 {
-	// std::cout << _parsed_cmd[0] << std::endl;
-	// std::cout << _parsed_cmd[1] << std::endl;
     if (_parsed_cmd.size() == 1)
 	{
         send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PASS").c_str(), ERR_NEEDMOREPARAMS(_nick, "PASS").size(), 0);
@@ -66,7 +64,6 @@ Client::check_nick()
 		_nick = _data_connexion[1];
 	else
 		_nick = _parsed_cmd[1];
-	// std::cout << "_nick="  << _nick << std::endl;
 	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
 	return true;
 }
@@ -116,7 +113,6 @@ Client::user()
 		//? Je pense que c'est le user est le dernier arg de user
 		//? _user = _parsed_cmd[4];
 
-		// std::cout << "_user=" << _user << std::endl;
 		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
 		send(_client_id, RPL_YOURHOST(_nick).c_str(), strlen(RPL_YOURHOST(_nick).c_str()), 0);
 		// TODO : Date time (devra etre decommente)
@@ -150,7 +146,7 @@ Client::privmsg()
 		for (std::map<int, Client>::iterator it = _server->_clients.begin(); it != end; it++)
 		{
 			std::cout << "nick = " << it->second.getNick() << std::endl;
-			std::cout << "data_connexio[1] = " << _data_connexion[1] << std::endl;
+			std::cout << "data_connexion[1] = " << _data_connexion[1] << std::endl;
 			if (it->second.getNick() != _parsed_cmd[1])
 				send(it->first, ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str(), strlen(ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str()), 0);
 			send (it->first, RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str(), strlen(RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str()), 0);
