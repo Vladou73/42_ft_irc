@@ -23,6 +23,8 @@ private:
 	bool						_connected;
 	Server						*_server;
 	bool						_socket_connected;
+	bool						_operator;
+	std::vector<std::string>	_canals;
 
 public:
 	// =============================================================================
@@ -69,6 +71,8 @@ public:
 	void	quit();
 	void 	join();
 	void	part();
+	void 	topic();
+	void	list();
 
 
 private:

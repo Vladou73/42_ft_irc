@@ -27,4 +27,7 @@
 # include "messages.hpp"
 # include "function_utils.hpp"
 
+std::vector<std::string>
+parse_commas(std::string buff);
+
 #endif

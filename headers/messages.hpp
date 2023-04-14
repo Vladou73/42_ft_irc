@@ -67,6 +67,21 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // =============================================================================
 // JOIN MESSAGES ===============================================================
 # define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
+# define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
+# define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
+
+// ==============================================================================
+// TOPIC MESSAGES ===============================================================
+# define ERR_NOTONCHANNEL(nickname) ("442 " + nickname + " :You're not on that channel\r\n")
+# define ERR_CHANNOTFOUND(nickname) (nickname + " :This channel does not exist\r\n")
+# define RPL_NOTOPIC(nickname) ("331 " + nickname + " :No topic is set\r\n")
+# define RPL_TOPIC(nickname, channel, topic) (":localhost 332 " + nickname + " " + channel + " :"+ topic + "\r\n")
+
+// ==============================================================================
+// LIST MESSAGES ================================================================
+# define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users Name\r\n")
+# define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " Channel " + chan + " " + number + " :" + topic + "\r\n")
+# define RPL_LISTEND(nickname) (":localhost 323 " + nickname + " :End of /LIST\r\n")
 
 
 

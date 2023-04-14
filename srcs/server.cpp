@@ -70,6 +70,11 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
 		std::string ss1 = buff;
         _clients[sender_fd].setBuff(ss1);
+        if (_clients[sender_fd].getBuff() == "\n")
+        {
+            _clients[sender_fd].clearBuff();
+            return ;
+        }
         if (*(_clients[sender_fd].getBuff().end() - 1) == '\n') //condition pour ctrl+D
         {
             _clients[sender_fd].parse_lines(_clients[sender_fd].getBuff());

@@ -8,8 +8,8 @@ SRCS =	srcs/main.cpp\
 		srcs/channel.cpp\
 		srcs/channel_commands/join.cpp\
 		srcs/channel_commands/part.cpp\
-
-# srcs/channel_commands.cpp\
+		srcs/channel_commands/topic.cpp\
+		srcs/channel_commands/list.cpp\
 
 CC = c++
 
@@ -19,10 +19,10 @@ OBJS = ${addprefix ${OBJS_PATH}, ${SRCS:.cpp=.o}}
 CFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
 
 $(NAME_FT): $(OBJS_FT)
-	$(CXX) $(CXXFLAGS) -o $(NAME_FT) $(OBJS_FT) 
+	$(CXX) $(CXXFLAGS) -o $(NAME_FT) $(OBJS_FT)
 
 $(NAME_STD): $(OBJS_STD)
-	$(CXX) $(CXXFLAGS) -o $(NAME_STD) $(OBJS_STD) 
+	$(CXX) $(CXXFLAGS) -o $(NAME_STD) $(OBJS_STD)
 
 
 ${OBJS_PATH}%.o: ${SRCS_PATH}%.cpp

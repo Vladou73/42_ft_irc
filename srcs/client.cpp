@@ -9,7 +9,7 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
-		_server(server), _socket_connected(true)
+		_server(server), _socket_connected(true), _operator(false), _canals()
 {}
 
 
@@ -94,6 +94,10 @@ Client::search_command()
 		quit();
 	else if (_parsed_cmd[0]== "PART")
 	  	part();
+	else if (_parsed_cmd[0]== "TOPIC")
+	  topic();
+	else if (_parsed_cmd[0]== "LIST")
+	  list();
 	else
 		std::cout << "default\n";
 }
