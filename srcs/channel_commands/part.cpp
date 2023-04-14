@@ -20,7 +20,7 @@ Client::part()
         {
             std::string chan_name = *it;
 
-            //Si le channel n'existe pas, renvoyer une erreur 
+            //Si le channel n'existe pas, renvoyer une erreur
             std::map<std::string, Channel>::iterator end = _server->_channels.end();
             if (_server->_channels.find(chan_name) == end)
             {
@@ -42,8 +42,8 @@ Client::part()
 
                 //msg aux autres clients du channel
                 for (std::map<int, Client*>::iterator client = _server->_channels.find(chan_name)->second._clients.begin();
-                    client != _channels.find(chan_name)->second._clients.end(); client++)
-                	send(_client_id, RPL_PART2(_nick, chan_name).c_str(), RPL_PART2(_nick, chan_name).size(), 0);
+                    client != _server->_channels.find(chan_name)->second._clients.end(); client++)
+                	send(client->second->_client_id, RPL_PART2(_nick, chan_name).c_str(), RPL_PART2(_nick, chan_name).size(), 0);
             }
         }
     }
