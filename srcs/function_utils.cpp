@@ -36,3 +36,16 @@ check_channel_name(std::string name)
 		return false;
     return true;
 }
+
+bool
+check_on_chan(std::vector<std::string> canals, std::string arg)
+{
+	std::vector<std::string>::iterator it = canals.begin();
+	std::vector<std::string>::iterator end = canals.end();
+	for(; it != end; it++)
+	{
+		if (*it == arg)
+			return true;
+	}
+	return false;
+}

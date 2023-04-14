@@ -16,20 +16,6 @@
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
-bool
-check_on_chan(std::vector<std::string> canals, std::string arg)
-{
-	std::vector<std::string>::iterator it = canals.begin();
-	std::vector<std::string>::iterator end = canals.end();
-	for(; it != end; it++)
-	{
-		if (*it == arg)
-			return true;
-	}
-	return false;
-}
-
 void
 Client::topic()
 {
@@ -43,6 +29,11 @@ Client::topic()
 		std::map<std::string, Channel>::iterator chan = _server->_channels.find(_parsed_cmd[1]);
 		std::string chan_name = chan->first;
 
+		if (check_channel_name(_parsed_cmd[1]) == false)
+		{
+			send(_client_id, ERR_INVALIDCHANNAME(_parsed_cmd[1]).c_str(), ERR_INVALIDCHANNAME(_parsed_cmd[1]).size(), 0);
+			return ;
+		}
 		if (chan == _server->_channels.end())
 		{
 	    	send(_client_id, ERR_NOSUCHCHANNEL(_nick, chan_name).c_str(), ERR_NOSUCHCHANNEL(_nick, chan_name).size(), 0);
@@ -53,7 +44,7 @@ Client::topic()
 	    	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
 			return ;
 		}
-		if (_operator == true)
+		if (chan->second._id_operator == _client_id)
 		{
 			if (_parsed_cmd.size() > 2)
 			{
