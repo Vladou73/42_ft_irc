@@ -9,7 +9,9 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_client_id_str(change_to_str(client_id)),
 		_client_id(client_id), _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
-		_server(server), _socket_connected(true)
+		_server(server), _socket_connected(true),
+		_operator(false), _canals(),
+		_quit_msg()
 {}
 
 
@@ -69,6 +71,18 @@ Client::getSocketConnexion()
     return _socket_connected;
 }
 
+void
+Client::setQuitMsg(std::string msg)
+{
+	_quit_msg = msg;
+}
+
+std::string
+Client::getQuitMsg()
+{
+	return _quit_msg;
+}
+
 // =============================================================================
 // METHODS =====================================================================
 
@@ -92,8 +106,12 @@ Client::search_command()
 		privmsg();
 	else if (_parsed_cmd[0] == "QUIT")
 		quit();
-	else if (_parsed_cmd[0]== "JOIN")
-	  join();
+	else if (_parsed_cmd[0]== "PART")
+	  	part();
+	else if (_parsed_cmd[0]== "TOPIC")
+	  topic();
+	else if (_parsed_cmd[0]== "LIST")
+	  list();
 	else
 		std::cout << "default\n";
 }
@@ -149,12 +167,6 @@ Client::parse_command(std::string command)
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 
-
-	for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
-	{
-		std::cout << "'" << *it << "'" << std::endl;
-	}
-
 	search_command();
 }
 
@@ -173,19 +185,37 @@ Client::parse_command(std::string command)
 // }
 
 void
+Client::delete_client_from_chans(std::string mess)
+{
+	(void)mess;
+	for (std::map<std::string, Channel>::iterator chan = _server->_channels.begin(); chan != _server->_channels.end(); chan++)
+	{
+		if (chan->second._clients.find(_client_id) != chan->second._clients.end())
+		{
+			chan->second._clients.erase(_client_id);
+			//msg aux autres clients du channel
+			for (std::map<int, Client*>::iterator client = _server->_channels.find(chan->first)->second._clients.begin();
+				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
+			{
+				std::cout << client->first << "\n";
+				send(client->first, RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str()), 0);
+			}
+		}
+	}
+}
+
+void
 Client::delete_client()
 {
-	std::cout << "delete client func\n";
+	std::cout << "DELETE CLIENT FUNC\n";
+	std::string mess = "I QUIT MOTHERFUCKERS";
 	std::vector<struct pollfd>::iterator it = _server->_pfds.begin();
 	std::vector<struct pollfd>::iterator end = _server->_pfds.end();
 	for (; it != end; it++)
 	{
 		if (it->fd == _client_id)
-		{
-			std::cout << "it->fd" << it->fd << std::endl;
 			_server->_pfds.erase(it);
-		}
 	}
+	delete_client_from_chans(mess);
 	_server->_clients.erase(_client_id);
-	// clear_client();
 }

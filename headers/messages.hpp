@@ -27,8 +27,9 @@
 
 // =============================================================================
 // WELCOME MESSAGES ============================================================
-# define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n" 
-
+# define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n"
+# define SEPARATOR "-------------------------------------------------\r\n"
+# define SEPARATOR_END "-------------------------------------------------\r\n\n"
 # define RPL_WELCOME(user_id, nickname) (":localhost 001 " + nickname + " :Welcome to the Internet Relay Network " + user_id + "\r\n")
 # define RPL_YOURHOST(nickname) (":localhost 002 " + nickname + " :Your host is ircserv (localhost), running version1.1\r\n")
 /*
@@ -61,11 +62,38 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 
 // =============================================================================
 // QUIT MESSAGES ===============================================================
+// The QUIT command is used to terminate a client’s connection to the server.
+// The server acknowledges this by replying with an ERROR message and closing the connection to the client.
+# define ERROR(reason) ("ERROR : " + reason + "\r\n")
 # define RPL_QUIT(user_id, reason) (user_id + " QUIT :Quit: " + reason + "\r\n")
 
 
 // =============================================================================
 // JOIN MESSAGES ===============================================================
-# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost\nJOIN" + chan_name + "\r\n")
+# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost JOIN" + chan_name + "\r\n")
+# define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
+# define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
+# define ERR_ALREADYINCHAN(nickname, chan) (":localhost " + nickname + " :You are already in the channel " + chan + "\r\n")
+
+
+// ==============================================================================
+// TOPIC MESSAGES ===============================================================
+# define ERR_NOTONCHANNEL(nickname, chan_name) ("442 " + nickname + " " + chan_name + " :You're not on that channel\r\n")
+# define RPL_NOTOPIC(nickname) ("331 " + nickname + " :No topic is set\r\n")
+# define RPL_TOPIC(nickname, channel, topic) (":localhost 332 " + nickname + " " + channel + " :"+ topic + "\r\n")
+
+// ==============================================================================
+// LIST MESSAGES ================================================================
+# define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users Name\r\n")
+# define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " Channel " + chan + " " + number + " :" + topic + "\r\n")
+# define RPL_LISTEND(nickname) (":localhost 323 " + nickname + " :End of /LIST\r\n")
+
+// =============================================================================
+// PART MESSAGES ===============================================================
+# define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
+# define ERR_INVALIDCHANNAME(chan_name) (chan_name + ": this channel name is invalid \r\n")
+# define RPL_PART(chan_name, msg) ("successfuly left channel " + chan_name + " :" + msg + "\r\n")
+# define RPL_PART2(nickname, chan_name, msg) (nickname + " left the channel " + chan_name + " :" + msg + "\r\n")
+
 
 #endif

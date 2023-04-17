@@ -16,6 +16,8 @@ private:
     std::string				_name;
 	std::string				_topic;
 	std::map<int, Client *>	_clients;
+	std::map<int, bool>		_first_connexion;
+	int						_id_operator;
 
 
 public:
