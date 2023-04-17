@@ -5,6 +5,7 @@
 # include "server.hpp"
 
 class Server;
+class Channel;
 
 class Client
 {
