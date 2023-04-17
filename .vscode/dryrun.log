@@ -1,5 +1,16 @@
 make --dry-run --keep-going --print-directory
 make: Entering directory `/Users/camille/Desktop/42_ft_irc'
-make: Nothing to be done for `all'.
+mkdir -p objects/srcs/channel_commands/
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 -c srcs/channel_commands/privmsg.cpp -o objects/srcs/channel_commands/privmsg.o 
+ 
+mkdir -p objects/srcs/channel_commands/
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 -c srcs/channel_commands/part.cpp -o objects/srcs/channel_commands/part.o 
+mkdir -p objects/srcs/channel_commands/
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 -c srcs/channel_commands/topic.cpp -o objects/srcs/channel_commands/topic.o 
+mkdir -p objects/srcs/channel_commands/
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 -c srcs/channel_commands/list.cpp -o objects/srcs/channel_commands/list.o 
+mkdir -p objects/srcs/connection_commands/
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 -c srcs/connection_commands/quit.cpp -o objects/srcs/connection_commands/quit.o 
+c++ -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3 objects/srcs/main.o objects/srcs/function_utils.o objects/srcs/server.o objects/srcs/client.o objects/srcs/client_commands.o objects/srcs/channel.o objects/srcs/channel_commands/join.o objects/srcs/channel_commands/privmsg.o objects/srcs/channel_commands/part.o objects/srcs/channel_commands/topic.o objects/srcs/channel_commands/list.o objects/srcs/connection_commands/quit.o -o ircserv
 make: Leaving directory `/Users/camille/Desktop/42_ft_irc'
  

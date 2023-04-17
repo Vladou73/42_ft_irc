@@ -58,7 +58,7 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define ERR_NOTEXTTOSEND(nickname) ("412 " + nickname + " :No text to send\r\n")
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " " + message + "\r\n")
 # define ERR_NOSUCHSERVER (username, server) ("402 " + username + " " + server + " :No such server\r\n")
-# define ERR_NOSUCHCHANNEL(username, channel) ("402 " + username + " " + channel + " :No such channel\r\n")
+// # define ERR_NOSUCHCHANNEL(username, channel) ("402 " + username + " " + channel + " :No such channel\r\n")
 
 // =============================================================================
 // QUIT MESSAGES ===============================================================
