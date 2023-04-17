@@ -7,6 +7,7 @@ SRCS =	srcs/main.cpp\
 		srcs/client_commands.cpp\
 		srcs/channel.cpp\
 		srcs/channel_commands/join.cpp\
+		srcs/channel_commands/privmsg.cpp\
 
 # srcs/channel_commands.cpp\
 
