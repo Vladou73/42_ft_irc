@@ -22,6 +22,7 @@
 # include <cstring>
 # include <string>
 # include <csignal>
+# include <fstream>
 
 # include "colors.hpp"
 # include "messages.hpp"

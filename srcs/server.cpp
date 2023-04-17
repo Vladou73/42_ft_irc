@@ -10,6 +10,7 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _clients(), _count_clients(0),
     _channels()
 {
+    _parse_conf_file();
     _get_listener_socket();
 	_poll_loop();
 }
@@ -214,4 +215,43 @@ Server::_get_listener_socket(void)
         std::cerr << "error getting listening socket\n";
         exit (1);
     }
+}
+
+
+
+void
+Server::_parse_conf_file()
+{
+    std::string filename = "./ircd.conf";
+    std::ifstream in_file;
+
+    in_file.open(filename.c_str(), std::ios::in);
+    if (!in_file.is_open()) {
+        std::cout << "please create the conf file './ircd.conf'" << std::endl;
+        return ;
+    }
+
+    size_t      pos;
+    std::string line;
+	while (std::getline(in_file, line)) {
+		pos = line.find(" ");
+		if (pos == std::string::npos) {
+			std::cout << "Error: bad config input format '<key> <value>' for line :" << line << std::endl;
+			return;
+		}
+        if (line.substr(0, pos) == "oper_name")
+            _oper_name = line.substr(pos + 1, std::string::npos);
+        else if (line.substr(0, pos) == "oper_host")
+            _oper_host = line.substr(pos + 1, std::string::npos);
+        else if (line.substr(0, pos) == "oper_password")
+            _oper_password = line.substr(pos + 1, std::string::npos);
+	}
+
+    std::cout << _oper_name << std::endl;
+    std::cout << _oper_host << std::endl;
+    std::cout << _oper_password << std::endl;
+
+    if (in_file.is_open())
+		in_file.close();
+
 }
