@@ -78,7 +78,7 @@ public:
 	void	part();
 	void 	topic();
 	void	list();
-
+	void	names();
 
 private:
 	bool	_check_user();

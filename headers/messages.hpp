@@ -95,5 +95,7 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_PART(chan_name, msg) ("successfuly left channel " + chan_name + " :" + msg + "\r\n")
 # define RPL_PART2(nickname, chan_name, msg) (nickname + " left the channel " + chan_name + " :" + msg + "\r\n")
 
+// =============================================================================
+// NAMES MESSAGES ==============================================================
 
 #endif

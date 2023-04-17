@@ -112,6 +112,8 @@ Client::search_command()
 	  topic();
 	else if (_parsed_cmd[0]== "LIST")
 	  list();
+	else if (_parsed_cmd[0]== "NAMES")
+	  names();
 	else
 		std::cout << "default\n";
 }
