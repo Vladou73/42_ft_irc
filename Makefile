@@ -7,10 +7,12 @@ SRCS =	srcs/main.cpp\
 		srcs/client_commands.cpp\
 		srcs/channel.cpp\
 		srcs/channel_commands/join.cpp\
+# srcs/channel_commands.cpp\
 		srcs/channel_commands/part.cpp\
 		srcs/channel_commands/topic.cpp\
 		srcs/channel_commands/list.cpp\
 		srcs/connection_commands/quit.cpp\
+    srcs/channel_commands/privmsg.cpp\
 
 CC = c++
 

@@ -1,0 +1,5 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/camille/Desktop/42_ft_irc'
+make: Nothing to be done for `all'.
+make: Leaving directory `/Users/camille/Desktop/42_ft_irc'
+ 
