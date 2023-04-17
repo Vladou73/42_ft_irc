@@ -20,11 +20,12 @@ private:
 	int							_listener;
 	const char *				_server_port;
     std::vector<struct pollfd>	_pfds;
-
+    
 protected:
 	std::map<int, Client>	                _clients;
     int                                     _count_clients;
     std::map<std::string, Channel>          _channels;
+    static Server*                          _instance;
 
 public:
 	// =============================================================================
@@ -39,6 +40,9 @@ public:
 
 	// =============================================================================
 	// MODIFIERS ===================================================================
+
+    static void     signalHandler(int signum);
+    static void     ctrl_C();
 
     // =============================================================================
 	// METHODS =====================================================================

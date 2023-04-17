@@ -1,5 +1,6 @@
 # include "../headers/server.hpp"
 
+Server* Server::_instance = NULL;
 // =============================================================================
 // CONSTRUCTORS ================================================================
 Server::Server() : _server_port("6667")
@@ -10,6 +11,7 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _clients(), _count_clients(0),
     _channels()
 {
+	_instance = this;
     _get_listener_socket();
 	_poll_loop();
 }
@@ -19,12 +21,28 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
 // DESTRUCTORS =================================================================
 Server::~Server()
 {
-
+	_instance = NULL;
 }
 
 // =============================================================================
 // MODIFIERS ===================================================================
 
+void
+Server::signalHandler(int signum)
+{
+	(void)signum;
+	ctrl_C();
+	exit(0);
+}
+
+void
+Server::ctrl_C()
+{
+	_instance->_pfds.clear();
+	_instance->_clients.clear();
+	_instance->_channels.clear();
+	// std::cout<<"CTRL + C = "<< _instance->_pfds.size()<<std::endl;
+}
 
 // =============================================================================
 // METHODS =====================================================================
@@ -51,8 +69,9 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             perror("recv");
         _clients[sender_fd].setQuitMsg("abrupt client aborting");
         send(sender_fd, ERROR(_clients[sender_fd].getQuitMsg()).c_str(), ERROR(_clients[sender_fd].getQuitMsg()).size(), 0);
+        int temp = it->fd;
         _clients[sender_fd].delete_client();
-        close(it->fd);
+        close(temp);
     }
     else
     {
@@ -129,6 +148,7 @@ Server::_poll_loop(void)
     }
     for(;;)
     {
+		signal(SIGINT, signalHandler);
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
 		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
@@ -194,7 +214,7 @@ Server::_get_listener_socket(void)
         // point d'ecoute dans le vide, pas encore connecter au Server
         _listener = socket(temp->ai_family, temp->ai_socktype, temp->ai_protocol);
         if (_listener < 0)
-          continue;
+			continue;
 
         // En cas de crash, permet d'avoir un nouveau socket sur le meme port
         setsockopt(_listener, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(int));
