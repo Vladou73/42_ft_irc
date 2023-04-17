@@ -247,9 +247,9 @@ Server::_parse_conf_file()
             _oper_password = line.substr(pos + 1, std::string::npos);
 	}
 
-    std::cout << _oper_name << std::endl;
-    std::cout << _oper_host << std::endl;
-    std::cout << _oper_password << std::endl;
+    // std::cout << _oper_name << std::endl;
+    // std::cout << _oper_host << std::endl;
+    // std::cout << _oper_password << std::endl;
 
     if (in_file.is_open())
 		in_file.close();

@@ -12,6 +12,7 @@ SRCS =	srcs/main.cpp\
 		srcs/channel_commands/topic.cpp\
 		srcs/channel_commands/list.cpp\
 		srcs/connection_commands/quit.cpp\
+		srcs/server_commands/oper.cpp\
 # srcs/channel_commands.cpp\
 
 CC = c++

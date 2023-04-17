@@ -78,6 +78,7 @@ public:
 	void	part();
 	void 	topic();
 	void	list();
+	void	oper();
 
 
 private:
