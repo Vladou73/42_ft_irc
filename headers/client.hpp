@@ -27,6 +27,7 @@ private:
 	bool						_operator;
 	std::vector<std::string>	_canals;
 	std::string					_quit_msg;
+	bool						_is_server_oper;
 
 public:
 	// =============================================================================
@@ -79,6 +80,7 @@ public:
 	void 	topic();
 	void	list();
 	void	names();
+	void	oper();
 
 private:
 	bool	_check_user();

@@ -22,12 +22,16 @@
 # include <cstring>
 # include <string>
 # include <csignal>
+# include <fstream>
 
 # include "colors.hpp"
 # include "messages.hpp"
 # include "function_utils.hpp"
 
-std::vector<std::string>
-parse_commas(std::string buff);
+struct server_oper {
+    std::string name;
+    std::string pwd;
+    std::string host;
+};
 
 #endif

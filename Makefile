@@ -13,6 +13,7 @@ SRCS =	srcs/main.cpp\
 		srcs/channel_commands/list.cpp\
 		srcs/channel_commands/names.cpp\
 		srcs/connection_commands/quit.cpp\
+		srcs/server_commands/oper.cpp\
 # srcs/channel_commands.cpp\
 
 CC = c++
@@ -20,7 +21,7 @@ CC = c++
 OBJS_PATH = objects/
 OBJS = ${addprefix ${OBJS_PATH}, ${SRCS:.cpp=.o}}
 
-CFLAGS = -Wall -Werror -Wextra -std=c++98 #-fsanitize=address -g3
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
 
 $(NAME_FT): $(OBJS_FT)
 	$(CXX) $(CXXFLAGS) -o $(NAME_FT) $(OBJS_FT)

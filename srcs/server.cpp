@@ -11,7 +11,8 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _clients(), _count_clients(0),
     _channels()
 {
-	_instance = this;
+    _instance = this;
+    _parse_conf_file();
     _get_listener_socket();
 	_poll_loop();
 }
@@ -76,16 +77,16 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
     else
     {
         //DEBUG : visualiser les channels existants
-        std::cout << std::endl << "*****CHANNELS***** " << std::endl;
-        for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
-        {
-            std::cout << std::endl << "channel " << it->first << std::endl;
-            std::map<int, Client *> clients = it->second.getClients();
-            for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
-            {
-                std::cout << "client " << client->second->getNick() << std::endl;
-            }
-        }
+        // std::cout << std::endl << "*****CHANNELS***** " << std::endl;
+        // for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
+        // {
+        //     std::cout << std::endl << "channel " << it->first << std::endl;
+        //     std::map<int, Client *> clients = it->second.getClients();
+        //     for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
+        //     {
+        //         std::cout << "client " << client->second->getNick() << std::endl;
+        //     }
+        // }
 
         std::cout   << PURPLE << "[client] " << "fd = " << it->fd << " | "
                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
@@ -234,4 +235,45 @@ Server::_get_listener_socket(void)
         std::cerr << "error getting listening socket\n";
         exit (1);
     }
+}
+
+
+
+void
+Server::_parse_conf_file()
+{
+    std::string     filename = "./ircd.conf";
+    std::ifstream   in_file;
+
+    in_file.open(filename.c_str(), std::ios::in);
+    if (!in_file.is_open()) {
+        std::cout << "please create the conf file './ircd.conf'" << std::endl;
+        return ;
+    }
+
+    std::string line;
+    std::string word;
+	while (std::getline(in_file, line)) {
+        
+        std::stringstream	strst(line);
+        if (line.substr(0, 5) != "oper ")
+            continue;
+
+        server_oper newOper;
+        while (std::getline(strst, word, ' '))
+        {
+            if (word == "oper")
+                continue;
+            if (newOper.name.empty())
+                newOper.name = word;
+            else if (newOper.pwd.empty())
+                newOper.pwd = word;
+            else
+                newOper.host = word;
+        }
+        _server_opers.push_back(newOper);
+	}
+
+    if (in_file.is_open())
+		in_file.close();
 }
