@@ -78,8 +78,8 @@ public:
 	void	part();
 	void 	topic();
 	void	list();
+	void	names();
 	void	oper();
-
 
 private:
 	bool	_check_user();

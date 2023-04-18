@@ -25,12 +25,12 @@ private:
     std::string                 _oper_name;
     std::string                 _oper_host;
     std::string                 _oper_password;
-    
 
 protected:
 	std::map<int, Client>	                _clients;
     int                                     _count_clients;
     std::map<std::string, Channel>          _channels;
+    static Server*                          _instance;
 
 public:
 	// =============================================================================
@@ -45,6 +45,9 @@ public:
 
 	// =============================================================================
 	// MODIFIERS ===================================================================
+
+    static void     signalHandler(int signum);
+    static void     ctrl_C();
 
     // =============================================================================
 	// METHODS =====================================================================
