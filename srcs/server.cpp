@@ -77,16 +77,16 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
     else
     {
         //DEBUG : visualiser les channels existants
-        std::cout << std::endl << "*****CHANNELS***** " << std::endl;
-        for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
-        {
-            std::cout << std::endl << "channel " << it->first << std::endl;
-            std::map<int, Client *> clients = it->second.getClients();
-            for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
-            {
-                std::cout << "client " << client->second->getNick() << std::endl;
-            }
-        }
+        // std::cout << std::endl << "*****CHANNELS***** " << std::endl;
+        // for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
+        // {
+        //     std::cout << std::endl << "channel " << it->first << std::endl;
+        //     std::map<int, Client *> clients = it->second.getClients();
+        //     for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
+        //     {
+        //         std::cout << "client " << client->second->getNick() << std::endl;
+        //     }
+        // }
 
         std::cout   << PURPLE << "[client] " << "fd = " << it->fd << " | "
                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
@@ -242,8 +242,8 @@ Server::_get_listener_socket(void)
 void
 Server::_parse_conf_file()
 {
-    std::string filename = "./ircd.conf";
-    std::ifstream in_file;
+    std::string     filename = "./ircd.conf";
+    std::ifstream   in_file;
 
     in_file.open(filename.c_str(), std::ios::in);
     if (!in_file.is_open()) {
@@ -251,27 +251,29 @@ Server::_parse_conf_file()
         return ;
     }
 
-    size_t      pos;
     std::string line;
+    std::string word;
 	while (std::getline(in_file, line)) {
-		pos = line.find(" ");
-		if (pos == std::string::npos) {
-			std::cout << "Error: bad config input format '<key> <value>' for line :" << line << std::endl;
-			return;
-		}
-        if (line.substr(0, pos) == "oper_name")
-            _oper_name = line.substr(pos + 1, std::string::npos);
-        else if (line.substr(0, pos) == "oper_host")
-            _oper_host = line.substr(pos + 1, std::string::npos);
-        else if (line.substr(0, pos) == "oper_password")
-            _oper_password = line.substr(pos + 1, std::string::npos);
-	}
+        
+        std::stringstream	strst(line);
+        if (line.substr(0, 5) != "oper ")
+            continue;
 
-    // std::cout << _oper_name << std::endl;
-    // std::cout << _oper_host << std::endl;
-    // std::cout << _oper_password << std::endl;
+        server_oper newOper;
+        while (std::getline(strst, word, ' '))
+        {
+            if (word == "oper")
+                continue;
+            if (newOper.name.empty())
+                newOper.name = word;
+            else if (newOper.pwd.empty())
+                newOper.pwd = word;
+            else
+                newOper.host = word;
+        }
+        _server_opers.push_back(newOper);
+	}
 
     if (in_file.is_open())
 		in_file.close();
-
 }

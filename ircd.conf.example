@@ -1,3 +1,2 @@
-oper_name name
-oper_password password
-oper_host host
+oper <name> <password> <host>
+oper <name> <password> <host>
