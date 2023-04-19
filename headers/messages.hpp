@@ -103,4 +103,13 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 # define RPL_YOUREOPER(nickname) ("381 " + nickname + " :You are now an IRC operator\r\n")
 # define ERR_NOPRIVILEGES(nickname) ("481 " + nickname + " :Permission Denied- You're not an IRC operator\r\n")
 
+// =============================================================================
+// MODE MESSAGES ===========================================================
+# define ERR_USERSDONTMATCH(nickname) ("502 " + nickname + " :Can't change or view mode for other users\r\n")
+# define RPL_UMODEIS(nickname, modes) ("221 " + nickname + " :" + modes + "\r\n")
+# define ERR_UMODEUNKNOWNFLAG(nickname, mode) ("501 " + nickname + " :Unknown MODE flag " + mode + "\r\n")
+# define RPL_CHANNELMODEIS(nickname, channel, modes) ("324 " + nickname + " " + channel + " :" + modes + "\r\n")
+# define ERR_CHANOPRIVSNEEDED(nickname, channel) ("482 " + nickname + " " + channel + " :You're not channel operator\r\n")
+# define ERR_UNKNOWNMODE(modechar, channel) ("472 " + modechar + " :is unknown mode char for " + channel + "\r\n")
+
 #endif

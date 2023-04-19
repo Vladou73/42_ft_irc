@@ -11,7 +11,8 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_buff(), _parsed_cmd(), _connected(false),
 		_server(server), _socket_connected(true),
 		_operator(false), _canals(),
-		_quit_msg(), _is_server_oper(false)
+		_quit_msg(), _is_server_oper(false),
+		_modes()
 {}
 
 
@@ -118,6 +119,8 @@ Client::search_command()
 	  oper();
 	else if (_parsed_cmd[0]== "KILL")
 	  kill();
+	else if (_parsed_cmd[0]== "MODE")
+		mode();
 	else
 		std::cout << "default\n";
 }

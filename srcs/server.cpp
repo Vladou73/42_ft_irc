@@ -40,9 +40,9 @@ void
 Server::ctrl_C()
 {
 	_instance->_pfds.clear();
+	_instance->_server_opers.clear();
 	_instance->_clients.clear();
 	_instance->_channels.clear();
-	// std::cout<<"CTRL + C = "<< _instance->_pfds.size()<<std::endl;
 }
 
 // =============================================================================
