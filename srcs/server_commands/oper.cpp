@@ -3,27 +3,29 @@
 # include "../../headers/channel.hpp"
 
 
-bool
+int
 check_oper_name(std::string name, std::vector<server_oper> oper_list)
 {
+    int i = 0;
     for (std::vector<struct server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
     {
         if (name == it->name)
-            return (true);
+            return (i);
+        i++;
     }
-    return false;
+    return -1;
 }
 
-bool
-check_oper_pwd(std::string pwd, std::vector<server_oper> oper_list)
-{
-    for (std::vector<struct server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
-    {
-        if (pwd == it->pwd)
-            return (true);
-    }
-    return false;
-}
+// bool
+// check_oper_pwd(std::string pwd, std::vector<server_oper> oper_list)
+// {
+//     for (std::vector<struct server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
+//     {
+//         if (pwd == it->pwd)
+//             return (true);
+//     }
+//     return false;
+// }
 
 void
 Client::oper(void)
@@ -39,17 +41,20 @@ Client::oper(void)
 
     if (_connected == false)
         return;
+    if (_is_server_oper == true)
+        return;
     if (_parsed_cmd.size() < 3) // on a besoin de name et password
     {
         send(_client_id, ERR_NEEDMOREPARAMS(_nick, "OPER").c_str(), ERR_NEEDMOREPARAMS(_nick, "OPER").size(), 0);
         return;
     }
-    if (check_oper_name(_parsed_cmd[1], _server->_server_opers) == false)
+    int nameIndex = check_oper_name(_parsed_cmd[1], _server->_server_opers);
+    if (nameIndex == -1)
     {
     	send(_client_id, ERR_NOOPERHOST(_nick).c_str(), ERR_NOOPERHOST(_nick).size(), 0);
         return;
     }
-    if (check_oper_pwd(_parsed_cmd[2], _server->_server_opers) == false)
+    if (_parsed_cmd[2] != _server->_server_opers[nameIndex].pwd)
     {
     	send(_client_id, ERR_PASSWDMISMATCH, strlen(ERR_PASSWDMISMATCH), 0);
         return ;      
