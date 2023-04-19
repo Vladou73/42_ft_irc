@@ -98,9 +98,9 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // NAMES MESSAGES ==============================================================
 
 // =============================================================================
-// OPER MESSAGES ==============================================================
+// SERVER OPERATOR MESSAGES ===========================================================
 # define ERR_NOOPERHOST(nickname) ("491 " + nickname + " :No O-lines for your host\r\n")
 # define RPL_YOUREOPER(nickname) ("381 " + nickname + " :You are now an IRC operator\r\n")
-
+# define ERR_NOPRIVILEGES(nickname) ("481 " + nickname + " :Permission Denied- You're not an IRC operator\r\n")
 
 #endif

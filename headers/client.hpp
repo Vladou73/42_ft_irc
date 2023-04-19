@@ -74,13 +74,14 @@ public:
 	bool 	check_nick();
 	void	user();
 	void	privmsg();
-	void	quit();
+	void	quit(Client &client, std::string msg = "");
 	void 	join();
 	void	part();
 	void 	topic();
 	void	list();
 	void	names();
 	void	oper();
+	void	kill();
 
 private:
 	bool	_check_user();
