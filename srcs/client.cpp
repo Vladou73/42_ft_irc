@@ -116,6 +116,8 @@ Client::search_command()
 	  names();
 	else if (_parsed_cmd[0]== "OPER")
 	  oper();
+	else if (_parsed_cmd[0]== "KILL")
+	  kill();
 	else
 		std::cout << "default\n";
 }

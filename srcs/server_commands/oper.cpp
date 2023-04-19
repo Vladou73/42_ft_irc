@@ -2,8 +2,6 @@
 # include "../../headers/channel.hpp"
 # include "../../headers/ft_irc.hpp"
 
-#include <unistd.h>
-
 bool
 check_oper_name(std::string name, std::vector<server_oper> oper_list)
 {
@@ -63,8 +61,5 @@ Client::oper(void)
     send(_client_id, RPL_YOUREOPER(_nick).c_str(), RPL_YOUREOPER(_nick).size(), 0);
 
     //TODO : The user will also receive a MODE message indicating their new user modes, and other messages may be sent.
-
-    std::cout << _user << std::endl;
-    std::cout << _nick << std::endl;
 
 }

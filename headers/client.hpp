@@ -81,6 +81,7 @@ public:
 	void	list();
 	void	names();
 	void	oper();
+	void	kill();
 
 private:
 	bool	_check_user();
