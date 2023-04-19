@@ -105,7 +105,7 @@ Client::search_command()
 	else if (_parsed_cmd[0]== "PRIVMSG")
 		privmsg();
 	else if (_parsed_cmd[0] == "QUIT")
-		quit();
+		quit(*this);
 	else if (_parsed_cmd[0]== "PART")
 	  	part();
 	else if (_parsed_cmd[0]== "TOPIC")
