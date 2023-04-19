@@ -123,6 +123,7 @@ Client::user()
 		send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
 
 		_connected = true;
+		_modes.insert(std::pair<std::string, std::string>("r", "+r"));
 		_server->_count_clients++;
 		std::cout << GREEN << "[server] clients connected = " << _server->_count_clients << std::endl;
 	}

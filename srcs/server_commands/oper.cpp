@@ -64,6 +64,7 @@ Client::oper(void)
     // the server replies with an ERR_NOOPERHOST message and the request is not successful.
 
     _is_server_oper = true;
+    _modes.insert(std::pair<std::string, std::string>("o", "+o"));
     send(_client_id, RPL_YOUREOPER(_nick).c_str(), RPL_YOUREOPER(_nick).size(), 0);
 
     //TODO : The user will also receive a MODE message indicating their new user modes, and other messages may be sent.

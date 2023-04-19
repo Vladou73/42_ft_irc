@@ -28,6 +28,7 @@ private:
 	std::vector<std::string>	_canals;
 	std::string					_quit_msg;
 	bool						_is_server_oper;
+	std::map<std::string, std::string>	_modes;
 
 public:
 	// =============================================================================
@@ -82,6 +83,8 @@ public:
 	void	names();
 	void	oper();
 	void	kill();
+	void	mode();
+	
 
 private:
 	bool	_check_user();
