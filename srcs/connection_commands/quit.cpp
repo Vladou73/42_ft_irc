@@ -3,7 +3,7 @@
 void
 Client::quit(Client &client, std::string msg) //quit est aussi appelé par KILL donc on a besoin de lui passer le client qui doit quit
 {
-	if (client._parsed_cmd.size() > 1)
+	if (client._parsed_cmd.size() > 1 && msg.empty())
 		client._quit_msg = client._parsed_cmd[1];
 	else
 		client._quit_msg = msg;

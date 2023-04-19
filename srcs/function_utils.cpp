@@ -49,3 +49,15 @@ check_on_chan(std::vector<std::string> canals, std::string arg)
 	}
 	return false;
 }
+
+int
+search_for_client_by_nick(std::string nick, std::map<int, Client> clients)
+{
+    std::map<int, Client>::iterator it;
+    for (it = clients.begin(); it != clients.end(); it++)
+    {
+        if (nick == it->second.getNick())
+            return it->first;
+    }
+    return -1;
+}

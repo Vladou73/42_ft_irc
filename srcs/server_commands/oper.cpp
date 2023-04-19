@@ -1,11 +1,12 @@
+# include "../../headers/ft_irc.hpp"
 # include "../../headers/client.hpp"
 # include "../../headers/channel.hpp"
-# include "../../headers/ft_irc.hpp"
+
 
 bool
 check_oper_name(std::string name, std::vector<server_oper> oper_list)
 {
-    for (std::vector<server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
+    for (std::vector<struct server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
     {
         if (name == it->name)
             return (true);
@@ -16,7 +17,7 @@ check_oper_name(std::string name, std::vector<server_oper> oper_list)
 bool
 check_oper_pwd(std::string pwd, std::vector<server_oper> oper_list)
 {
-    for (std::vector<server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
+    for (std::vector<struct server_oper>::iterator it = oper_list.begin(); it != oper_list.end(); it++)
     {
         if (pwd == it->pwd)
             return (true);

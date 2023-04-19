@@ -3,8 +3,10 @@
 
 # include "ft_irc.hpp"
 # include "client.hpp"
+# include "server.hpp"
 
 class Client;
+class Server;
 
 class Channel
 {

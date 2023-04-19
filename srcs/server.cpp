@@ -259,7 +259,7 @@ Server::_parse_conf_file()
         if (line.substr(0, 5) != "oper ")
             continue;
 
-        server_oper newOper;
+        struct server_oper newOper;
         while (std::getline(strst, word, ' '))
         {
             if (word == "oper")

@@ -22,7 +22,7 @@ private:
 	int							_listener;
 	const char *				_server_port;
     std::vector<struct pollfd>	_pfds;
-    std::vector<server_oper>	_server_opers;
+    std::vector<struct server_oper>	_server_opers;
 
 protected:
 	std::map<int, Client>	                _clients;
