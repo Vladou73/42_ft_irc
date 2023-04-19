@@ -65,6 +65,8 @@ public:
 	void	clear_client();
 	void	delete_client();
 	void	delete_client_from_chans(std::string);
+	void	channel_mode();
+	void	user_mode();
 
 
     // =============================================================================
