@@ -21,7 +21,7 @@ Client::topic()
 {
     if (_parsed_cmd.size() == 1)
     {
-    	send(_client_id, ERR_NEEDMOREPARAMS(_nick, "TOPIC").c_str(), ERR_NEEDMOREPARAMS(_nick, "TOPIC").size(), 0);
+    	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "TOPIC").c_str();
         return ;
     }
     if (_connected == true)
@@ -31,17 +31,17 @@ Client::topic()
 
 		if (check_channel_name(_parsed_cmd[1]) == false)
 		{
-			send(_client_id, ERR_INVALIDCHANNAME(_parsed_cmd[1]).c_str(), ERR_INVALIDCHANNAME(_parsed_cmd[1]).size(), 0);
+			_msg_buffer += ERR_INVALIDCHANNAME(_parsed_cmd[1]);
 			return ;
 		}
 		if (chan == _server->_channels.end())
 		{
-	    	send(_client_id, ERR_NOSUCHCHANNEL(_nick, chan_name).c_str(), ERR_NOSUCHCHANNEL(_nick, chan_name).size(), 0);
+	    	_msg_buffer += ERR_NOSUCHCHANNEL(_nick, chan_name);
 			return ;
 		}
 		if (check_on_chan(_canals, _parsed_cmd[1]) == false)
 		{
-	    	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
+	    	_msg_buffer += ERR_NOTONCHANNEL(_nick, chan_name);
 			return ;
 		}
 		if (chan->second._id_operator == _client_id)
@@ -55,11 +55,11 @@ Client::topic()
 		}
 		if (chan->second._topic.size() == 0)
 		{
-			send(_client_id, RPL_NOTOPIC(_nick).c_str(), RPL_NOTOPIC(_nick).size(), 0);
+			_msg_buffer += RPL_NOTOPIC(_nick);
 			return ;
 		}
-        send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
-		send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);
-        send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
+        _msg_buffer += SEPARATOR;
+		_msg_buffer += RPL_TOPIC(_nick, chan->first, chan->second._topic);
+        _msg_buffer += SEPARATOR_END;
 	}
 }

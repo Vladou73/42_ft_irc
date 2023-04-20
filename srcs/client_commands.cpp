@@ -6,9 +6,9 @@ void
 Client::ping()
 {
     if (_parsed_cmd.size() == 1)
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PING").c_str(), ERR_NEEDMOREPARAMS(_nick, "PING").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PING");
     else if (_connected == true)
-        send(_client_id, RPL_PONG(_parsed_cmd[1]).c_str(), RPL_PONG(_parsed_cmd[1]).size(), 0);
+        _msg_buffer += RPL_PONG(_parsed_cmd[1]);
 }
 
 void
@@ -16,18 +16,18 @@ Client::pass()
 {
     if (_parsed_cmd.size() == 1)
 	{
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PASS").c_str(), ERR_NEEDMOREPARAMS(_nick, "PASS").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PASS");
 		return;
 	}
     if (_connected == true)
     {
-        send(_client_id, ERR_ALREADYREGISTERED(_nick).c_str(), ERR_ALREADYREGISTERED(_nick).size(), 0);
+        _msg_buffer += ERR_ALREADYREGISTERED(_nick);
         return ;
     }
     if (_parsed_cmd[1] != _server->_pwd)
 	{
 		_data_connexion.clear();
-        send(_client_id, ERR_PASSWDMISMATCH, strlen(ERR_PASSWDMISMATCH), 0);
+        _msg_buffer += ERR_PASSWDMISMATCH;
 		return ;
 	}
     if (_data_connexion.size() > 0)
@@ -46,7 +46,7 @@ Client::check_nick()
 	//TODO verifier avec irssi le nombre max de caracteres
 	// if(_data_connexion[1].size() >= 9)
 	// {
-	// 	send (client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
+	// 	_msg_buffer +=  ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
 	// 	return false;
 	// }
 
@@ -55,8 +55,8 @@ Client::check_nick()
 	{
 		if (it->second.getNick() == _data_connexion[1])
 		{
-			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1]).c_str()), 0);
-			send (_client_id, USER_ID(_data_connexion[1], _user).c_str(), strlen(USER_ID(_data_connexion[1], _user).c_str()), 0);
+			_msg_buffer += ERR_NICKNAMEINUSE(_data_connexion[1]);
+			_msg_buffer += USER_ID(_data_connexion[1], _user);
 			return (false);
 		}
 	}
@@ -64,7 +64,7 @@ Client::check_nick()
 		_nick = _data_connexion[1];
 	else
 		_nick = _parsed_cmd[1];
-	send (_client_id, USER_ID(_data_connexion[1], _user).c_str(), strlen(USER_ID(_data_connexion[1], _user).c_str()), 0);
+	_msg_buffer += USER_ID(_data_connexion[1], _user);
 	return true;
 }
 
@@ -95,7 +95,7 @@ Client::nick()
 {
 	if (_parsed_cmd.size() == 1)
 	{
-		send (_client_id, ERR_NONICKNAMEGIVEN, strlen(ERR_NONICKNAMEGIVEN), 0);
+		_msg_buffer += ERR_NONICKNAMEGIVEN;
 		return;
 	}
 	if (_connected == true)
@@ -124,7 +124,7 @@ Client::user()
 	{
 		if (_parsed_cmd.size() < 5)
 		{
-			send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
+			_msg_buffer += ERR_NEEDMOREPARAMS(_data_connexion[1], "USER");
 			return ;
 		}
 
@@ -140,14 +140,14 @@ Client::user()
 		//? Je pense que c'est le user est le dernier arg de user
 		//? _user = _parsed_cmd[4];
 
-		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
-		send(_client_id, RPL_YOURHOST(_nick).c_str(), strlen(RPL_YOURHOST(_nick).c_str()), 0);
+		_msg_buffer += RPL_WELCOME(_client_id_str, _nick);
+		_msg_buffer += RPL_YOURHOST(_nick);
 		// TODO : Date time (devra etre decommente)
-		// send(_client_id, RPL_CREATED(_nick, datetime).c_str(), strlen(RPL_CREATED(_nick, datetime).c_str()), 0);
+		// _msg_buffer += RPL_CREATED(_nick, datetime).c_str(), strlen(RPL_CREATED(_nick, datetime).c_str()), 0);
 		// TODO : check user_mode/chan_mode/Chan_parm_mode (exemples in the messages file) (devra etre decommente)
-		// send(_client_id, RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
-		send(_client_id, RPL_ISUPPORT(_nick).c_str(), strlen(RPL_ISUPPORT(_nick).c_str()), 0);
-		send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
+		// _msg_buffer += RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
+		_msg_buffer += RPL_ISUPPORT(_nick);
+		_msg_buffer += WELCOME_ART;
 
 		_connected = true;
 		_modes.insert(std::pair<std::string, std::string>("r", "+r"));

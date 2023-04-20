@@ -12,7 +12,7 @@ Client::Client(int client_id, Server *server) : _nick(), _user(),
 		_server(server), _socket_connected(true),
 		_operator(false), _canals(),
 		_quit_msg(), _is_server_oper(false),
-		_modes()
+		_modes(), _msg_buffer()
 {}
 
 
@@ -84,6 +84,21 @@ Client::getQuitMsg()
 	return _quit_msg;
 }
 
+std::string
+Client::getMsgBuffer()
+{
+	return _msg_buffer;
+}
+void
+Client::clearMsgBuffer()
+{
+	_msg_buffer.clear();
+}
+void
+Client::setMsgBuffer(std::string msg)
+{
+	_msg_buffer += msg;
+}
 // =============================================================================
 // METHODS =====================================================================
 
@@ -207,7 +222,7 @@ Client::delete_client_from_chans(std::string mess)
 				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
 			{
 				std::cout << client->first << "\n";
-				send(client->first, RPL_QUIT(USER_ID2(_nick, _user), _quit_msg).c_str(), strlen(RPL_QUIT(USER_ID2(_nick, _user), _quit_msg).c_str()), 0);
+				_msg_buffer += RPL_QUIT(USER_ID2(_nick, _user), _quit_msg);
 			}
 		}
 	}

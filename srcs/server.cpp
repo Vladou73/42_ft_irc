@@ -69,7 +69,9 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
         } else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
         _clients[sender_fd].setQuitMsg("abrupt client aborting");
-        send(sender_fd, ERROR(_clients[sender_fd].getQuitMsg()).c_str(), ERROR(_clients[sender_fd].getQuitMsg()).size(), 0);
+        _clients[sender_fd].setMsgBuffer(ERROR(_clients[sender_fd].getQuitMsg()));
+        // send(sender_fd, ERROR(_clients[sender_fd].getQuitMsg()).c_str(), ERROR(_clients[sender_fd].getQuitMsg()).size(), 0);
+        
         int temp = it->fd;
         _clients[sender_fd].delete_client();
         close(temp);
@@ -125,11 +127,21 @@ Server::_add_new_client(std::vector<struct pollfd> &new_pollfds)
         setsockopt(newfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(int));
         struct pollfd new_poll_fd;
         new_poll_fd.fd = newfd; // the socket descriptor
-        new_poll_fd.events = POLLIN;
+        new_poll_fd.events = POLLIN | POLLOUT;
         new_pollfds.push_back(new_poll_fd);
 
         Client client(newfd, this);
 		_clients.insert(std::pair<int,Client>(newfd, client));
+    }
+}
+
+void
+Server::_handle_pollout(int fd)
+{
+    if (!_clients[fd].getMsgBuffer().empty())
+    {
+        send(fd, _clients[fd].getMsgBuffer().c_str(), _clients[fd].getMsgBuffer().size(), 0);
+        _clients[fd].clearMsgBuffer();
     }
 }
 
@@ -147,12 +159,17 @@ Server::_poll_loop(void)
         std::cout<<"Dup2 fail!\n";
         // Handle error
     }
+    bool first_loop = true;
     for(;;)
     {
 		signal(SIGINT, signalHandler);
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
-		std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
+        if (first_loop == true)
+        {
+		    std::cout << GREEN <<  "[server] is listening in fd = "<< _listener << RESET << std::endl;
+            first_loop = false;
+        }
         int poll_count = poll((pollfd *)&_pfds[0], _pfds.size(), -1);
         if (poll_count == -1)
         {
@@ -172,6 +189,8 @@ Server::_poll_loop(void)
                 else
                     _handle_data(it);
             }
+            else if (it->revents & POLLOUT) // "Alert me when I can send() data to this socket without blocking."
+                _handle_pollout(it->fd);
             else if (it->revents & POLLHUP) // POLLHUP :Déconnexion (uniquement en sortie).
             {
                 std::cout << "Client at socket #" << it->fd << " disconnected." << std::endl;

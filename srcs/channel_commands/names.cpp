@@ -21,7 +21,7 @@ Client::names()
    if (_connected == true)
 	{
 		std::string	clients_list;
-        send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
+        _msg_buffer += SEPARATOR;
 	    if (_parsed_cmd.size() == 1)
 		{
 			std::map<std::string, Channel>::iterator chan = _server->_channels.begin();
@@ -44,8 +44,8 @@ Client::names()
 					if (it->second->_client_id == _client_id)
 						continue ;
 				}
-				send(_client_id, RPL_NAMREPLY(_nick, chan->first, clients_list).c_str(), RPL_NAMREPLY(_nick, chan->first, clients_list).size(), 0);
-				send(_client_id, RPL_ENDOFNAMES(_nick, chan->first).c_str(), RPL_ENDOFNAMES(_nick, chan->first).size(), 0);
+				_msg_buffer += RPL_NAMREPLY(_nick, chan->first, clients_list);
+				_msg_buffer += RPL_ENDOFNAMES(_nick, chan->first);
 				clients_list.clear();
 			}
 			std::map<int, Client>::iterator it = _server->_clients.begin();
@@ -60,8 +60,8 @@ Client::names()
 				}
 			}
 			std::string	temp = "*";
-			send(_client_id, RPL_NAMREPLY(_nick, temp, clients_list).c_str(), RPL_NAMREPLY(_nick, temp, clients_list).size(), 0);
-			send(_client_id, RPL_ENDOFNAMES(_nick, temp).c_str(), RPL_ENDOFNAMES(_nick, temp).size(), 0);
+			_msg_buffer += RPL_NAMREPLY(_nick, temp, clients_list);
+			_msg_buffer += RPL_ENDOFNAMES(_nick, temp);
 			clients_list.clear();
 		}
 		else if (_parsed_cmd.size() == 2)
@@ -90,11 +90,11 @@ Client::names()
 					if (it_client->second->_client_id == _client_id)
 						continue ;
 				}
-				send(_client_id, RPL_NAMREPLY(_nick, chan->first, clients_list).c_str(), RPL_NAMREPLY(_nick, chan->first, clients_list).size(), 0);
-				send(_client_id, RPL_ENDOFNAMES(_nick, chan->first).c_str(), RPL_ENDOFNAMES(_nick, chan->first).size(), 0);
+				_msg_buffer += RPL_NAMREPLY(_nick, chan->first, clients_list);
+				_msg_buffer += RPL_ENDOFNAMES(_nick, chan->first);
 				clients_list.clear();
 			}
 		}
-        send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
+        _msg_buffer += SEPARATOR_END;
 	}
 }
