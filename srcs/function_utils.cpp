@@ -1,5 +1,18 @@
 # include "../headers/function_utils.hpp"
 
+bool
+check_operator(std::vector<int> &oper, int client_id)
+{
+	std::vector<int>::iterator it = oper.begin();
+	std::vector<int>::iterator end = oper.end();
+	for(; it != end; it++)
+	{
+		if (*it == client_id)
+			return true;
+	}
+	return false;
+}
+
 std::string
 change_to_str(int a)
 {

@@ -44,6 +44,7 @@ public:
 	std::vector<std::string>	getDataConnexion();
 	std::string 				getUser();
 	std::string 				getNick();
+	int 		 				getClientID();
 	std::string 				getBuff();
 	void		 				setBuff(std::string ss1);
 	void						clearBuff();
@@ -82,7 +83,8 @@ public:
 	void	names();
 	void	oper();
 	void	kill();
-
+	void	kick();
+	
 private:
 	bool	_check_user();
 	std::map<int, Client>::iterator				_nick_exist();

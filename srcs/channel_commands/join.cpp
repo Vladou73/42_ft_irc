@@ -4,6 +4,18 @@
 
 //https://github.com/Vladou73/42_ft_irc/wiki/5-Channel-operations#command-join
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * *  Commande: JOIN * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+Paramètres: <canal>{,<canal>} [<clé>{,<clé>}]
+
+La commande JOIN est utilisée par un client pour commencer à écouter un canal spécifique. 
+L'accès à un canal est autorisé ou non uniquement par le serveur auquel le client est connecté.
+Une fois qu'un utilisateur a accès à un canal, il reçoit des notifications de toutes les commandes que son serveur reçoit et qui affectent le canal. 
+Cela inclut MODE, KICK, PART, QUIT, et bien sûr PRIVMSG/NOTICE. 
+Si un JOIN a lieu avec succès, on envoie à l'utilisateur le sujet du canal (en utilisant RPL_TOPIC) et la liste des utilisateurs du canal (en utilisant RPL_NAMREPLY), y compris lui-même.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 void
 Client::join()
 {
@@ -32,7 +44,7 @@ Client::join()
             {
                 std::string	mess_op = "You are the Operator of the Channel : " + *it + "\r\n";
                 Channel channel(*it);
-				channel._id_operator =_client_id;
+				channel._id_operator.push_back(_client_id);
                 _server->_channels.insert(std::pair<std::string, Channel>(*it, channel));
 				send(_client_id, mess_op.c_str(), mess_op.size(), 0);
             }
@@ -58,7 +70,7 @@ Client::join()
 					std::map<int, Client *>::iterator end = chan->second._clients.end();
 					for(; it != end; it++)
                     {
-                        if (chan->second._id_operator == it->second->_client_id)
+                        if (check_operator(chan->second._id_operator, it->second->_client_id) == true)
                         {
                             std::string temp = "@" + it->second->_nick;
                             clients_list = clients_list + " " + temp;

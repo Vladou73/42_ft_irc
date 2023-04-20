@@ -12,6 +12,7 @@ SRCS =	srcs/main.cpp\
 		srcs/channel_commands/topic.cpp\
 		srcs/channel_commands/list.cpp\
 		srcs/channel_commands/names.cpp\
+		srcs/channel_commands/kick.cpp\
 		srcs/connection_commands/quit.cpp\
 		srcs/server_commands/oper.cpp\
 		srcs/server_commands/kill.cpp\

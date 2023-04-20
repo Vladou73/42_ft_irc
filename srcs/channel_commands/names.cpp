@@ -32,7 +32,7 @@ Client::names()
 				std::map<int, Client *>::iterator end = chan->second._clients.end();
 				for(; it != end; it++)
 				{
-					if (chan->second._id_operator == it->second->_client_id)
+                    if (check_operator(chan->second._id_operator, it->second->_client_id) == true)
 					{
 						std::string temp = "@" + it->second->_nick;
 						clients_list = clients_list + " " + temp;
@@ -78,7 +78,7 @@ Client::names()
 				std::map<int, Client *>::iterator end_client = chan->second._clients.end();
 				for(; it_client != end_client; it_client++)
 				{
-					if (chan->second._id_operator == it_client->second->_client_id)
+                    if (check_operator(chan->second._id_operator, it_client->second->_client_id) == true)
 					{
 						std::string temp = "@" + it_client->second->_nick;
 						clients_list = clients_list + " " + temp;

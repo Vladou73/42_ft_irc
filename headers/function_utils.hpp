@@ -16,5 +16,5 @@ std::vector<std::string>    parse_commas(std::string buff);
 bool						check_channel_name(std::string name);
 bool                        check_on_chan(std::vector<std::string> canals, std::string arg);
 int                         search_for_client_by_nick(std::string nick, std::map<int, Client> clients);
-
+bool                        check_operator(std::vector<int> &oper, int client_id);
 #endif

@@ -47,6 +47,12 @@ Client::getBuff()
     return _buff;
 }
 
+int
+Client::getClientID()
+{
+	return (_client_id);
+}
+
 void
 Client::setBuff(std::string ss1)
 {
@@ -118,6 +124,8 @@ Client::search_command()
 	  oper();
 	else if (_parsed_cmd[0]== "KILL")
 	  kill();
+	else if (_parsed_cmd[0]== "KILL")
+	  kick();
 	else
 		std::cout << "default\n";
 }
