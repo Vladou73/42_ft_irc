@@ -4,10 +4,26 @@
 
 int main (int ac, char **av)
 {
-    (void) ac;
+    if (ac != 3)
+    {
+        std::cout << "Please run the executable as follow : /ircserv <port> <password>" << std::endl;
+        return (2);
+    }
+
+    std::string port(av[1]);
+    std::string pwd(av[2]);
+    
+    for (size_t i = 0; i < port.size(); i++)
+    {
+        if (!std::isdigit(port[i]))
+        {
+            std::cout << "Please use a valid port number : /ircserv <port> <password>" << std::endl;
+            return (2);
+        }
+    }
+
     //TODO secure  Servers are uniquely identified by their name, which has a maximum length of sixty three (63) characters
     Server a(av);
-    // a._get_listener_socket();
 
     return (0);
 }
