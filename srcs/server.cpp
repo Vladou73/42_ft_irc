@@ -3,8 +3,8 @@
 Server* Server::_instance = NULL;
 // =============================================================================
 // CONSTRUCTORS ================================================================
-Server::Server() : _server_port("6667")
-{}
+// Server::Server() : _server_port("6667")
+// {}
 
 Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _server_port(av[1]), _pfds(0),

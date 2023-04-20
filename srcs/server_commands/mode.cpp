@@ -61,7 +61,7 @@ Client::channel_mode(void)
         _msg_buffer += RPL_CHANNELMODEIS(_nick, channel->first, "");
         return;
     }
-    if (channel->second._id_operator != _client_id) //TODO A MODIFIER
+    if (!client_is_chann_oper(_client_id, channel->second._id_operators))
     {
         _msg_buffer += ERR_CHANOPRIVSNEEDED(_nick, channel->first);
         return;
@@ -94,12 +94,17 @@ Client::channel_mode(void)
             }
             if (modestring[0] == '-') //TODO A MODIFIER quand le vecteur de channel operators aura été créé par Hugo
             {
-                std::cout << "itérer dans le vecteur de channel operators du channel, et supprimer l'operateur si il s'y trouve\n";                
+                for (std::vector<int>::iterator it = channel->second._id_operators.begin(); it != channel->second._id_operators.end(); it++)
+                {
+                    if (*it == client_fd)
+                    {
+                        channel->second._id_operators.erase(it);
+                        break;
+                    }                    
+                }
             }
             else //TODO A MODIFIER quand le vecteur de channel operators aura été créé par Hugo
-            {
-                std::cout << "Ajouter le client mentionner en tant qu'operateur dans le vecteur des channel operators du channel\n";
-            }
+                channel->second._id_operators.push_back(client_fd);
         }
         else
         {

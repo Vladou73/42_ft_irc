@@ -33,6 +33,7 @@ Client::join()
                 std::string	mess_op = "You are the Operator of the Channel : " + *it + "\r\n";
                 Channel channel(*it);
 				channel._id_operator =_client_id;
+                channel._id_operators.push_back(_client_id);
                 _server->_channels.insert(std::pair<std::string, Channel>(*it, channel));
 				_msg_buffer += mess_op.c_str();
             }
