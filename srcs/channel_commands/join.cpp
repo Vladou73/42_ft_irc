@@ -70,10 +70,11 @@ Client::join()
                         if (it->second->_client_id == _client_id)
                             continue ;
                         if (chan->second._first_connexion.find(_client_id)->second == true)
-                            send(it->first, JOIN_CHAN(_nick, chan_names[i]).c_str(), JOIN_CHAN(_nick, chan_names[i]).size(), 0);
+                            send(it->first, JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]).c_str(), JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]).size(), 0);
                     }
                     if (chan->second._first_connexion.find(_client_id)->second == true)
                     {
+                        send(it->first, JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]).c_str(), JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]).size(), 0);
                         send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);
                         send(_client_id, RPL_NAMREPLY(_nick, chan->first, clients_list).c_str(), RPL_NAMREPLY(_nick, chan->first, clients_list).size(), 0);
                         send(_client_id, RPL_ENDOFNAMES(_nick, chan->first).c_str(), RPL_ENDOFNAMES(_nick, chan->first).size(), 0);
