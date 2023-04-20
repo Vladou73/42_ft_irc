@@ -29,6 +29,7 @@ private:
 	std::string					_quit_msg;
 	bool						_is_server_oper;
 	std::map<std::string, std::string>	_modes;
+	std::string							_msg_buffer;
 
 public:
 	// =============================================================================
@@ -52,6 +53,9 @@ public:
 	void						socketDisconnect();
 	void						setQuitMsg(std::string);
 	std::string					getQuitMsg();
+	std::string					getMsgBuffer();
+	void						clearMsgBuffer();
+	void						setMsgBuffer(std::string);
 
     // =============================================================================
 	// METHODS =====================================================================

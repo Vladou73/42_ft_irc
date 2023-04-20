@@ -7,22 +7,17 @@ Client::user_mode(void)
 {
     if (_nick != _parsed_cmd[1])
     {
-        send(_client_id, ERR_USERSDONTMATCH(_nick).c_str(), ERR_USERSDONTMATCH(_nick).size(), 0);
+        _msg_buffer += ERR_USERSDONTMATCH(_nick);
         return;
     }
 
     std::string str_modes;
     for (std::map<std::string, std::string>::iterator it = _modes.begin(); it != _modes.end(); it++)
-    {
-        if (str_modes.empty())
-            str_modes == it->first;
-        else
-            str_modes += " " + it->first;
-    }
+        str_modes += it->second;
 
     if (_parsed_cmd.size() == 2)
     {
-        send(_client_id, RPL_UMODEIS(_nick, str_modes).c_str(), RPL_UMODEIS(_nick, str_modes).size(), 0);
+        _msg_buffer += RPL_UMODEIS(_nick, str_modes);
         return;
     }
     else
@@ -50,7 +45,7 @@ Client::user_mode(void)
                     _modes.insert(std::pair<std::string, std::string>("i", "+i"));
             }
             else
-                send(_client_id, ERR_UMODEUNKNOWNFLAG(_nick, modestring[i]).c_str(), ERR_UMODEUNKNOWNFLAG(_nick, modestring[i]).size(), 0);
+                _msg_buffer += ERR_UMODEUNKNOWNFLAG(_nick, modestring[i]);
         }
     }
 
@@ -63,12 +58,12 @@ Client::channel_mode(void)
  
     if (_parsed_cmd.size() == 2)
     {
-        send(_client_id, RPL_CHANNELMODEIS(_nick, channel->first, "").c_str(), RPL_CHANNELMODEIS(_nick, channel->first, "").size(), 0);
+        _msg_buffer += RPL_CHANNELMODEIS(_nick, channel->first, "");
         return;
     }
     if (channel->second._id_operator != _client_id) //TODO A MODIFIER
     {
-        send(_client_id, ERR_CHANOPRIVSNEEDED(_nick, channel->first).c_str(), ERR_CHANOPRIVSNEEDED(_nick, channel->first).size(), 0);
+        _msg_buffer += ERR_CHANOPRIVSNEEDED(_nick, channel->first);
         return;
     }
     
@@ -83,18 +78,18 @@ Client::channel_mode(void)
         {
             if (_parsed_cmd.size() < 3)
             {
-                send(_client_id, ERR_NEEDMOREPARAMS(_nick, "MODE").c_str(), ERR_NEEDMOREPARAMS(_nick, "MODE").size(), 0);
+                _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "MODE");
                 return;
             }
             int client_fd = search_for_client_by_nick(_parsed_cmd[3], _server->_clients);
             if (client_fd == -1) //si le client n'existe pas, renvoyer une erreur ?
             {
-                send(_client_id, ERR_NOSUCHNICK(_user, _parsed_cmd[3]).c_str(), ERR_NOSUCHNICK(_user, _parsed_cmd[3]).size(), 0);
+                _msg_buffer += ERR_NOSUCHNICK(_user, _parsed_cmd[3]);
                 return;
             }
             if (channel->second._clients.find(_client_id) == channel->second._clients.end()) //si le client n'ai pas dans le channel, renvoyer une erreur ?
             {
-            	send(_client_id, ERR_NOTONCHANNEL(_nick, channel->first).c_str(), ERR_NOTONCHANNEL(_nick, channel->first).size(), 0);
+            	_msg_buffer += ERR_NOTONCHANNEL(_nick, channel->first);
                 return;
             }
             if (modestring[0] == '-') //TODO A MODIFIER quand le vecteur de channel operators aura été créé par Hugo
@@ -109,7 +104,7 @@ Client::channel_mode(void)
         else
         {
             std::string s = std::string() + modestring[i];
-            send(_client_id, ERR_UNKNOWNMODE(s, channel->first).c_str(), ERR_UNKNOWNMODE(s, channel->first).size(), 0);
+            _msg_buffer += ERR_UNKNOWNMODE(s, channel->first);
         }
     }
 
@@ -122,7 +117,7 @@ Client::mode(void)
         return;
     if (_parsed_cmd.size() < 2)
     {
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "MODE").c_str(), ERR_NEEDMOREPARAMS(_nick, "MODE").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "MODE");
         return;
     }
     if (search_for_client_by_nick(_parsed_cmd[1], _server->_clients) == -1)
@@ -134,7 +129,7 @@ Client::mode(void)
         }
         else
         {
-            send(_client_id, ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str(), ERR_NOSUCHNICK(_user, _parsed_cmd[1]).size(), 0);
+            _msg_buffer += ERR_NOSUCHNICK(_user, _parsed_cmd[1]);
             return;
         }
     }

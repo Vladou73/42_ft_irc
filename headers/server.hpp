@@ -59,6 +59,7 @@ private:
     void    _handle_data(std::vector<struct pollfd>::iterator &it);
     void    _rm_deconnected_clients();
     void    _parse_conf_file();
+    void    _handle_pollout(int fd);
 
 };
 

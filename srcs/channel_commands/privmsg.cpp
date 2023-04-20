@@ -27,20 +27,20 @@ Client::privmsg()
 {
 	std::string mess;
 	if (_parsed_cmd.size() == 2)
-		send(_client_id, ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]).c_str(), strlen(ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]).c_str()), 0);
+		_msg_buffer += ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]);
 	if (_parsed_cmd.size() == 3)
 	{
 		if (_parsed_cmd[1].at(0) == '#' || _parsed_cmd[1].at(0) == '&')
 		{
 			std::map<std::string, Channel>::iterator it_chan = _channel_exist();
 			if (it_chan == _server->_channels.end())
-				send(_client_id, ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]).c_str(), strlen(ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]).c_str()), 0);
+				_msg_buffer += ERR_NOSUCHCHANNEL(_user, _parsed_cmd[1]);
 			else 
 			{
 				mess = _parsed_cmd[2];
 				std::map<int, Client *>	::iterator it_clients_chan = it_chan->second._clients.begin();
 				for (; it_clients_chan != it_chan->second._clients.end(); it_clients_chan++)
-					send (it_clients_chan->first, RPL_PRIVMSG(_nick, _user, _parsed_cmd[1], mess).c_str(), strlen(RPL_PRIVMSG(_nick, _user, _parsed_cmd[1], mess).c_str()), 0);
+					it_clients_chan->second->_msg_buffer += RPL_PRIVMSG(_nick, _user, _parsed_cmd[1], mess);
 			}
 		}
 		else
@@ -48,9 +48,9 @@ Client::privmsg()
 			mess = _parsed_cmd[2];
 			std::map<int, Client>::iterator it = _nick_exist();
 			if (it == _server->_clients.end())
-				send(_client_id, ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str(), strlen(ERR_NOSUCHNICK(_user, _parsed_cmd[1]).c_str()), 0);
+				_msg_buffer += ERR_NOSUCHNICK(_user, _parsed_cmd[1]);
 			else
-				send (it->first, RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str(), strlen(RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess).c_str()), 0);
+				_msg_buffer += RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess);
 		}
 	}
 }

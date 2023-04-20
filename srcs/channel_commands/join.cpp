@@ -9,20 +9,20 @@ Client::join()
 {
     if (_parsed_cmd.size() == 1)
     {
-    	send(_client_id, ERR_NEEDMOREPARAMS(_nick, "JOIN").c_str(), ERR_NEEDMOREPARAMS(_nick, "JOIN").size(), 0);
+    	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "JOIN");
         return ;
     }
     if (_connected == true)
     {
         //parsing du 1er argument qui contient la liste des channels envoyés pour le JOIN
-        send(_client_id, SEPARATOR, strlen(SEPARATOR), 0);
+        _msg_buffer += SEPARATOR;
 		std::string	clients_list;
         std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
         for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
         {
             if (check_channel_name(*it) == false)
             {
-            	send(_client_id, ERR_INVALIDCHANNAME(*it).c_str(), ERR_INVALIDCHANNAME(*it).size(), 0);
+            	_msg_buffer += ERR_INVALIDCHANNAME(*it);
                 continue;
             }
 
@@ -34,7 +34,7 @@ Client::join()
                 Channel channel(*it);
 				channel._id_operator =_client_id;
                 _server->_channels.insert(std::pair<std::string, Channel>(*it, channel));
-				send(_client_id, mess_op.c_str(), mess_op.size(), 0);
+				_msg_buffer += mess_op.c_str();
             }
 			_canals.push_back(*it);
 
@@ -70,21 +70,22 @@ Client::join()
                         if (it->second->_client_id == _client_id)
                             continue ;
                         if (chan->second._first_connexion.find(_client_id)->second == true)
-                            send(it->first, JOIN_CHAN(_nick, chan_names[i]).c_str(), JOIN_CHAN(_nick, chan_names[i]).size(), 0);
+                            it->second->_msg_buffer += JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]);
                     }
                     if (chan->second._first_connexion.find(_client_id)->second == true)
                     {
-                        send(_client_id, RPL_TOPIC(_nick, chan->first, chan->second._topic).c_str(), RPL_TOPIC(_nick, chan->first, chan->second._topic).size(), 0);
-                        send(_client_id, RPL_NAMREPLY(_nick, chan->first, clients_list).c_str(), RPL_NAMREPLY(_nick, chan->first, clients_list).size(), 0);
-                        send(_client_id, RPL_ENDOFNAMES(_nick, chan->first).c_str(), RPL_ENDOFNAMES(_nick, chan->first).size(), 0);
+                        _msg_buffer += JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]);
+                        _msg_buffer += RPL_TOPIC(_nick, chan->first, chan->second._topic);
+                        _msg_buffer += RPL_NAMREPLY(_nick, chan->first, clients_list);
+                        _msg_buffer += RPL_ENDOFNAMES(_nick, chan->first);
                         chan->second._first_connexion.find(_client_id)->second = false;
                     }
                     else
-                        send(_client_id, ERR_ALREADYINCHAN(_nick, chan->first).c_str(), ERR_ALREADYINCHAN(_nick, chan->first).size(), 0);
+                        _msg_buffer += ERR_ALREADYINCHAN(_nick, chan->first).c_str();
                     clients_list.clear();
 				}
             }
         }
-        send(_client_id, SEPARATOR_END, strlen(SEPARATOR_END), 0);
+        _msg_buffer += SEPARATOR_END;
     }
 }

@@ -45,18 +45,18 @@ Client::oper(void)
         return;
     if (_parsed_cmd.size() < 3) // on a besoin de name et password
     {
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "OPER").c_str(), ERR_NEEDMOREPARAMS(_nick, "OPER").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "OPER");
         return;
     }
     int nameIndex = check_oper_name(_parsed_cmd[1], _server->_server_opers);
     if (nameIndex == -1)
     {
-    	send(_client_id, ERR_NOOPERHOST(_nick).c_str(), ERR_NOOPERHOST(_nick).size(), 0);
+    	_msg_buffer += _client_id, ERR_NOOPERHOST(_nick);
         return;
     }
     if (_parsed_cmd[2] != _server->_server_opers[nameIndex].pwd)
     {
-    	send(_client_id, ERR_PASSWDMISMATCH, strlen(ERR_PASSWDMISMATCH), 0);
+    	_msg_buffer += ERR_PASSWDMISMATCH;
         return ;      
     }
     //TODO : rajouter une verification du hostname ? ou pas besoin ?
@@ -65,7 +65,7 @@ Client::oper(void)
 
     _is_server_oper = true;
     _modes.insert(std::pair<std::string, std::string>("o", "+o"));
-    send(_client_id, RPL_YOUREOPER(_nick).c_str(), RPL_YOUREOPER(_nick).size(), 0);
+    _msg_buffer += RPL_YOUREOPER(_nick);
 
     //TODO : The user will also receive a MODE message indicating their new user modes, and other messages may be sent.
 

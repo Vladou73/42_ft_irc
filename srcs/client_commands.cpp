@@ -6,9 +6,9 @@ void
 Client::ping()
 {
     if (_parsed_cmd.size() == 1)
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PING").c_str(), ERR_NEEDMOREPARAMS(_nick, "PING").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PING");
     else if (_connected == true)
-        send(_client_id, RPL_PONG(_parsed_cmd[1]).c_str(), RPL_PONG(_parsed_cmd[1]).size(), 0);
+        _msg_buffer += RPL_PONG(_parsed_cmd[1]);
 }
 
 void
@@ -16,18 +16,18 @@ Client::pass()
 {
     if (_parsed_cmd.size() == 1)
 	{
-        send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PASS").c_str(), ERR_NEEDMOREPARAMS(_nick, "PASS").size(), 0);
+        _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PASS");
 		return;
 	}
     if (_connected == true)
     {
-        send(_client_id, ERR_ALREADYREGISTERED(_nick).c_str(), ERR_ALREADYREGISTERED(_nick).size(), 0);
+        _msg_buffer += ERR_ALREADYREGISTERED(_nick);
         return ;
     }
     if (_parsed_cmd[1] != _server->_pwd)
 	{
 		_data_connexion.clear();
-        send(_client_id, ERR_PASSWDMISMATCH, strlen(ERR_PASSWDMISMATCH), 0);
+        _msg_buffer += ERR_PASSWDMISMATCH;
 		return ;
 	}
     if (_data_connexion.size() > 0)
@@ -46,7 +46,7 @@ Client::check_nick()
 	//TODO verifier avec irssi le nombre max de caracteres
 	// if(_data_connexion[1].size() >= 9)
 	// {
-	// 	send (client_id, ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
+	// 	_msg_buffer +=  ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str(), strlen(ERR_ERRONEUSNICKNAME(_data_connexion[1],_data_connexion[1]).c_str()), 0);
 	// 	return false;
 	// }
 
@@ -55,8 +55,8 @@ Client::check_nick()
 	{
 		if (it->second.getNick() == _data_connexion[1])
 		{
-			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1]).c_str()), 0);
-			send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
+			_msg_buffer += ERR_NICKNAMEINUSE(_data_connexion[1]);
+			_msg_buffer += USER_ID(_data_connexion[1], _user);
 			return (false);
 		}
 	}
@@ -64,16 +64,38 @@ Client::check_nick()
 		_nick = _data_connexion[1];
 	else
 		_nick = _parsed_cmd[1];
-	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
+	_msg_buffer += USER_ID(_data_connexion[1], _user);
 	return true;
 }
 
+// 	https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.2
+// 	NICK command is used to give user a nickname or change the existing
+//    one.
+
+// Numeric Replies:
+
+//            ERR_NONICKNAMEGIVEN             ERR_ERRONEUSNICKNAME
+//            ERR_NICKNAMEINUSE               ERR_NICKCOLLISION
+//            ERR_UNAVAILRESOURCE             ERR_RESTRICTED
+
+//    Examples:
+
+//    NICK Wiz                ; Introducing new nick "Wiz" if session is
+//                            still unregistered, or user changing his
+//                            nickname to "Wiz"
+
+//    :WiZ!jto@tolsun.oulu.fi NICK Kilroy
+//                            ; Server telling that WiZ changed his
+//                            nickname to Kilroy.
+
+
+//TODO : un utilisateur peu changer de nickname si il est déjà connected
 void
 Client::nick()
 {
 	if (_parsed_cmd.size() == 1)
 	{
-		send (_client_id, ERR_NONICKNAMEGIVEN, strlen(ERR_NONICKNAMEGIVEN), 0);
+		_msg_buffer += ERR_NONICKNAMEGIVEN;
 		return;
 	}
 	if (_connected == true)
@@ -93,14 +115,16 @@ Client::user()
 		return;
 
 	//TODO verifier quoi checker sur les users
-	//TODO verifier quoi renvoyer en cas de probleme sur les users
+	//TODO verifier quoi renvoyer en cas de probleme sur les users https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3
+	// ERR_NEEDMOREPARAMS
+	// ERR_ALREADYREGISTRED
 	// 4 informations
 	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
 	if (_data_connexion.size() == 2)
 	{
 		if (_parsed_cmd.size() < 5)
 		{
-			send(_client_id, ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").c_str(), ERR_NEEDMOREPARAMS(_data_connexion[1], "USER").size(), 0);
+			_msg_buffer += ERR_NEEDMOREPARAMS(_data_connexion[1], "USER");
 			return ;
 		}
 
@@ -109,18 +133,21 @@ Client::user()
 			append += _parsed_cmd[i];
 		_data_connexion.push_back(append);
 
-		_user = _data_connexion[2];
+		_user = _data_connexion[1];
+		//TODO : vérifier ces informations
+		// Parameters: <user> <mode> <unused> <realname> ==> le user c'est le 2ème argument donc _data_connexion[1]
+		// https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3
 		//? Je pense que c'est le user est le dernier arg de user
 		//? _user = _parsed_cmd[4];
 
-		send (_client_id, RPL_WELCOME(_client_id_str, _nick).c_str(), strlen(RPL_WELCOME(_client_id_str, _nick).c_str()), 0);
-		send(_client_id, RPL_YOURHOST(_nick).c_str(), strlen(RPL_YOURHOST(_nick).c_str()), 0);
+		_msg_buffer += RPL_WELCOME(_client_id_str, _nick);
+		_msg_buffer += RPL_YOURHOST(_nick);
 		// TODO : Date time (devra etre decommente)
-		// send(_client_id, RPL_CREATED(_nick, datetime).c_str(), strlen(RPL_CREATED(_nick, datetime).c_str()), 0);
+		// _msg_buffer += RPL_CREATED(_nick, datetime).c_str(), strlen(RPL_CREATED(_nick, datetime).c_str()), 0);
 		// TODO : check user_mode/chan_mode/Chan_parm_mode (exemples in the messages file) (devra etre decommente)
-		// send(_client_id, RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
-		send(_client_id, RPL_ISUPPORT(_nick).c_str(), strlen(RPL_ISUPPORT(_nick).c_str()), 0);
-		send (_client_id, WELCOME_ART, strlen(WELCOME_ART), 0);
+		// _msg_buffer += RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str(), strlen(RPL_MYINFO(_nick, user_modes, chan_modes, chan_param_modes).c_str()), 0);
+		_msg_buffer += RPL_ISUPPORT(_nick);
+		_msg_buffer += WELCOME_ART;
 
 		_connected = true;
 		_modes.insert(std::pair<std::string, std::string>("r", "+r"));

@@ -9,7 +9,7 @@ Client::part()
 {
     if (_parsed_cmd.size() == 1)
     {
-    	send(_client_id, ERR_NEEDMOREPARAMS(_nick, "PART").c_str(), ERR_NEEDMOREPARAMS(_nick, "PART").size(), 0);
+    	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PART");
         return ;
     }
     if (_connected == true)
@@ -25,14 +25,14 @@ Client::part()
             std::string chan_name = *it;
             if (check_channel_name(chan_name) == false)
             {
-            	send(_client_id, ERR_INVALIDCHANNAME(chan_name).c_str(), ERR_INVALIDCHANNAME(chan_name).size(), 0);
+            	_msg_buffer += ERR_INVALIDCHANNAME(chan_name);
                 continue;
             }
 
             std::map<std::string, Channel>::iterator end = _server->_channels.end();
             if (_server->_channels.find(chan_name) == end) //Si le channel n'existe pas, renvoyer une erreur
             {
-            	send(_client_id, ERR_NOSUCHCHANNEL(_nick, chan_name).c_str(), ERR_NOSUCHCHANNEL(_nick, chan_name).size(), 0);
+            	_msg_buffer += ERR_NOSUCHCHANNEL(_nick, chan_name);
                 continue;
             }
 
@@ -40,7 +40,7 @@ Client::part()
             if (chan->second._clients.find(_client_id) == chan->second._clients.end())
             {
                 //si le client n'ai pas dans le channel, renvoyer une erreur
-            	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
+            	_msg_buffer += ERR_NOTONCHANNEL(_nick, chan_name);
                 continue;
             }
             else
@@ -54,12 +54,12 @@ Client::part()
                         break;
                     }
                 }
-                send(_client_id, RPL_PART(chan_name, part_msg).c_str(), RPL_PART(chan_name, part_msg).size(), 0);
+                _msg_buffer += RPL_PART(USER_ID2(_nick, _user), chan_name, part_msg);
 
                 //msg aux autres clients du channel
                 for (std::map<int, Client*>::iterator client = _server->_channels.find(chan_name)->second._clients.begin();
                     client != _server->_channels.find(chan_name)->second._clients.end(); client++)
-                	send(client->second->_client_id, RPL_PART2(_nick, chan_name, part_msg).c_str(), RPL_PART2(_nick, chan_name, part_msg).size(), 0);
+                	client->second->_msg_buffer += RPL_PART(USER_ID2(_nick, _user), chan_name, part_msg);
             }
         }
     }

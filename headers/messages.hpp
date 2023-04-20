@@ -7,9 +7,10 @@
 
 // =============================================================================
 // USER ID =====================================================================
-# define USER_ID(nickname) (":" + nickname + "!" + nickname + "@localhost\r\n")
-# define USER_ID2(nickname) (":" + nickname + "!" + nickname + "@localhost")
 
+// prefix     =   ":" + servername / ( nickname [ [ "!" user ] "@" host ] )
+# define USER_ID(nickname, username) (":" + nickname + "!" + username + "@localhost\r\n")
+# define USER_ID2(nickname, username) (":" + nickname + "!" + username + "@localhost")
 
 // =============================================================================
 // PASS MESSAGES ===============================================================
@@ -69,7 +70,9 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 
 // =============================================================================
 // JOIN MESSAGES ===============================================================
-# define JOIN_CHAN(nickname, chan_name) (nickname + "!" + nickname + "@localhost JOIN" + chan_name + "\r\n")
+
+// FORMAT A RENVOYER POUR LE JOIN ":WiZ!jto@tolsun.oulu.fi JOIN #Twilight_zone" ; JOIN message from WiZ on channel #Twilight_zone
+# define JOIN_CHAN(user_id, chan_name) (user_id + " JOIN " + chan_name + "\r\n")
 # define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
 # define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
 # define ERR_ALREADYINCHAN(nickname, chan) (":localhost " + nickname + " :You are already in the channel " + chan + "\r\n")
@@ -91,8 +94,10 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 // PART MESSAGES ===============================================================
 # define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
 # define ERR_INVALIDCHANNAME(chan_name) (chan_name + ": this channel name is invalid \r\n")
-# define RPL_PART(chan_name, msg) ("successfuly left channel " + chan_name + " :" + msg + "\r\n")
-# define RPL_PART2(nickname, chan_name, msg) (nickname + " left the channel " + chan_name + " :" + msg + "\r\n")
+
+// :WiZ!jto@tolsun.oulu.fi PART #playzone :I lost
+# define RPL_PART(user_id, chan_name, msg) (user_id + " PART " + chan_name + " :" + msg + "\r\n")
+// # define RPL_PART2(user_id, chan_name, msg) (user_id + " PART " + chan_name + " :" + msg + "\r\n")
 
 // =============================================================================
 // NAMES MESSAGES ==============================================================
