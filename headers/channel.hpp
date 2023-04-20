@@ -20,6 +20,7 @@ private:
 	std::map<int, Client *>	_clients;
 	std::map<int, bool>		_first_connexion;
 	int						_id_operator;
+	std::vector<int>		_id_operators;
 
 
 public:
