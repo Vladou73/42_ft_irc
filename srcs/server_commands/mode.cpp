@@ -13,12 +13,7 @@ Client::user_mode(void)
 
     std::string str_modes;
     for (std::map<std::string, std::string>::iterator it = _modes.begin(); it != _modes.end(); it++)
-    {
-        if (str_modes.empty())
-            str_modes == it->first;
-        else
-            str_modes += " " + it->first;
-    }
+        str_modes += it->second;
 
     if (_parsed_cmd.size() == 2)
     {
@@ -94,7 +89,7 @@ Client::channel_mode(void)
             }
             if (channel->second._clients.find(_client_id) == channel->second._clients.end()) //si le client n'ai pas dans le channel, renvoyer une erreur ?
             {
-            	send(_client_id, ERR_NOTONCHANNEL(_nick, chan_name).c_str(), ERR_NOTONCHANNEL(_nick, chan_name).size(), 0);
+            	send(_client_id, ERR_NOTONCHANNEL(_nick, channel->first).c_str(), ERR_NOTONCHANNEL(_nick, channel->first).size(), 0);
                 return;
             }
             if (modestring[0] == '-') //TODO A MODIFIER quand le vecteur de channel operators aura été créé par Hugo
