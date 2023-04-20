@@ -56,7 +56,7 @@ Client::check_nick()
 		if (it->second.getNick() == _data_connexion[1])
 		{
 			send (_client_id, ERR_NICKNAMEINUSE(_data_connexion[1]).c_str(), strlen(ERR_NICKNAMEINUSE(_data_connexion[1]).c_str()), 0);
-			send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
+			send (_client_id, USER_ID(_data_connexion[1], _user).c_str(), strlen(USER_ID(_data_connexion[1], _user).c_str()), 0);
 			return (false);
 		}
 	}
@@ -64,10 +64,32 @@ Client::check_nick()
 		_nick = _data_connexion[1];
 	else
 		_nick = _parsed_cmd[1];
-	send (_client_id, USER_ID(_data_connexion[1]).c_str(), strlen(USER_ID(_data_connexion[1]).c_str()), 0);
+	send (_client_id, USER_ID(_data_connexion[1], _user).c_str(), strlen(USER_ID(_data_connexion[1], _user).c_str()), 0);
 	return true;
 }
 
+// 	https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.2
+// 	NICK command is used to give user a nickname or change the existing
+//    one.
+
+// Numeric Replies:
+
+//            ERR_NONICKNAMEGIVEN             ERR_ERRONEUSNICKNAME
+//            ERR_NICKNAMEINUSE               ERR_NICKCOLLISION
+//            ERR_UNAVAILRESOURCE             ERR_RESTRICTED
+
+//    Examples:
+
+//    NICK Wiz                ; Introducing new nick "Wiz" if session is
+//                            still unregistered, or user changing his
+//                            nickname to "Wiz"
+
+//    :WiZ!jto@tolsun.oulu.fi NICK Kilroy
+//                            ; Server telling that WiZ changed his
+//                            nickname to Kilroy.
+
+
+//TODO : un utilisateur peu changer de nickname si il est déjà connected
 void
 Client::nick()
 {
@@ -93,7 +115,9 @@ Client::user()
 		return;
 
 	//TODO verifier quoi checker sur les users
-	//TODO verifier quoi renvoyer en cas de probleme sur les users
+	//TODO verifier quoi renvoyer en cas de probleme sur les users https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3
+	// ERR_NEEDMOREPARAMS
+	// ERR_ALREADYREGISTRED
 	// 4 informations
 	// user  =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF ); any octet except NUL, CR, LF, " " and "@"
 	if (_data_connexion.size() == 2)
@@ -109,7 +133,10 @@ Client::user()
 			append += _parsed_cmd[i];
 		_data_connexion.push_back(append);
 
-		_user = _data_connexion[2];
+		_user = _data_connexion[1];
+		//TODO : vérifier ces informations
+		// Parameters: <user> <mode> <unused> <realname> ==> le user c'est le 2ème argument donc _data_connexion[1]
+		// https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3
 		//? Je pense que c'est le user est le dernier arg de user
 		//? _user = _parsed_cmd[4];
 

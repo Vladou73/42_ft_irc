@@ -207,7 +207,7 @@ Client::delete_client_from_chans(std::string mess)
 				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
 			{
 				std::cout << client->first << "\n";
-				send(client->first, RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str(), strlen(RPL_QUIT(USER_ID2(_nick), _quit_msg).c_str()), 0);
+				send(client->first, RPL_QUIT(USER_ID2(_nick, _user), _quit_msg).c_str(), strlen(RPL_QUIT(USER_ID2(_nick, _user), _quit_msg).c_str()), 0);
 			}
 		}
 	}
