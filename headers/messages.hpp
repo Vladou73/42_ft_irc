@@ -94,6 +94,10 @@
 // NAMES MESSAGES ==============================================================
 
 // =============================================================================
+// KICK MESSAGES ==============================================================
+# define RPL_KICK(nick, user, chan, client_kick, reason) (":" + nick + "!" + user + "@localhost KICK " + chan + " " + client_kick + " :" + reason + "\r\n")
+
+// =============================================================================
 // SERVER OPERATOR MESSAGES ===========================================================
 # define ERR_NOOPERHOST(nickname) ("491 " + nickname + " :No O-lines for your host\r\n")
 # define RPL_YOUREOPER(nickname) ("381 " + nickname + " :You are now an IRC operator\r\n")

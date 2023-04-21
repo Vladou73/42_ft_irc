@@ -91,6 +91,7 @@ public:
 	void	oper();
 	void	kill();
 	void	mode();
+	void	kick();
 	
 
 private:

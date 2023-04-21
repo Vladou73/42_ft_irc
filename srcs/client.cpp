@@ -136,6 +136,8 @@ Client::search_command()
 	  kill();
 	else if (_parsed_cmd[0]== "MODE")
 		mode();
+	else if (_parsed_cmd[0]== "KICK")
+		kick();
 	else
 		std::cout << "default\n";
 }
