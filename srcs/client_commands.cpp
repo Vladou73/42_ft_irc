@@ -1,6 +1,5 @@
 # include "../headers/client.hpp"
 
-
 //The PING command is sent by either clients or servers to check the other side of the connection is still connected and/or to check for connection latency, at the application layer.
 void
 Client::ping()
@@ -47,8 +46,6 @@ They MUST NOT start with a character listed as a channel type prefix.
 They SHOULD NOT contain any dot character ('.', 0x2E).
 
 */
-
-
 
 bool
 Client::check_nick()
@@ -99,7 +96,6 @@ Client::nick()
     		_data_connexion.pop_back();
     }
 }
-
 
 //TODO no @ in user
 void

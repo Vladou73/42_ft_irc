@@ -3,10 +3,10 @@
 
 // =============================================================================
 // CONSTRUCTORS ================================================================
-Channel::Channel() : _name(), _topic(), _clients(), _first_connexion(), _id_operator(), _id_operators()
+Channel::Channel() : _name(), _topic(), _clients(), _first_connexion(), _id_operators()
 {}
 
-Channel::Channel(std::string name) : _name(name), _topic(), _clients(), _first_connexion(), _id_operator(0), _id_operators()
+Channel::Channel(std::string name) : _name(name), _topic(), _clients(), _first_connexion(), _id_operators()
 {}
 
 
