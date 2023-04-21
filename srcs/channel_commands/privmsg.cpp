@@ -50,7 +50,7 @@ Client::privmsg()
 			if (it == _server->_clients.end())
 				_msg_buffer += ERR_NOSUCHNICK(_user, _parsed_cmd[1]);
 			else
-				_msg_buffer += RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess);
+				it->second._msg_buffer += RPL_PRIVMSG(_nick, _user, it->second.getNick(), mess);
 		}
 	}
 }

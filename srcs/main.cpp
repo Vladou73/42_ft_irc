@@ -2,8 +2,10 @@
 #include "../headers/client.hpp"
 #include "../headers/ft_irc.hpp"
 
+
 int main (int ac, char **av)
 {
+    // char *dt = ctime(&(_datetime));
     if (ac != 3)
     {
         std::cout << "Please run the executable as follow : /ircserv <port> <password>" << std::endl;
@@ -21,8 +23,6 @@ int main (int ac, char **av)
             return (2);
         }
     }
-
-    //TODO secure  Servers are uniquely identified by their name, which has a maximum length of sixty three (63) characters
     Server a(av);
 
     return (0);

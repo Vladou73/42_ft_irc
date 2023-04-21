@@ -15,20 +15,18 @@ public:
     friend class Channel;
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
-
-//TODO : pourquoi certains attributs sont privés et d'autres protected ?
 private:
-    const char *				_pwd;
-	int							_listener;
-	const char *				_server_port;
-    std::vector<struct pollfd>	_pfds;
+    const char *					_pwd;
+	int								_listener;
+	const char *					_server_port;
+    std::vector<struct pollfd>		_pfds;
     std::vector<struct server_oper>	_server_opers;
+	std::map<int, Client>			_clients;
+    int								_count_clients;
+    std::map<std::string, Channel>	_channels;
+    static Server*					_instance;
+	std::string						_launch_date;
 
-protected:
-	std::map<int, Client>	                _clients;
-    int                                     _count_clients;
-    std::map<std::string, Channel>          _channels;
-    static Server*                          _instance;
 
 public:
 	// =============================================================================

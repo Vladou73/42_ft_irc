@@ -23,12 +23,14 @@
 # include <string>
 # include <csignal>
 # include <fstream>
+# include <ctime>
 
 # include "colors.hpp"
 # include "messages.hpp"
 # include "function_utils.hpp"
 
-struct server_oper {
+struct server_oper 
+{
     std::string name;
     std::string pwd;
     std::string host;

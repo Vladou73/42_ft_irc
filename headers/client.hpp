@@ -14,20 +14,21 @@ class Client
 	// =============================================================================
 	// ATTRIBUTS ===================================================================
 private:
-	std::string					_nick;
-	std::string					_user;
-	std::string					_client_id_str;
-	int							_client_id;
-	std::vector<std::string>	_data_connexion;
-	std::string					_buff;
-	std::vector<std::string>	_parsed_cmd;
-	bool						_connected;
-	Server						*_server;
-	bool						_socket_connected;
-	bool						_operator;
-	std::vector<std::string>	_canals;
-	std::string					_quit_msg;
-	bool						_is_server_oper;
+	std::string							_nick;
+	std::string							_user;
+	std::string							_user_infos;
+	std::string							_client_id_str;
+	int									_client_id;
+	std::vector<std::string>			_data_connexion;
+	std::string							_buff;
+	std::vector<std::string>			_parsed_cmd;
+	bool								_connected;
+	Server								*_server;
+	bool								_socket_connected;
+	bool								_operator;
+	std::vector<std::string>			_canals;
+	std::string							_quit_msg;
+	bool								_is_server_oper;
 	std::map<std::string, std::string>	_modes;
 	std::string							_msg_buffer;
 

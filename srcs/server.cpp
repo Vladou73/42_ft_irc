@@ -11,6 +11,8 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _clients(), _count_clients(0),
     _channels()
 {
+    time_t launch_date = std::time(0);
+    _launch_date = std::asctime(std::localtime(&launch_date));
     _instance = this;
     _parse_conf_file();
     _get_listener_socket();
@@ -50,8 +52,8 @@ Server::ctrl_C()
 void
 Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 {
-    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 character limit includes this delimiter, meaning that a message only has space for 510 useful characters.
-	char    buff[100000]; //TODO CHECK LE BUFFER SIZE
+    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 bytes limit includes this delimiter, meaning that a message only has space for 510 useful characters.
+	char    buff[512]; //TODO CHECK LE BUFFER SIZE check segfault que faire quand + de 512
 
 	memset(&buff, 0, sizeof(buff));
     // If not the listener, we're just a regular client
@@ -66,7 +68,8 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             if (!_clients[sender_fd].getUser().empty())
                 _count_clients--;
            std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
-        } else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
+        } 
+        else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
         _clients[sender_fd].setQuitMsg("abrupt client aborting");
         _clients[sender_fd].setMsgBuffer(ERROR(_clients[sender_fd].getQuitMsg()));
@@ -78,18 +81,6 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
     }
     else
     {
-        //DEBUG : visualiser les channels existants
-        // std::cout << std::endl << "*****CHANNELS***** " << std::endl;
-        // for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
-        // {
-        //     std::cout << std::endl << "channel " << it->first << std::endl;
-        //     std::map<int, Client *> clients = it->second.getClients();
-        //     for (std::map<int, Client *>::iterator client = clients.begin(); client != clients.end(); client++)
-        //     {
-        //         std::cout << "client " << client->second->getNick() << std::endl;
-        //     }
-        // }
-
         std::cout   << PURPLE << "[client] " << "fd = " << it->fd << " | "
                     << std::string(buff, 0, nbytes) << RESET << std::endl ;
 		std::string ss1 = buff;
@@ -140,6 +131,7 @@ Server::_handle_pollout(int fd)
 {
     if (!_clients[fd].getMsgBuffer().empty())
     {
+        std::cout << "fd = " << fd << std::endl;
         send(fd, _clients[fd].getMsgBuffer().c_str(), _clients[fd].getMsgBuffer().size(), 0);
         _clients[fd].clearMsgBuffer();
     }
@@ -162,6 +154,7 @@ Server::_poll_loop(void)
     bool first_loop = true;
     for(;;)
     {
+        //TODO il reste 2 still reachables avec valgrind qu on a pas reussi a virer, meme avec le signal handler avec ctrl C
 		signal(SIGINT, signalHandler);
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
