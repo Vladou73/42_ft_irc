@@ -30,15 +30,6 @@ check_oper_name(std::string name, std::vector<server_oper> oper_list)
 void
 Client::oper(void)
 {
-    // std::cout << "***SERVER OPERS***" << std::endl;
-    // for (std::vector<server_oper>::iterator it = _server->_server_opers.begin(); it != _server->_server_opers.end(); it++)
-    // {
-    //     std::cout << it->name << std::endl;
-    //     std::cout << it->pwd << std::endl;
-    //     std::cout << it->host << std::endl;
-    //     std::cout << std::endl;
-    // }
-
     if (_connected == false)
         return;
     if (_is_server_oper == true)

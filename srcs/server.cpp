@@ -134,6 +134,11 @@ Server::_handle_pollout(int fd)
         std::cout << "fd = " << fd << std::endl;
         send(fd, _clients[fd].getMsgBuffer().c_str(), _clients[fd].getMsgBuffer().size(), 0);
         _clients[fd].clearMsgBuffer();
+        if (_clients[fd].getSocketConnexion() == false)
+        {
+            close(fd);
+            _clients[fd].delete_client();
+        }
     }
 }
 

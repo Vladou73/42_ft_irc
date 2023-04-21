@@ -13,5 +13,4 @@ Client::quit(Client &client, std::string msg) //quit est aussi appelé par KILL 
         _server->_count_clients--;
 
 	client._socket_connected = false;
-	close(client._client_id);
 }
