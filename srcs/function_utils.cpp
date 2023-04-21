@@ -62,6 +62,18 @@ search_for_client_by_nick(std::string nick, std::map<int, Client> clients)
     return -1;
 }
 
+int
+search_for_client_by_nick_in_channel(std::string nick, std::map<int, Client *> clients)
+{
+    std::map<int, Client *>::iterator it;
+    for (it = clients.begin(); it != clients.end(); it++)
+    {
+        if (nick == it->second->getNick())
+            return it->first;
+    }
+    return -1;
+}
+
 bool
 client_is_chann_oper(int client_id, std::vector<int> channel_operators)
 {

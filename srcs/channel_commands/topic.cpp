@@ -44,7 +44,7 @@ Client::topic()
 	    	_msg_buffer += ERR_NOTONCHANNEL(_nick, chan_name);
 			return ;
 		}
-		if (chan->second._id_operator == _client_id)
+		if (client_is_chann_oper(_client_id, chan->second._id_operators) == true)
 		{
 			if (_parsed_cmd.size() > 2)
 			{
