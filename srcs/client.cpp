@@ -138,6 +138,8 @@ Client::search_command()
 		mode();
 	else if (_parsed_cmd[0]== "KICK")
 		kick();
+	else if (_parsed_cmd[0]== "INVITE")
+		invite();
 	else
 		std::cout << "default\n";
 }

@@ -91,8 +91,10 @@
 // # define RPL_PART2(user_id, chan_name, msg) (user_id + " PART " + chan_name + " :" + msg + "\r\n")
 
 // =============================================================================
-// NAMES MESSAGES ==============================================================
-
+// INVITE MESSAGES ==============================================================
+# define ERR_USERONCHANNEL(nick, chan) (":localhost 443 " + nick + " " + chan + " :is already on channel\r\n")
+# define RPL_INVITING(nick, chan) ("INVITE " + nick + " " + chan + "\r\n")
+# define INVITATION(nick, user, client_nick, chan) (":" + nick + "!" + user +"@localhost INVITE " + client_nick + " " + chan + "\r\n")
 // =============================================================================
 // KICK MESSAGES ==============================================================
 # define RPL_KICK(nick, user, chan, client_kick, reason) (":" + nick + "!" + user + "@localhost KICK " + chan + " " + client_kick + " :" + reason + "\r\n")

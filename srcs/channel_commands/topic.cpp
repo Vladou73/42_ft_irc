@@ -48,9 +48,10 @@ Client::topic()
 		{
 			if (_parsed_cmd.size() > 2)
 			{
-				for(size_t i = 2; i < _parsed_cmd.size(); i++)
-					chan->second._topic = chan->second._topic + " " + _parsed_cmd[i];
-				chan->second._topic.erase(0, 1);
+				// for(size_t i = 2; i < _parsed_cmd.size(); i++)
+				chan->second._topic = _parsed_cmd[2];
+				// chan->second._topic = chan->second._topic + " " + _parsed_cmd[i];
+				// chan->second._topic.erase(0, 1);
 			}
 		}
 		if (chan->second._topic.size() == 0)

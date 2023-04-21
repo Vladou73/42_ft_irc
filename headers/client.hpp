@@ -92,6 +92,7 @@ public:
 	void	kill();
 	void	mode();
 	void	kick();
+	void	invite();
 	
 
 private:

@@ -43,9 +43,13 @@ Client::kick()
                 }
 				std::map<int, Client *>::iterator iter = chan->second._clients.begin();
 				std::string	reason;
-				for(size_t i = 3; i < _parsed_cmd.size(); i++)
-					reason = reason + " " + _parsed_cmd[i];
-				reason.erase(0, 1);
+				// for(size_t i = 3; i < _parsed_cmd.size(); i++)
+				if (_parsed_cmd.size() > 3)
+					reason = _parsed_cmd[3];
+				else
+					reason = "";
+				// reason = reason + " " + _parsed_cmd[i];
+				// reason.erase(0, 1);
 				for(; iter != chan->second._clients.end(); iter++)
 					iter->second->_msg_buffer += RPL_KICK(_nick, _user, *it, *it_client, reason);
                 fd_erase.push_back(fd_client);
