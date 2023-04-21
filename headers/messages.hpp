@@ -104,7 +104,6 @@ Part of the post-registration greeting, this numeric returns a human-readable da
 
 // =============================================================================
 // KICK MESSAGES ==============================================================
-# define ERR_CHANOPRIVSNEEDED(chan) ("482 " + chan + " :You're not channel operator\r\n")
 # define RPL_KICK(nick, user, chan, client_kick, reason) (":" + nick + "!" + user + "@localhost KICK " + chan + " " + client_kick + " :" + reason + "\r\n")
 
 // =============================================================================
