@@ -59,7 +59,7 @@ Client::join()
 					std::map<int, Client *>::iterator end = chan->second._clients.end();
 					for(; it != end; it++)
                     {
-                        if (chan->second._id_operator == it->second->_client_id)
+                        if (client_is_chann_oper(it->second->_client_id, chan->second._id_operators) == true)
                         {
                             std::string temp = "@" + it->second->_nick;
                             clients_list = clients_list + " " + temp;
