@@ -1,6 +1,21 @@
 # include "../headers/client.hpp"
 
-//The PING command is sent by either clients or servers to check the other side of the connection is still connected and/or to check for connection latency, at the application layer.
+/*
+NICKNAME =============================================================
+nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
+Nicknames are non-empty strings with the following restrictions:
+
+They MUST NOT contain any of the following characters: space (' ', 0x20), comma (',', 0x2C), asterisk ('*', 0x2A), question mark ('?', 0x3F), exclamation mark ('!', 0x21), at sign ('@', 0x40).
+They MUST NOT start with any of the following characters: dollar ('$', 0x24), colon (':', 0x3A).
+They MUST NOT start with a character listed as a channel type prefix.
+They SHOULD NOT contain any dot character ('.', 0x2E).
+*/
+
+/*
+PING =================================================================
+The PING command is sent by either clients or servers to check the other side of the connection is still connected and/or to check for connection latency, at the application layer.
+*/
+
 void
 Client::ping()
 {
@@ -35,16 +50,6 @@ Client::pass()
     _data_connexion.push_back(_parsed_cmd[1]);
 }
 
-/*
-nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
-Nicknames are non-empty strings with the following restrictions:
-
-They MUST NOT contain any of the following characters: space (' ', 0x20), comma (',', 0x2C), asterisk ('*', 0x2A), question mark ('?', 0x3F), exclamation mark ('!', 0x21), at sign ('@', 0x40).
-They MUST NOT start with any of the following characters: dollar ('$', 0x24), colon (':', 0x3A).
-They MUST NOT start with a character listed as a channel type prefix.
-They SHOULD NOT contain any dot character ('.', 0x2E).
-
-*/
 
 //TODO we take off space so the nick doesnt have any, is it a problem ?
 bool
@@ -124,13 +129,16 @@ Client::user()
 			return ;
 		}
 
+		if (_parsed_cmd[1].find('@') == std::string::npos)
+			_user = _parsed_cmd[1];
+		else
+			return ;
+
 		std::string	append;
 		for (size_t i = 1; i < _parsed_cmd.size(); i++)
 			append += _parsed_cmd[i];
 		_data_connexion.push_back(append);
-
 		_user_infos = _data_connexion[2];
-		_user = _parsed_cmd[1];
 
 		_msg_buffer += RPL_WELCOME(_client_id_str, _nick);
 		_msg_buffer += RPL_YOURHOST(_nick);

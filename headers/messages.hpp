@@ -12,6 +12,7 @@
 # define USER_ID(nickname, username) (":" + nickname + "!" + username + "@localhost\r\n")
 # define USER_ID2(nickname, username) (":" + nickname + "!" + username + "@localhost")
 
+
 // =============================================================================
 // PASS MESSAGES ===============================================================
 # define ERR_NEEDMOREPARAMS(nickname, command) (":localhost 461 " + nickname + " " + command + " :Not enough parameters\r\n")
@@ -52,7 +53,6 @@
 # define RPL_NOTICE(nick, username, target, message) (":" + nick + "!" + username + "@localhost NOTICE " + target + " :" + message + "\r\n")
 
 
-
 // =============================================================================
 // QUIT MESSAGES ===============================================================
 // The QUIT command is used to terminate a client’s connection to the server.
@@ -77,11 +77,13 @@
 # define RPL_NOTOPIC(nickname) ("331 " + nickname + " :No topic is set\r\n")
 # define RPL_TOPIC(nickname, channel, topic) (":localhost 332 " + nickname + " " + channel + " :"+ topic + "\r\n")
 
+
 // ==============================================================================
 // LIST MESSAGES ================================================================
 # define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users Name\r\n")
 # define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " Channel " + chan + " " + number + " :" + topic + "\r\n")
 # define RPL_LISTEND(nickname) (":localhost 323 " + nickname + " :End of /LIST\r\n")
+
 
 // =============================================================================
 // PART MESSAGES ===============================================================
@@ -92,20 +94,25 @@
 # define RPL_PART(user_id, chan_name, msg) (user_id + " PART " + chan_name + " :" + msg + "\r\n")
 // # define RPL_PART2(user_id, chan_name, msg) (user_id + " PART " + chan_name + " :" + msg + "\r\n")
 
+
 // =============================================================================
 // INVITE MESSAGES ==============================================================
 # define ERR_USERONCHANNEL(nick, chan) (":localhost 443 " + nick + " " + chan + " :is already on channel\r\n")
 # define RPL_INVITING(nick, chan) ("INVITE " + nick + " " + chan + "\r\n")
 # define INVITATION(nick, user, client_nick, chan) (":" + nick + "!" + user +"@localhost INVITE " + client_nick + " " + chan + "\r\n")
+
+
 // =============================================================================
 // KICK MESSAGES ==============================================================
 # define RPL_KICK(nick, user, chan, client_kick, reason) (":" + nick + "!" + user + "@localhost KICK " + chan + " " + client_kick + " :" + reason + "\r\n")
+
 
 // =============================================================================
 // SERVER OPERATOR MESSAGES ===========================================================
 # define ERR_NOOPERHOST(nickname) ("491 " + nickname + " :No O-lines for your host\r\n")
 # define RPL_YOUREOPER(nickname) ("381 " + nickname + " :You are now an IRC operator\r\n")
 # define ERR_NOPRIVILEGES(nickname) ("481 " + nickname + " :Permission Denied- You're not an IRC operator\r\n")
+
 
 // =============================================================================
 // MODE MESSAGES ===========================================================

@@ -14,7 +14,14 @@
    requesting it.  If the <topic> parameter is an empty string, the
    topic for that channel will be removed.
 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+void
+Client::_check_topic_len()
+{
+	if (_parsed_cmd[2].size() >= 307)
+		_parsed_cmd[2].resize(307);
+}
 
 void
 Client::topic()
@@ -49,6 +56,7 @@ Client::topic()
 			if (_parsed_cmd.size() > 2)
 			{
 				// for(size_t i = 2; i < _parsed_cmd.size(); i++)
+				_check_topic_len();
 				chan->second._topic = _parsed_cmd[2];
 				// chan->second._topic = chan->second._topic + " " + _parsed_cmd[i];
 				// chan->second._topic.erase(0, 1);
