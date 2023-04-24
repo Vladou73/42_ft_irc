@@ -25,11 +25,12 @@ Client::join()
             	_msg_buffer += ERR_INVALIDCHANNAME(*it);
                 continue;
             }
-
             //Si le channel n'existe pas encore, le crée
             std::map<std::string, Channel>::iterator end = _server->_channels.end();
             if (_server->_channels.find(*it) == end)
             {
+                if ((*it).size() >= 64)
+                    (*it).resize(64);
                 std::string	mess_op = "You are the Operator of the Channel : " + *it + "\r\n";
                 Channel channel(*it);
                 channel._id_operators.push_back(_client_id);

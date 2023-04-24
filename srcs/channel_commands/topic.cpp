@@ -24,6 +24,13 @@ Client::_check_topic_len()
 }
 
 void
+Client::_check_topic_len()
+{
+	if (_parsed_cmd[2].size() >= 307)
+		_parsed_cmd[2].resize(307);
+}
+
+void
 Client::topic()
 {
     if (_parsed_cmd.size() == 1)
