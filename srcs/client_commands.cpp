@@ -35,7 +35,6 @@ Client::pass()
     _data_connexion.push_back(_parsed_cmd[1]);
 }
 
-//TODO add the following in check_nick
 /*
 nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
 Nicknames are non-empty strings with the following restrictions:
@@ -47,12 +46,23 @@ They SHOULD NOT contain any dot character ('.', 0x2E).
 
 */
 
+//TODO we take off space so the nick doesnt have any, is it a problem ?
+bool
+Client::_forbiden_nick()
+{
+	if (_parsed_cmd[1].find('.') != std::string::npos ||_parsed_cmd[1].find(',') != std::string::npos || _parsed_cmd[1].find('*') != std::string::npos || _parsed_cmd[1].find('?') != std::string::npos || _parsed_cmd[1].find('!') != std::string::npos || _parsed_cmd[1].find('@') != std::string::npos ||_parsed_cmd[1].find(' ') != std::string::npos || _parsed_cmd[1].size() >= 9)
+		return (true);
+	if (_parsed_cmd[1][0] == '$' || _parsed_cmd[1][0] == '#')
+		return (true);
+	return(false);
+}
+
 bool
 Client::check_nick()
 {
 	std::string tmp;
 
-	if(_parsed_cmd[1].size() >= 9)
+	if(_forbiden_nick() == true)
 	{
 		_msg_buffer +=  ERR_ERRONEUSNICKNAME(_parsed_cmd[1]);
 		return false;
