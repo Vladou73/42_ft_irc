@@ -35,7 +35,7 @@
 # define RPL_YOURHOST(nickname) (":localhost 002 " + nickname + " :Your host is ircserv (localhost), running version1.1\r\n")
 # define RPL_CREATED(nickname, datetime) (":localhost 003 " + nickname + " :This server was created " + datetime + "\r\n")
 # define RPL_MYINFO(nickname, user_modes, chan_modes) (":localhost 004 " + nickname + " ircserv 1.1 " + "USERMODES=" + user_modes + " " + chan_modes + "\r\n")
-# define RPL_ISUPPORT(nickname) (":localhost 005 " + nickname + " CHANNELLEN=32 NICKLEN=9 TOPICLEN=307 :are supported by this server\r\n")
+# define RPL_ISUPPORT(nickname) (":localhost 005 " + nickname + " CHANNELLEN=64 NICKLEN=9 TOPICLEN=307 :are supported by this server\r\n")
 
 
 // =============================================================================
