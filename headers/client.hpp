@@ -97,6 +97,7 @@ public:
 	
 
 private:
+	void										_check_topic_len();
 	bool										_forbiden_nick();
 	bool										_check_user();
 	std::map<int, Client>::iterator				_nick_exist();
