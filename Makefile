@@ -8,6 +8,7 @@ SRCS =	srcs/main.cpp\
 		srcs/channel.cpp\
 		srcs/channel_commands/join.cpp\
     	srcs/channel_commands/privmsg.cpp\
+		srcs/channel_commands/notice.cpp\
 		srcs/channel_commands/part.cpp\
 		srcs/channel_commands/topic.cpp\
 		srcs/channel_commands/list.cpp\

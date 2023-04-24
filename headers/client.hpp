@@ -93,11 +93,12 @@ public:
 	void	mode();
 	void	kick();
 	void	invite();
+	void	notice();
 	
 
 private:
-	bool	_forbiden_nick();
-	bool	_check_user();
+	bool										_forbiden_nick();
+	bool										_check_user();
 	std::map<int, Client>::iterator				_nick_exist();
 	std::map<std::string, Channel>::iterator	_channel_exist();
 
