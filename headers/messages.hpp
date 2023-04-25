@@ -42,7 +42,7 @@
 
 // =============================================================================
 // PONG MESSAGES ===============================================================
-# define RPL_PONG(token) (":localhost PONG ircserv " + token + "\r\n")
+# define RPL_PONG(nick, username, token) (":" + nick + "!" + username + "@localhost PONG ircserv " + token + "\r\n")
 
 
 // =============================================================================

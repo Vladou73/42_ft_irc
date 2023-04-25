@@ -5,7 +5,6 @@
 
 int main (int ac, char **av)
 {
-    // char *dt = ctime(&(_datetime));
     if (ac != 3)
     {
         std::cout << "Please run the executable as follow : /ircserv <port> <password>" << std::endl;

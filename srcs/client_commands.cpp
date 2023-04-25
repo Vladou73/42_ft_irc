@@ -22,7 +22,7 @@ Client::ping()
     if (_parsed_cmd.size() == 1)
         _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PING");
     else if (_connected == true)
-        _msg_buffer += RPL_PONG(_parsed_cmd[1]);
+        _msg_buffer += RPL_PONG(_nick, _user, _parsed_cmd[1]);
 }
 
 void
