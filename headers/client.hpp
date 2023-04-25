@@ -101,6 +101,7 @@ private:
 	void										_check_topic_len();
 	bool										_forbiden_nick();
 	bool										_check_user();
+	std::string									_mess_trunc();
 	std::map<int, Client>::iterator				_nick_exist();
 	std::map<std::string, Channel>::iterator	_channel_exist();
 

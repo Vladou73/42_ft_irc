@@ -22,6 +22,17 @@ Client::_channel_exist()
 	return (end);
 }
 
+//TODO si le mess est resize, faut il ajouter /r/n ?
+std::string
+Client::_mess_trunc()
+{
+	std::string mess;
+	if (_parsed_cmd[2].size() >= 510)
+		_parsed_cmd[2].resize(510);
+	mess = _parsed_cmd[2];
+	return (mess);
+}
+
 void
 Client::privmsg()
 {
@@ -37,7 +48,7 @@ Client::privmsg()
 				_msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
 			else 
 			{
-				mess = _parsed_cmd[2];
+				mess = _mess_trunc();
 				std::map<int, Client *>	::iterator it_clients_chan = it_chan->second._clients.begin();
 				for (; it_clients_chan != it_chan->second._clients.end(); it_clients_chan++)
 					it_clients_chan->second->_msg_buffer += RPL_PRIVMSG(_nick, _user, _parsed_cmd[1], mess);
@@ -45,7 +56,7 @@ Client::privmsg()
 		}
 		else
 		{
-			mess = _parsed_cmd[2];
+			mess = _mess_trunc();
 			std::map<int, Client>::iterator it = _nick_exist();
 			if (it == _server->_clients.end())
 				_msg_buffer += ERR_NOSUCHNICK(_nick, _parsed_cmd[1]);
@@ -54,6 +65,7 @@ Client::privmsg()
 		}
 	}
 }
+
 
 void
 Client::msg()
@@ -70,7 +82,7 @@ Client::msg()
 				_msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
 			else 
 			{
-				mess = _parsed_cmd[2];
+				mess = _mess_trunc();
 				std::map<int, Client *>	::iterator it_clients_chan = it_chan->second._clients.begin();
 				for (; it_clients_chan != it_chan->second._clients.end(); it_clients_chan++)
 					it_clients_chan->second->_msg_buffer += RPL_MSG(_nick, _user, _parsed_cmd[1], mess);
@@ -78,7 +90,7 @@ Client::msg()
 		}
 		else
 		{
-			mess = _parsed_cmd[2];
+			mess = _mess_trunc();
 			std::map<int, Client>::iterator it = _nick_exist();
 			if (it == _server->_clients.end())
 				_msg_buffer += ERR_NOSUCHNICK(_nick, _parsed_cmd[1]);
