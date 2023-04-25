@@ -35,7 +35,7 @@
 //TODO pas sur "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
 # define RPL_WELCOME(nickname, user_id) (":localhost 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + " " + user_id + "\r\n")
 # define RPL_YOURHOST(nickname) (":localhost 002 " + nickname + " :Your host is ircserv (localhost), running version1.1\r\n")
-# define RPL_CREATED(nickname, datetime) (":localhost 003 " + nickname + " :This server was created " + datetime + "\r\n")
+# define RPL_CREATED(nickname, datetime) (":localhost 003 " + nickname + " :This server was created " + datetime )
 # define RPL_MYINFO(nickname, user_modes, chan_modes) (":localhost 004 " + nickname + " ircserv 1.1 " + "USERMODES=" + user_modes + " " + chan_modes + "\r\n")
 # define RPL_ISUPPORT(nickname) (":localhost 005 " + nickname + " CHANNELLEN=64 NICKLEN=9 TOPICLEN=307 :are supported by this server\r\n")
 
@@ -47,10 +47,11 @@
 
 // =============================================================================
 // PRIVATE MESSAGES ============================================================
-# define ERR_NOSUCHNICK(username, target) (":localhost 401 " + username + " " + target + " :No such nick\r\n")
+# define ERR_NOSUCHNICK(nick, target) (":localhost 401 " + nick + " " + target + " :No such nick\r\n")
 # define ERR_NORECIPIENT(nickname) (":localhost 411 " + nickname + " :No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(nickname) (":localhost 412 " + nickname + " :No text to send\r\n")
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " :" + message + "\r\n")
+# define RPL_MSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost MSG " + target + " :" + message + "\r\n")
 # define RPL_NOTICE(nick, username, target, message) (":" + nick + "!" + username + "@localhost NOTICE " + target + " :" + message + "\r\n")
 
 

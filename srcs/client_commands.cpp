@@ -112,7 +112,6 @@ Client::nick()
     }
 }
 
-//TODO no @ in user
 void
 Client::user()
 {

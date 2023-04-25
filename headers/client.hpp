@@ -94,6 +94,7 @@ public:
 	void	kick();
 	void	invite();
 	void	notice();
+	void	msg();
 	
 
 private:

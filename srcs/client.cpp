@@ -118,8 +118,10 @@ Client::search_command()
 		ping();
 	else if (_parsed_cmd[0]== "JOIN")
 		join();
-	else if (_parsed_cmd[0]== "PRIVMSG")
+	else if (_parsed_cmd[0]== "PRIVMSG") 
 		privmsg();
+	else if (_parsed_cmd[0]== "MSG")
+		msg();
 	else if (_parsed_cmd[0] == "QUIT")
 		quit(*this);
 	else if (_parsed_cmd[0]== "PART")
