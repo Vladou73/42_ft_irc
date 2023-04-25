@@ -140,7 +140,7 @@ Client::user()
 		_data_connexion.push_back(append);
 		_user_infos = _data_connexion[2];
 
-		_msg_buffer += RPL_WELCOME(_client_id_str, _nick);
+		_msg_buffer += RPL_WELCOME(_nick, USER_ID2(_nick, _user));
 		_msg_buffer += RPL_YOURHOST(_nick);
 		_msg_buffer += RPL_CREATED(_nick, _server->_launch_date);
 		_msg_buffer += RPL_MYINFO(_nick, "+r+o+i", "");

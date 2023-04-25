@@ -109,7 +109,7 @@ Client::channel_mode(void)
         else
         {
             std::string s = std::string() + modestring[i];
-            _msg_buffer += ERR_UNKNOWNMODE(s, channel->first);
+            _msg_buffer += ERR_UNKNOWNMODE(_nick, s, channel->first);
         }
     }
 
