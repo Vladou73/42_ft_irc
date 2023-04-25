@@ -52,12 +52,14 @@ Server::ctrl_C()
 void
 Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 {
-    //A single message is a string of characters with a maximum length of 512 characters. The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”). There is no null terminator. The 512 bytes limit includes this delimiter, meaning that a message only has space for 510 useful characters.
-	char    buff[512]; //TODO CHECK LE BUFFER SIZE check segfault que faire quand + de 512
+    //A single message is a string of characters with a maximum length of 512 characters.
+    //The end of the string is denoted by a CR-LF (Carriage Return - Line Feed) pair (i.e., “\r\n”).
+    //There is no null terminator. The 512 bytes limit includes this delimiter, meaning that a message only has space for 510 useful characters.
+	char    buff[512];
 
 	memset(&buff, 0, sizeof(buff));
     // If not the listener, we're just a regular client
-    int nbytes = recv(it->fd, buff, sizeof(buff), 0);
+    int nbytes = recv(it->fd, buff, sizeof(buff) - 1, 0);
     int sender_fd = it->fd;
 
     if (nbytes <= 0)
