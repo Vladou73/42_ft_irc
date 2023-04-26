@@ -28,16 +28,16 @@ Client::topic()
 {
     if (_parsed_cmd.size() == 1)
     {
-    	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "TOPIC").c_str();
+    	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "TOPIC");
         return ;
     }
+	//TODO j'ai change l'ordre pour eviter le segfault
     if (_connected == true)
 	{
 		std::map<std::string, Channel>::iterator chan = _server->_channels.find(_parsed_cmd[1]);
 		std::string chan_name = chan->first;
-
 		if (check_channel_name(_parsed_cmd[1]) == false)
-		{
+		{ 	
 			//TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
             _msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
 			// _msg_buffer += ERR_INVALIDCHANNAME(_parsed_cmd[1]);
