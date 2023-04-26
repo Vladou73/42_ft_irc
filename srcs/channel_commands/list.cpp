@@ -40,7 +40,9 @@ Client::list()
 			{
 				if (check_channel_name(*it) == false)
 				{
-					_msg_buffer += ERR_INVALIDCHANNAME(*it);
+					 //TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
+                	_msg_buffer += ERR_NOSUCHCHANNEL(_nick, *it);
+					// _msg_buffer += ERR_INVALIDCHANNAME(*it);
 					continue;
 				}
 				if (_server->_channels.find(*it) == _server->_channels.end())

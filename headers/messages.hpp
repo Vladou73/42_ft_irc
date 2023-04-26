@@ -85,9 +85,8 @@
 
 // ==============================================================================
 // LIST MESSAGES ================================================================
-# define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users Name\r\n")
-//TODO enlever "Channel" ?  "<client> <channel> <client count> :<topic>"
-# define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " Channel " + chan + " " + number + " :" + topic + "\r\n")
+# define RPL_LISTSTART(nickname) (":localhost 321 " + nickname + " Channel :Users  Name\r\n")
+# define RPL_LIST(nickname, chan, number, topic) (":localhost 322 " + nickname + " " + chan + " " + number + " :" + topic + "\r\n")
 # define RPL_LISTEND(nickname) (":localhost 323 " + nickname + " :End of /LIST\r\n")
 
 
