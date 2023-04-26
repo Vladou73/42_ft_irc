@@ -25,7 +25,9 @@ Client::part()
             std::string chan_name = *it;
             if (check_channel_name(chan_name) == false)
             {
-            	_msg_buffer += ERR_INVALIDCHANNAME(chan_name);
+                 //TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
+                _msg_buffer += ERR_NOSUCHCHANNEL(_nick, chan_name);
+            	// _msg_buffer += ERR_INVALIDCHANNAME(chan_name);
                 continue;
             }
 

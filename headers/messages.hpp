@@ -23,8 +23,10 @@
 // =============================================================================
 // NICK MESSAGES ===============================================================
 # define ERR_NONICKNAMEGIVEN ":localhost 431 :No nickname given\r\n"
-# define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " " + nickname + " :Erroneus nickname\r\n")
-# define ERR_NICKNAMEINUSE(nickname) (":localhost 433 " + nickname + " " + nickname + " :Nickname is already in use\r\n")
+# define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneus nickname\r\n")
+# define ERR_NICKNAMEINUSE(nickinuse) (":localhost 433 " + nickinuse + " :Nickname is already in use\r\n")
+# define ERR_ERRONEUSNICKNAME_CO(nickname, erronusnick) (":localhost 432 " + nickname + " " + erronusnick + " :Erroneus nickname\r\n")
+# define ERR_NICKNAMEINUSE_CO(nickname, othernick) (":localhost 433 " + nickname + " " + othernick + " :Nickname is already in use\r\n")
 
 
 // =============================================================================
@@ -91,7 +93,7 @@
 
 // =============================================================================
 // PART MESSAGES ===============================================================
-# define ERR_NOSUCHCHANNEL(nickname, chan_name) ("403 " + nickname + " " + chan_name + " :No such channel\r\n")
+# define ERR_NOSUCHCHANNEL(nickname, chan_name) (":localhost 403 " + nickname + " " + chan_name + " :No such channel\r\n")
 //TODO est ce que cette erreur existe (pas trouve)
 # define ERR_INVALIDCHANNAME(chan_name) (chan_name + ": this channel name is invalid \r\n")
 

@@ -38,7 +38,9 @@ Client::topic()
 
 		if (check_channel_name(_parsed_cmd[1]) == false)
 		{
-			_msg_buffer += ERR_INVALIDCHANNAME(_parsed_cmd[1]);
+			//TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
+            _msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
+			// _msg_buffer += ERR_INVALIDCHANNAME(_parsed_cmd[1]);
 			return ;
 		}
 		if (chan == _server->_channels.end())

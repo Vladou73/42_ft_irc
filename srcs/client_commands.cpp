@@ -55,9 +55,11 @@ Client::pass()
 bool
 Client::_forbiden_nick()
 {
+	std::cout << "_parsed_cmd[1] = " << _parsed_cmd[1] << std::endl;
+	std::cout << "_data_connexion[1] = " << _data_connexion[1] << std::endl;
 	if (_parsed_cmd[1].find('.') != std::string::npos ||_parsed_cmd[1].find(',') != std::string::npos || _parsed_cmd[1].find('*') != std::string::npos || _parsed_cmd[1].find('?') != std::string::npos || _parsed_cmd[1].find('!') != std::string::npos || _parsed_cmd[1].find('@') != std::string::npos ||_parsed_cmd[1].find(' ') != std::string::npos || _parsed_cmd[1].size() >= 9)
 		return (true);
-	if (_parsed_cmd[1][0] == '$' || _parsed_cmd[1][0] == '#')
+	if (_parsed_cmd[1][0] == ':' || _parsed_cmd[1][0] == '$' || _parsed_cmd[1][0] == '#')
 		return (true);
 	return(false);
 }
@@ -69,7 +71,10 @@ Client::check_nick()
 
 	if(_forbiden_nick() == true)
 	{
-		_msg_buffer +=  ERR_ERRONEUSNICKNAME(_parsed_cmd[1]);
+		if (_connected == true)
+			_msg_buffer +=  ERR_ERRONEUSNICKNAME_CO(_nick, _parsed_cmd[1]);
+		else
+			_msg_buffer +=  ERR_ERRONEUSNICKNAME(_parsed_cmd[1]);
 		return false;
 	}
 
@@ -78,7 +83,10 @@ Client::check_nick()
 	{
 		if (it->second.getNick() == _parsed_cmd[1])
 		{
-			_msg_buffer += ERR_NICKNAMEINUSE(_parsed_cmd[1]);
+			if (_connected == true)
+				_msg_buffer += ERR_NICKNAMEINUSE_CO(_nick, _parsed_cmd[1]);
+			else
+				_msg_buffer += ERR_NICKNAMEINUSE(_parsed_cmd[1]);
 			return (false);
 		}
 	}
