@@ -25,9 +25,7 @@ Client::part()
             std::string chan_name = *it;
             if (check_channel_name(chan_name) == false)
             {
-                 //TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
                 _msg_buffer += ERR_NOSUCHCHANNEL(_nick, chan_name);
-            	// _msg_buffer += ERR_INVALIDCHANNAME(chan_name);
                 continue;
             }
 
@@ -56,6 +54,7 @@ Client::part()
                         break;
                     }
                 }
+                chan->second._first_connexion.erase(chan->second._first_connexion.find(_client_id));
                 _msg_buffer += RPL_PART(USER_ID2(_nick, _user), chan_name, part_msg);
 
                 //msg aux autres clients du channel
