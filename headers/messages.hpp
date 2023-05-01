@@ -49,7 +49,7 @@
 
 // =============================================================================
 // PRIVATE MESSAGES ============================================================
-# define ERR_NOSUCHNICK(nick, target) (":localhost 401 " + nick + " " + target + " :No such nick\r\n")
+# define ERR_NOSUCHNICK(nick, target) (":localhost 401 " + nick + " " + target + " :No such nick/channel\r\n")
 # define ERR_NORECIPIENT(nickname) (":localhost 411 " + nickname + " :No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(nickname) (":localhost 412 " + nickname + " :No text to send\r\n")
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " :" + message + "\r\n")
@@ -110,6 +110,7 @@
 
 // =============================================================================
 // KICK MESSAGES ==============================================================
+# define ERR_USERNOTINCHANNEL(nick, client_kick, channel) (":localhost 341 " + nick + " " + client_kick + " " +  channel + " :They aren't on that channel \r\n")
 # define RPL_KICK(nick, user, chan, client_kick, reason) (":" + nick + "!" + user + "@localhost KICK " + chan + " " + client_kick + " :" + reason + "\r\n")
 
 

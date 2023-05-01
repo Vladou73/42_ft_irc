@@ -134,7 +134,8 @@ Server::_handle_pollout(int fd)
     if (!_clients[fd].getMsgBuffer().empty())
     {
         std::cout << "fd = " << fd << std::endl;
-        send(fd, _clients[fd].getMsgBuffer().c_str(), _clients[fd].getMsgBuffer().size(), 0);
+        std::string truncated = mess_trunc(_clients[fd].getMsgBuffer());
+        send(fd, truncated.c_str(), truncated.size(), 0);
         _clients[fd].clearMsgBuffer();
         if (_clients[fd].getSocketConnexion() == false)
         {

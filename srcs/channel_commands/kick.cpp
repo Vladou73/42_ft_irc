@@ -38,7 +38,7 @@ Client::kick()
 				int fd_client = search_for_client_by_nick_in_channel(*it_client, chan->second._clients);
 				if (fd_client == -1)
                 {
-                    _msg_buffer += ERR_NOTONCHANNEL(*it_client, *it);
+                    _msg_buffer += ERR_USERNOTINCHANNEL(_nick ,*it_client, *it);
 					continue ;
                 }
 				std::map<int, Client *>::iterator iter = chan->second._clients.begin();

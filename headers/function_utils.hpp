@@ -18,4 +18,5 @@ bool                        check_on_chan(std::vector<std::string> canals, std::
 int                         search_for_client_by_nick(std::string nick, std::map<int, Client> clients);
 bool                        client_is_chann_oper(int client_id, std::vector<int> channel_operators);
 int                         search_for_client_by_nick_in_channel(std::string nick, std::map<int, Client *> clients);
+std::string                 mess_trunc(std::string to_trunc);
 #endif

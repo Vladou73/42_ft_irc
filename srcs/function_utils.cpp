@@ -84,3 +84,17 @@ client_is_chann_oper(int client_id, std::vector<int> channel_operators)
     }
 	return false;
 }
+
+
+
+//TODO si le mess est resize, faut il ajouter /r/n ?
+std::string
+mess_trunc(std::string to_trunc)
+{
+	if (to_trunc.size() >= 510)
+	{
+		to_trunc.resize(510);
+		to_trunc += "\r\n";
+	}
+	return (to_trunc);
+}
