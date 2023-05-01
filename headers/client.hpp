@@ -69,7 +69,7 @@ public:
 	void	search_command();
 	void	clear_client();
 	void	delete_client();
-	void	delete_client_from_chans(std::string);
+	void	delete_client_from_chans();
 	void	channel_mode();
 	void	user_mode();
 

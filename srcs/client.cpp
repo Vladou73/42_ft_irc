@@ -217,20 +217,20 @@ Client::parse_command(std::string command)
 // }
 
 void
-Client::delete_client_from_chans(std::string mess)
+Client::delete_client_from_chans()
 {
-	(void)mess;
 	for (std::map<std::string, Channel>::iterator chan = _server->_channels.begin(); chan != _server->_channels.end(); chan++)
 	{
 		if (chan->second._clients.find(_client_id) != chan->second._clients.end())
 		{
 			chan->second._clients.erase(_client_id);
+			chan->second._first_connexion.erase(chan->second._first_connexion.find(_client_id));
 			//msg aux autres clients du channel
 			for (std::map<int, Client*>::iterator client = _server->_channels.find(chan->first)->second._clients.begin();
 				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
 			{
 				std::cout << client->first << "\n";
-				_msg_buffer += RPL_QUIT(USER_ID2(_nick, _user), _quit_msg);
+				client->second->_msg_buffer += RPL_QUIT(USER_ID2(_nick, _user), _quit_msg);
 			}
 		}
 	}
@@ -240,7 +240,6 @@ void
 Client::delete_client()
 {
 	std::cout << "DELETE CLIENT FUNC\n";
-	std::string mess = "I QUIT MOTHERFUCKERS";
 	std::vector<struct pollfd>::iterator it = _server->_pfds.begin();
 	std::vector<struct pollfd>::iterator end = _server->_pfds.end();
 	for (; it != end; it++)
@@ -248,6 +247,6 @@ Client::delete_client()
 		if (it->fd == _client_id)
 			_server->_pfds.erase(it);
 	}
-	delete_client_from_chans(mess);
+	delete_client_from_chans();
 	_server->_clients.erase(_client_id);
 }

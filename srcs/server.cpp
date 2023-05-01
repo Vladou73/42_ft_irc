@@ -64,7 +64,7 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
 
     if (nbytes <= 0)
     {
-        if (nbytes == 0) // Got connection closed by client. Ici gestion du ctrl+C
+        if (nbytes == 0) // Got connection closed by client. Ici gestion du ctrl+C d'un client
         {
             std::cout << "pollServer: socket #" << sender_fd << " hung up" << std::endl; // Connection closed
             if (!_clients[sender_fd].getUser().empty())
@@ -192,20 +192,16 @@ Server::_poll_loop(void)
             }
             else if (it->revents & POLLOUT) // "Alert me when I can send() data to this socket without blocking."
                 _handle_pollout(it->fd);
-            else if (it->revents & POLLHUP) // POLLHUP :Déconnexion (uniquement en sortie).
+            // POLLERR :Condition d'erreur (uniquement en sortie).
+            // POLLNVAL :Requête invalide : fd nest pas ouvert (uniquement en sortie)
+            // POLLHUP :Déconnexion (uniquement en sortie).
+            else if (it->revents & POLLHUP || it->revents & POLLERR || it->revents & POLLNVAL)
             {
                 std::cout << "Client at socket #" << it->fd << " disconnected." << std::endl;
                 _clients[it->fd].socketDisconnect();
                 _clients[it->fd].delete_client();
             }
-            // POLLERR :Condition d'erreur (uniquement en sortie).
-            // POLLNVAL :Requête invalide : fd nest pas ouvert (uniquement en sortie)
-            else if (it->revents & POLLERR || it->revents & POLLNVAL)
-            {
-                std::cout << "Invalid event on socket #" << it->fd << "." << std::endl;
-                _clients[it->fd].socketDisconnect();
-                _clients[it->fd].delete_client();
-            }
+
         }
         _pfds.insert(_pfds.end(), new_pollfds.begin(), new_pollfds.end()); // Add the range of NEW_pollfds in poll_fds (helps recalculating poll_fds.end() in the for loop)
     }
