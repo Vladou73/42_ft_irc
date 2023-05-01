@@ -31,7 +31,6 @@ Client::topic()
     	_msg_buffer += ERR_NEEDMOREPARAMS(_nick, "TOPIC");
         return ;
     }
-	//TODO j'ai change l'ordre pour eviter le segfault
     if (_connected == true)
 	{
 		std::map<std::string, Channel>::iterator chan = _server->_channels.find(_parsed_cmd[1]);

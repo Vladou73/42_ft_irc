@@ -32,6 +32,11 @@ Client::names()
 				std::map<int, Client *>::iterator end = chan->second._clients.end();
 				for(; it != end; it++)
 				{
+					if (it->second->_modes.find("i") != it->second->_modes.end())
+					{
+						if (search_for_client_by_nick_in_channel(_nick, chan->second._clients) == -1)
+							continue ;
+					}
 					if (client_is_chann_oper(it->second->_client_id, chan->second._id_operators) == true)
 					{
 						std::string temp = "@" + it->second->_nick;
@@ -52,7 +57,7 @@ Client::names()
 			std::map<int, Client>::iterator end = _server->_clients.end();
 			for (; it != end; it++)
 			{
-				if (it->second._canals.size() == 0)
+				if (it->second._canals.size() == 0 && it->second._modes.find("i") == it->second._modes.end())
 				{
 					clients_list = clients_list + " " + it->second._nick;
 					if (clients_list[0] == ' ')
@@ -69,15 +74,23 @@ Client::names()
         	std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
         	for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
 			{
-				if (check_channel_name(*it) == false)
-					continue;
-				else if (_server->_channels.find(*it) == _server->_channels.end())
+				// if (check_channel_name(*it) == false)
+				// 	continue;
+				if (_server->_channels.find(*it) == _server->_channels.end())
+				{
+					_msg_buffer += RPL_ENDOFNAMES(_nick, *it);
 					continue ;
+				}
 				std::map<std::string, Channel>::iterator chan = _server->_channels.find(*it);
 				std::map<int, Client *>::iterator it_client = chan->second._clients.begin();
 				std::map<int, Client *>::iterator end_client = chan->second._clients.end();
 				for(; it_client != end_client; it_client++)
 				{
+					if (it_client->second->_modes.find("i") != it_client->second->_modes.end())
+					{
+						if (search_for_client_by_nick_in_channel(_nick, chan->second._clients) == -1)
+							continue ;
+					}
 					if (client_is_chann_oper(it_client->second->_client_id, chan->second._id_operators) == true)
 					{
 						std::string temp = "@" + it_client->second->_nick;
