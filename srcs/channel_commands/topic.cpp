@@ -35,19 +35,12 @@ Client::topic()
     if (_connected == true)
 	{
 		std::map<std::string, Channel>::iterator chan = _server->_channels.find(_parsed_cmd[1]);
-		std::string chan_name = chan->first;
-		if (check_channel_name(_parsed_cmd[1]) == false)
-		{ 	
-			//TODO j'ai change pour ce message d'erreur car INVALIDCHANNANE n'existe pas
-            _msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
-			// _msg_buffer += ERR_INVALIDCHANNAME(_parsed_cmd[1]);
-			return ;
-		}
 		if (chan == _server->_channels.end())
 		{
-	    	_msg_buffer += ERR_NOSUCHCHANNEL(_nick, chan_name);
+	    	_msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
 			return ;
 		}
+		std::string chan_name = chan->first;
 		if (check_on_chan(_canals, _parsed_cmd[1]) == false)
 		{
 	    	_msg_buffer += ERR_NOTONCHANNEL(_nick, chan_name);
@@ -57,12 +50,14 @@ Client::topic()
 		{
 			if (_parsed_cmd.size() > 2)
 			{
-				// for(size_t i = 2; i < _parsed_cmd.size(); i++)
 				_check_topic_len();
 				chan->second._topic = _parsed_cmd[2];
-				// chan->second._topic = chan->second._topic + " " + _parsed_cmd[i];
-				// chan->second._topic.erase(0, 1);
 			}
+		}
+		else if (_parsed_cmd.size() > 2)
+		{
+			_msg_buffer += ERR_CHANOPRIVSNEEDED(_nick, chan_name);
+			return ;
 		}
 		if (chan->second._topic.size() == 0)
 		{
