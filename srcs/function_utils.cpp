@@ -88,10 +88,10 @@ client_is_chann_oper(int client_id, std::vector<int> channel_operators)
 std::string
 mess_trunc(std::string to_trunc)
 {
-	if (to_trunc.size() >= 510)
+	if (to_trunc.size() > 512)
 	{
-		to_trunc.resize(510);
-		to_trunc += "\r\n";
+		to_trunc.resize(512);
+		// to_trunc += "\r\n";
 	}
 	return (to_trunc);
 }

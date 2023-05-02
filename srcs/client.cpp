@@ -95,9 +95,14 @@ Client::clearMsgBuffer()
 	_msg_buffer.clear();
 }
 void
-Client::setMsgBuffer(std::string msg)
+Client::addMsgBuffer(std::string msg)
 {
 	_msg_buffer += msg;
+}
+void
+Client::setMsgBuffer(std::string msg)
+{
+	_msg_buffer = msg;
 }
 // =============================================================================
 // METHODS =====================================================================
@@ -118,7 +123,7 @@ Client::search_command()
 		ping();
 	else if (_parsed_cmd[0]== "JOIN")
 		join();
-	else if (_parsed_cmd[0]== "PRIVMSG") 
+	else if (_parsed_cmd[0]== "PRIVMSG")
 		privmsg();
 	else if (_parsed_cmd[0]== "MSG")
 		msg();

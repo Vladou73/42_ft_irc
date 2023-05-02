@@ -57,6 +57,7 @@ public:
 	std::string					getMsgBuffer();
 	void						clearMsgBuffer();
 	void						setMsgBuffer(std::string);
+	void						addMsgBuffer(std::string msg);
 
     // =============================================================================
 	// METHODS =====================================================================
@@ -102,7 +103,7 @@ public:
 	void	invite();
 	void	notice();
 	void	msg();
-	
+
 
 
 
