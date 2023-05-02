@@ -207,7 +207,6 @@ Server::_poll_loop(void)
     }
 }
 
-
 void
 Server::_get_listener_socket(void)
 {

@@ -31,7 +31,7 @@
 
 // =============================================================================
 // WELCOME MESSAGES ============================================================
-# define WELCOME_ART "******************************************************************\n               You are now connected to the server!\n******************************************************************\r\n"
+# define WELCOME_ART "****************************************************\n      You are now connected to the server!\n****************************************************\r\n"
 # define SEPARATOR "-------------------------------------------------\r\n"
 # define SEPARATOR_END "-------------------------------------------------\r\n\n"
 //TODO pas sur "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
@@ -125,11 +125,10 @@
 // MODE MESSAGES ===========================================================
 # define ERR_USERSDONTMATCH(nickname) (":localhost 502 " + nickname + " :Can't change or view mode for other users\r\n")
 # define RPL_UMODEIS(nickname, modes) (":localhost 221 " + nickname + " " + modes + "\r\n")
-//TODO  enlever mode ? "<client> :Unknown MODE flag"
-# define ERR_UMODEUNKNOWNFLAG(nickname, mode) (":localhost 501 " + nickname + " :Unknown MODE flag " + mode + "\r\n")
+# define ERR_UMODEUNKNOWNFLAG(nickname) (":localhost 501 " + nickname + " :Unknown MODE flag\r\n")
 # define RPL_CHANNELMODEIS(nickname, channel, modes) (":localhost 324 " + nickname + " " + channel + " " + modes + "\r\n")
 # define ERR_CHANOPRIVSNEEDED(nickname, channel) (":localhost 482 " + nickname + " " + channel + " :You're not channel operator\r\n")
 //TODO  enlever channel "<client> <modechar> :is unknown mode char to me"
-# define ERR_UNKNOWNMODE(nick, modechar, channel) (":localhost 472 " + nick + " " + modechar + " :is unknown mode char for " + channel + "\r\n")
+# define ERR_UNKNOWNMODE(nick, modechar) (":localhost 472 " + nick + " " + modechar + " :is unknown mode char for\r\n")
 
 #endif

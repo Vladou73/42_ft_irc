@@ -22,17 +22,6 @@ Client::_channel_exist()
 	return (end);
 }
 
-//TODO si le mess est resize, faut il ajouter /r/n ?
-// std::string
-// Client::_mess_trunc()
-// {
-// 	std::string mess;
-// 	if (_parsed_cmd[2].size() >= 510)
-// 		_parsed_cmd[2].resize(510);
-// 	mess = _parsed_cmd[2];
-// 	return (mess);
-// }
-
 void
 Client::privmsg()
 {
@@ -65,7 +54,6 @@ Client::privmsg()
 		}
 	}
 }
-
 
 void
 Client::msg()
