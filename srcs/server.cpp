@@ -16,7 +16,6 @@ Server::Server(char **av) : _pwd(av[2]), _listener(0),
     _instance = this;
     _parse_conf_file();
     _get_listener_socket();
-	_poll_loop();
 }
 
 
@@ -72,13 +71,13 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             if (!_clients[sender_fd].getUser().empty())
                 _count_clients--;
            std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
-        } 
+        }
         else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
         _clients[sender_fd].setQuitMsg("abrupt client aborting");
         _clients[sender_fd].setMsgBuffer(ERROR(_clients[sender_fd].getQuitMsg()));
         // send(sender_fd, ERROR(_clients[sender_fd].getQuitMsg()).c_str(), ERROR(_clients[sender_fd].getQuitMsg()).size(), 0);
-        
+
         int temp = it->fd;
         _clients[sender_fd].delete_client();
         close(temp);
@@ -177,7 +176,7 @@ Server::_poll_loop(void)
         if (poll_count == -1)
         {
             perror("poll");
-            exit(1);
+            return;
         }
         std::vector<struct pollfd>::iterator end = _pfds.end();
         for (std::vector<struct pollfd>::iterator it = _pfds.begin(); it != end; it++)
@@ -207,6 +206,7 @@ Server::_poll_loop(void)
         }
         _pfds.insert(_pfds.end(), new_pollfds.begin(), new_pollfds.end()); // Add the range of NEW_pollfds in poll_fds (helps recalculating poll_fds.end() in the for loop)
     }
+
 }
 
 void
@@ -224,7 +224,7 @@ Server::_get_listener_socket(void)
     if ((rv = getaddrinfo(NULL, _server_port, &hints, &ai)) != 0)
     {
         std::cerr << gai_strerror(rv);
-        exit(1);
+        return;
     }
     // Boucle pour trouver une adresse qui fonctionne avec l'ouverture du socket
     for(temp = ai; temp != NULL; temp = temp->ai_next)
@@ -250,7 +250,7 @@ Server::_get_listener_socket(void)
     if (temp == NULL || listen(_listener, SOMAXCONN) == -1)
     {
         std::cerr << "error getting listening socket\n";
-        exit (1);
+        return;
     }
 }
 
@@ -271,7 +271,7 @@ Server::_parse_conf_file()
     std::string line;
     std::string word;
 	while (std::getline(in_file, line)) {
-        
+
         std::stringstream	strst(line);
         if (line.substr(0, 5) != "oper ")
             continue;

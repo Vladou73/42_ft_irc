@@ -2,7 +2,7 @@
 #include "../headers/client.hpp"
 #include "../headers/ft_irc.hpp"
 
-int int_sign = 0; 
+int int_sign = 0;
 
 void signalHandler(int a)
 {
@@ -21,8 +21,6 @@ int main (int ac, char **av)
     signal(SIGINT, signalHandler);
 
     std::string port(av[1]);
-    std::string pwd(av[2]);
-    
     for (size_t i = 0; i < port.size(); i++)
     {
         if (!std::isdigit(port[i]))
@@ -31,8 +29,10 @@ int main (int ac, char **av)
             return (2);
         }
     }
-    Server a(av);
+    Server serv(av);
+    serv._poll_loop();
 
+    std::cout << std::endl << std::endl << "got out of poll loop" << std::endl << std::endl;
     return (0);
 }
 

@@ -44,10 +44,11 @@ public:
 
     // =============================================================================
 	// METHODS =====================================================================
-    // Return a listening socket
+
+    void    _poll_loop(void);
+
 private:
     void    _get_listener_socket(void);
-    void    _poll_loop(void);
     void    _add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size);
     void    _del_from_pfds(struct pollfd pfds[], int i, int *fd_count);
     void    _add_new_client(std::vector<struct pollfd> &);
