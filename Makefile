@@ -26,7 +26,7 @@ CC = c++
 OBJS_PATH = objects/
 OBJS = ${addprefix ${OBJS_PATH}, ${SRCS:.cpp=.o}}
 
-CFLAGS = -Wall -Werror -Wextra -std=c++98 #-fsanitize=address -g3
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 #-fsanitize=address 
 
 $(NAME_FT): $(OBJS_FT)
 	$(CXX) $(CXXFLAGS) -o $(NAME_FT) $(OBJS_FT)

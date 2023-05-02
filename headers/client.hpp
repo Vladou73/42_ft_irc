@@ -73,9 +73,16 @@ public:
 	void	channel_mode();
 	void	user_mode();
 
+private:
+	void										_check_topic_len();
+	bool										_forbiden_nick();
+	bool										_check_user();
+	std::map<int, Client>::iterator				_nick_exist();
+	std::map<std::string, Channel>::iterator	_channel_exist();
 
     // =============================================================================
 	// COMMANDS ====================================================================
+public:
 	void 	ping();
 	void 	pass();
 	void 	nick();
@@ -97,13 +104,6 @@ public:
 	void	msg();
 	
 
-private:
-	void										_check_topic_len();
-	bool										_forbiden_nick();
-	bool										_check_user();
-	// std::string									_mess_trunc();
-	std::map<int, Client>::iterator				_nick_exist();
-	std::map<std::string, Channel>::iterator	_channel_exist();
 
 
 };

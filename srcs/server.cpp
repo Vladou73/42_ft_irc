@@ -30,22 +30,24 @@ Server::~Server()
 // =============================================================================
 // MODIFIERS ===================================================================
 
-void
-Server::signalHandler(int signum)
-{
-	(void)signum;
-	ctrl_C();
-	exit(0);
-}
+// void
+// Server::signalHandler(int signum)
+// {
+// 	(void)signum;
+// 	ctrl_C();
+// 	exit(0);
+// }
 
-void
-Server::ctrl_C()
-{
-	_instance->_pfds.clear();
-	_instance->_server_opers.clear();
-	_instance->_clients.clear();
-	_instance->_channels.clear();
-}
+// void
+// Server::ctrl_C()
+// {
+// 	for (std::vector<struct pollfd>::iterator it = _instance->_pfds.begin(); it != _instance->_pfds.end(); it++)
+//         close(it->fd);
+//     _instance->_pfds.clear();
+// 	_instance->_server_opers.clear();
+// 	_instance->_clients.clear();
+// 	_instance->_channels.clear();
+// }
 
 // =============================================================================
 // METHODS =====================================================================
@@ -160,10 +162,10 @@ Server::_poll_loop(void)
         // Handle error
     }
     bool first_loop = true;
-    for(;;)
+    while (int_sign == 0)
     {
         //TODO il reste 2 still reachables avec valgrind qu on a pas reussi a virer, meme avec le signal handler avec ctrl C
-		signal(SIGINT, signalHandler);
+		// signal(SIGINT, signalHandler);
         std::vector<pollfd> new_pollfds; // tmp struct hosting potential newly-created fds
 
         if (first_loop == true)

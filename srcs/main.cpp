@@ -2,6 +2,14 @@
 #include "../headers/client.hpp"
 #include "../headers/ft_irc.hpp"
 
+int int_sign = 0; 
+
+void signalHandler(int a)
+{
+    (void) a;
+    int_sign = 1;
+    std::cout << "int_sign = " << int_sign << std::endl;
+}
 
 int main (int ac, char **av)
 {
@@ -10,6 +18,7 @@ int main (int ac, char **av)
         std::cout << "Please run the executable as follow : /ircserv <port> <password>" << std::endl;
         return (2);
     }
+    signal(SIGINT, signalHandler);
 
     std::string port(av[1]);
     std::string pwd(av[2]);

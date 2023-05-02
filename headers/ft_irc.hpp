@@ -29,6 +29,8 @@
 # include "messages.hpp"
 # include "function_utils.hpp"
 
+extern int int_sign; 
+
 struct server_oper 
 {
     std::string name;
