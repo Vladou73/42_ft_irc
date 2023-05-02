@@ -110,9 +110,6 @@ Client::setMsgBuffer(std::string msg)
 void
 Client::search_command()
 {
-	// for (std::vector<std::string>::iterator it = _parsed_cmd.begin(); it != _parsed_cmd.end(); it++)
-	// 	std::cout << *it << std::endl;
-
 	if (_parsed_cmd[0] == "PASS")
 		pass();
 	else if (_parsed_cmd[0] == "NICK")
@@ -150,7 +147,8 @@ Client::search_command()
 	else if (_parsed_cmd[0]== "NOTICE")
 		notice();
 	else
-		std::cout << "default\n";
+		return;
+		// std::cout << "default\n";
 }
 
 void
@@ -170,10 +168,7 @@ Client::parse_lines(std::string buff)
 	}
 
 	for (std::vector<std::string>::iterator it = buff_lines.begin(); it != buff_lines.end(); it++)
-	{
-		// std::cout << "'" << *it << "'" << std::endl;
 		parse_command(*it);
-	}
 }
 
 void
@@ -234,7 +229,6 @@ Client::delete_client_from_chans()
 			for (std::map<int, Client*>::iterator client = _server->_channels.find(chan->first)->second._clients.begin();
 				client != _server->_channels.find(chan->first)->second._clients.end(); client++)
 			{
-				std::cout << client->first << "\n";
 				client->second->_msg_buffer += RPL_QUIT(USER_ID2(_nick, _user), _quit_msg);
 			}
 		}
@@ -244,7 +238,6 @@ Client::delete_client_from_chans()
 void
 Client::delete_client()
 {
-	std::cout << "DELETE CLIENT FUNC\n";
 	std::vector<struct pollfd>::iterator it = _server->_pfds.begin();
 	std::vector<struct pollfd>::iterator end = _server->_pfds.end();
 	for (; it != end; it++)

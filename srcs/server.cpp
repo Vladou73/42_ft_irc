@@ -70,7 +70,7 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
             std::cout << "pollServer: socket #" << sender_fd << " hung up" << std::endl; // Connection closed
             if (!_clients[sender_fd].getUser().empty())
                 _count_clients--;
-           std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << std::endl;
+           std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << RESET << std::endl;
         }
         else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
             perror("recv");
@@ -168,8 +168,8 @@ Server::_poll_loop(void)
 
     // Redirect standard input to the socket file descriptor
     if (dup2(_listener, STDIN_FILENO) == -1) {
-        std::cout<<"Dup2 fail!\n";
-        // Handle error
+        std::cout<<"Dup2 fail!\n"; // Handle error ?
+        return;
     }
     bool first_loop = true;
     while (int_sign == 0)

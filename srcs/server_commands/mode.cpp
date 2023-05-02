@@ -63,7 +63,7 @@ void
 Client::channel_mode(void)
 {
     std::map<std::string, Channel>::iterator channel = _server->_channels.find(_parsed_cmd[1]);
- 
+
     if (_parsed_cmd.size() == 2)
     {
         _msg_buffer += RPL_CHANNELMODEIS(_nick, channel->first, "");
@@ -74,12 +74,9 @@ Client::channel_mode(void)
         _msg_buffer += ERR_CHANOPRIVSNEEDED(_nick, channel->first);
         return;
     }
-    
-    std::string modestring = _parsed_cmd[2];
-    std::cout << modestring.size() << std::endl;
 
+    std::string modestring = _parsed_cmd[2];
     if (modestring.size() != 2 || (modestring[0] != '+' && modestring[0] != '-'))
-    // if (modestring.size() != 2)
     {
         _msg_buffer += ERR_UNKNOWNMODE(_nick, modestring);
         return ;
@@ -110,7 +107,7 @@ Client::channel_mode(void)
                 {
                     channel->second._id_operators.erase(it);
                     break;
-                }                    
+                }
             }
         }
         else
@@ -132,7 +129,6 @@ Client::mode(void)
     }
     if (search_for_client_by_nick(_parsed_cmd[1], _server->_clients) == -1)
     {
-        // std::cout << "_parsed_cmd[1] = " << _parsed_cmd[1] << std::endl;
         if (_server->_channels.find(_parsed_cmd[1]) != _server->_channels.end())
         {
             channel_mode();

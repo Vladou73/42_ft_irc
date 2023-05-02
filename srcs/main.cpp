@@ -31,8 +31,6 @@ int main (int ac, char **av)
     }
     Server serv(av);
     serv._poll_loop();
-
-    std::cout << std::endl << std::endl << "got out of poll loop" << std::endl << std::endl;
     return (0);
 }
 

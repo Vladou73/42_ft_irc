@@ -55,8 +55,6 @@ Client::pass()
 bool
 Client::_forbiden_nick()
 {
-	std::cout << "_parsed_cmd[1] = " << _parsed_cmd[1] << std::endl;
-	std::cout << "_data_connexion[1] = " << _data_connexion[1] << std::endl;
 	if (_parsed_cmd[1].find('.') != std::string::npos ||_parsed_cmd[1].find(',') != std::string::npos || _parsed_cmd[1].find('*') != std::string::npos || _parsed_cmd[1].find('?') != std::string::npos || _parsed_cmd[1].find('!') != std::string::npos || _parsed_cmd[1].find('@') != std::string::npos ||_parsed_cmd[1].find(' ') != std::string::npos || _parsed_cmd[1].size() >= 9)
 		return (true);
 	if (_parsed_cmd[1][0] == ':' || _parsed_cmd[1][0] == '$' || _parsed_cmd[1][0] == '#')
@@ -90,7 +88,7 @@ Client::check_nick()
 			return (false);
 		}
 	}
-	tmp = _data_connexion[1]; 
+	tmp = _data_connexion[1];
 	if (_connected == false)
 		_nick = _data_connexion[1];
 	else
