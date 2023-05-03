@@ -24,7 +24,7 @@
 // NICK MESSAGES ===============================================================
 # define ERR_NONICKNAMEGIVEN ":localhost 431 :No nickname given\r\n"
 # define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneus nickname\r\n")
-# define ERR_NICKNAMEINUSE(nickinuse) (":localhost 433 " + nickinuse + " :Nickname is already in use\r\n")
+# define ERR_NICKNAMEINUSE(nickinuse) (":localhost 433 " + nickinuse + " " + nickinuse +" :Nickname is already in use\r\n")
 # define ERR_ERRONEUSNICKNAME_CO(nickname, erronusnick) (":localhost 432 " + nickname + " " + erronusnick + " :Erroneus nickname\r\n")
 # define ERR_NICKNAMEINUSE_CO(nickname, othernick) (":localhost 433 " + nickname + " " + othernick + " :Nickname is already in use\r\n")
 

@@ -203,7 +203,8 @@ Client::parse_command(std::string command)
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
 
-	std::cout << "_parsed_cmd[0]" << _parsed_cmd[0] << std::endl;
+	std::cout << "_parsed_cmd[0]=" << _parsed_cmd[0] << std::endl;
+	std::cout << "isconnected=" << _connected << std::endl;
 
 	search_command();
 }
