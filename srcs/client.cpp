@@ -111,7 +111,11 @@ void
 Client::search_command()
 {
 	if (_parsed_cmd[0] == "PASS")
+	{
 		pass();
+		// return;
+	}
+
 	else if (_parsed_cmd[0] == "NICK")
 		nick();
 	else if (_parsed_cmd[0] == "USER")
@@ -136,7 +140,7 @@ Client::search_command()
 	  names();
 	else if (_parsed_cmd[0]== "OPER")
 	  oper();
-	else if (_parsed_cmd[0]== "KILL")
+	else if (_parsed_cmd[0]== "KILL" || _parsed_cmd[0] == "kill")
 	  kill();
 	else if (_parsed_cmd[0]== "MODE")
 		mode();
@@ -198,6 +202,8 @@ Client::parse_command(std::string command)
 	}
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
+
+	std::cout << "_parsed_cmd[0]" << _parsed_cmd[0] << std::endl;
 
 	search_command();
 }

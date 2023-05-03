@@ -135,6 +135,7 @@ Server::_handle_pollout(int fd)
     {
         // std::string truncated = mess_trunc(_clients[fd].getMsgBuffer());
         // send(fd, truncated.c_str(), truncated.size(), 0);
+        std::cout << "buffer=" << _clients[fd].getMsgBuffer() << std::endl;
 
         //meilleure gestion des messages faisant + de 512 caracteres : envoi en plusieurs paquets via plusieurs sends
         if (_clients[fd].getMsgBuffer().size() > 512)

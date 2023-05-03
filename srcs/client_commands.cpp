@@ -28,7 +28,8 @@ Client::ping()
 void
 Client::pass()
 {
-    if (_parsed_cmd.size() == 1)
+    std::cout << "_connected ?" << (_connected == true) << std::endl;
+	if (_parsed_cmd.size() == 1)
 	{
         _msg_buffer += ERR_NEEDMOREPARAMS(_nick, "PASS");
 		return;
