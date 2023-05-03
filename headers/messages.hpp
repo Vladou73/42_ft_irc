@@ -52,6 +52,7 @@
 # define ERR_NOSUCHNICK(nick, target) (":localhost 401 " + nick + " " + target + " :No such nick/channel\r\n")
 # define ERR_NORECIPIENT(nickname) (":localhost 411 " + nickname + " :No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(nickname) (":localhost 412 " + nickname + " :No text to send\r\n")
+# define ERR_CANNOTSENDTOCHAN(nick, chan) (":localhost 412 " + nick + " " + chan + " :Cannot send to channel\r\n")
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " :" + message + "\r\n")
 # define RPL_MSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost MSG " + target + " :" + message + "\r\n")
 # define RPL_NOTICE(nick, username, target, message) (":" + nick + "!" + username + "@localhost NOTICE " + target + " :" + message + "\r\n")

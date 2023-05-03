@@ -35,7 +35,9 @@ Client::privmsg()
 			std::map<std::string, Channel>::iterator it_chan = _channel_exist();
 			if (it_chan == _server->_channels.end())
 				_msg_buffer += ERR_NOSUCHNICK(_nick, _parsed_cmd[1]);
-			else 
+			else if (search_for_client_by_nick_in_channel(_nick, it_chan->second._clients) == -1)
+				_msg_buffer += ERR_CANNOTSENDTOCHAN(_nick, _parsed_cmd[1]);
+			else
 			{
 				mess = _parsed_cmd[2];
 				std::map<int, Client *>	::iterator it_clients_chan = it_chan->second._clients.begin();
@@ -68,6 +70,8 @@ Client::msg()
 			std::map<std::string, Channel>::iterator it_chan = _channel_exist();
 			if (it_chan == _server->_channels.end())
 				_msg_buffer += ERR_NOSUCHCHANNEL(_nick, _parsed_cmd[1]);
+			else if (search_for_client_by_nick_in_channel(_nick, it_chan->second._clients) == -1)
+				_msg_buffer += ERR_CANNOTSENDTOCHAN(_nick, _parsed_cmd[1]);
 			else 
 			{
 				mess = _parsed_cmd[2];

@@ -13,6 +13,8 @@ Client::notice()
 			std::map<std::string, Channel>::iterator it_chan = _channel_exist();
 			if (it_chan == _server->_channels.end())
 				return ;
+			else if (search_for_client_by_nick_in_channel(_nick, it_chan->second._clients) == -1)
+				return ;
 			else 
 			{
 				mess = _parsed_cmd[2];
