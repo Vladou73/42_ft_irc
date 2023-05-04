@@ -55,7 +55,7 @@ Client::check_nick()
 	if (!_nick.empty())
 		tmp = _nick;
 	_nick = _parsed_cmd[1];
-	_msg_buffer += USER_ID(tmp, _user);
+	_msg_buffer += RPL_NICK(_nick, USER_ID2(tmp, _user));
 	return true;
 }
 

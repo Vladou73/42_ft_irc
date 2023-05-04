@@ -27,7 +27,7 @@
 # define ERR_NICKNAMEINUSE(nickinuse) (":localhost 433 " + nickinuse + " " + nickinuse +" :Nickname is already in use\r\n")
 # define ERR_ERRONEUSNICKNAME_CO(nickname, erronusnick) (":localhost 432 " + nickname + " " + erronusnick + " :Erroneus nickname\r\n")
 # define ERR_NICKNAMEINUSE_CO(nickname, othernick) (":localhost 433 " + nickname + " " + othernick + " :Nickname is already in use\r\n")
-
+# define RPL_NICK(new_nick, user_id) (user_id + " NICK " + new_nick + "\r\n")
 
 // =============================================================================
 // WELCOME MESSAGES ============================================================
@@ -71,8 +71,8 @@
 
 // FORMAT A RENVOYER POUR LE JOIN ":WiZ!jto@tolsun.oulu.fi JOIN #Twilight_zone" ; JOIN message from WiZ on channel #Twilight_zone
 # define JOIN_CHAN(user_id, chan_name) (user_id + " JOIN :" + chan_name + "\r\n")
-# define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " " + channel + " :"+ client_list + "\r\n")
-# define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of NAMES list\r\n")
+# define RPL_NAMREPLY(nickname, channel, client_list) (":localhost 353 " + nickname + " = " + channel + " :"+ client_list + "\r\n")
+# define RPL_ENDOFNAMES(nickname, channel) (":localhost 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
 //TODO est ce que cette erreur existe (pas trouve)
 # define ERR_ALREADYINCHAN(nickname, chan) (":localhost " + nickname + " :You are already in the channel " + chan + "\r\n")
 

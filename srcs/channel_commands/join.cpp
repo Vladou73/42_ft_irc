@@ -78,7 +78,7 @@ Client::join()
                     if (chan->second._first_connexion.find(_client_id)->second == true)
                     {
                         _msg_buffer += JOIN_CHAN(USER_ID2(_nick, _user), chan_names[i]);
-                        _msg_buffer += RPL_TOPIC(_nick, chan->first, chan->second._topic);
+                        // _msg_buffer += RPL_TOPIC(_nick, chan->first, chan->second._topic);
                         _msg_buffer += RPL_NAMREPLY(_nick, chan->first, clients_list);
                         _msg_buffer += RPL_ENDOFNAMES(_nick, chan->first);
                         chan->second._first_connexion.find(_client_id)->second = false;

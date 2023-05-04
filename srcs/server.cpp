@@ -140,12 +140,14 @@ Server::_handle_pollout(int fd)
         if (_clients[fd].getMsgBuffer().size() > 512)
         {
             std::string tmp = mess_trunc(_clients[fd].getMsgBuffer());
+            std::cout << GREEN << "[server] : message sent to client " << fd << " >> " << tmp << RESET << std::endl;
             send(fd, tmp.c_str(), tmp.size(), 0);
             _clients[fd].setMsgBuffer( _clients[fd].getMsgBuffer().substr(512, std::string::npos));
 
         }
         else
         {
+            std::cout << GREEN << "[server] : message sent to client " << fd << " >> " << _clients[fd].getMsgBuffer() << RESET << std::endl;
             send(fd, _clients[fd].getMsgBuffer().c_str(), _clients[fd].getMsgBuffer().size(), 0);
             _clients[fd].clearMsgBuffer();
         }

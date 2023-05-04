@@ -106,11 +106,7 @@ void
 Client::search_command()
 {
 	if (_parsed_cmd[0] == "PASS")
-	{
 		pass();
-		// return;
-	}
-
 	else if (_parsed_cmd[0] == "NICK")
 		nick();
 	else if (_parsed_cmd[0] == "USER")
