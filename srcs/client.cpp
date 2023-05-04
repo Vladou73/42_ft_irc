@@ -7,12 +7,13 @@ Client::Client()
 
 Client::Client(int client_id, Server *server) : _nick(), _user(), _user_infos(),
 		_client_id_str(change_to_str(client_id)),
-		_client_id(client_id), _data_connexion(0),
+		_client_id(client_id),
+		// _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
 		_server(server), _socket_connected(true),
 		_operator(false), _canals(),
 		_quit_msg(), _is_server_oper(false),
-		_modes(), _msg_buffer()
+		_modes(), _msg_buffer(), _pass()
 {}
 
 
@@ -24,12 +25,6 @@ Client::~Client()
 
 // =============================================================================
 // GETTERS / SETTERS ===========================================================
-std::vector<std::string>
-Client::getDataConnexion()
-{
-    return _data_connexion;
-}
-
 std::string
 Client::getUser()
 {
@@ -152,7 +147,6 @@ Client::search_command()
 		notice();
 	else
 		return;
-		// std::cout << "default\n";
 }
 
 void
@@ -202,9 +196,6 @@ Client::parse_command(std::string command)
 	}
 	if (!msg.empty() && msg.length() > 0)
 		_parsed_cmd.push_back(msg);
-
-	std::cout << "_parsed_cmd[0]=" << _parsed_cmd[0] << std::endl;
-	std::cout << "isconnected=" << _connected << std::endl;
 
 	search_command();
 }
