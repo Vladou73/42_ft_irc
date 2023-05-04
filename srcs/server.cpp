@@ -73,7 +73,10 @@ Server::_handle_data(std::vector<struct pollfd>::iterator &it)
            std::cout << GREEN << "[server] " << "clients connected = " << _count_clients << RESET << std::endl;
         }
         else //Got error //TODO : verifier si on doit egalement close le fd et supprimer le client. verifer erno (EWOULDBLOCK)
+        {
             perror("recv");
+            return;
+        }
         _clients[sender_fd].setQuitMsg("abrupt client aborting");
         _clients[sender_fd].addMsgBuffer(ERROR(_clients[sender_fd].getQuitMsg()));
 
@@ -133,15 +136,13 @@ Server::_handle_pollout(int fd)
 {
     if (!_clients[fd].getMsgBuffer().empty())
     {
-        // std::string truncated = mess_trunc(_clients[fd].getMsgBuffer());
-        // send(fd, truncated.c_str(), truncated.size(), 0);
-
         //meilleure gestion des messages faisant + de 512 caracteres : envoi en plusieurs paquets via plusieurs sends
         if (_clients[fd].getMsgBuffer().size() > 512)
         {
             std::string tmp = mess_trunc(_clients[fd].getMsgBuffer());
             send(fd, tmp.c_str(), tmp.size(), 0);
             _clients[fd].setMsgBuffer( _clients[fd].getMsgBuffer().substr(512, std::string::npos));
+
         }
         else
         {

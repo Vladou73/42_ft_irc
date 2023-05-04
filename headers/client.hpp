@@ -19,7 +19,7 @@ private:
 	std::string							_user_infos;
 	std::string							_client_id_str;
 	int									_client_id;
-	std::vector<std::string>			_data_connexion;
+	// std::vector<std::string>			_data_connexion;
 	std::string							_buff;
 	std::vector<std::string>			_parsed_cmd;
 	bool								_connected;
@@ -31,6 +31,7 @@ private:
 	bool								_is_server_oper;
 	std::map<std::string, std::string>	_modes;
 	std::string							_msg_buffer;
+	std::string							_pass;
 
 public:
 	// =============================================================================
@@ -44,7 +45,6 @@ public:
 
 	// =============================================================================
 	// GETTERS / SETTERS ===========================================================
-	std::vector<std::string>	getDataConnexion();
 	std::string 				getUser();
 	std::string 				getNick();
 	std::string 				getBuff();

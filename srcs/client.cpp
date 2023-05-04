@@ -7,12 +7,13 @@ Client::Client()
 
 Client::Client(int client_id, Server *server) : _nick(), _user(), _user_infos(),
 		_client_id_str(change_to_str(client_id)),
-		_client_id(client_id), _data_connexion(0),
+		_client_id(client_id),
+		// _data_connexion(0),
 		_buff(), _parsed_cmd(), _connected(false),
 		_server(server), _socket_connected(true),
 		_operator(false), _canals(),
 		_quit_msg(), _is_server_oper(false),
-		_modes(), _msg_buffer()
+		_modes(), _msg_buffer(), _pass()
 {}
 
 
@@ -24,12 +25,6 @@ Client::~Client()
 
 // =============================================================================
 // GETTERS / SETTERS ===========================================================
-std::vector<std::string>
-Client::getDataConnexion()
-{
-    return _data_connexion;
-}
-
 std::string
 Client::getUser()
 {
@@ -111,7 +106,11 @@ void
 Client::search_command()
 {
 	if (_parsed_cmd[0] == "PASS")
+	{
 		pass();
+		// return;
+	}
+
 	else if (_parsed_cmd[0] == "NICK")
 		nick();
 	else if (_parsed_cmd[0] == "USER")
@@ -136,7 +135,7 @@ Client::search_command()
 	  names();
 	else if (_parsed_cmd[0]== "OPER")
 	  oper();
-	else if (_parsed_cmd[0]== "KILL")
+	else if (_parsed_cmd[0]== "KILL" || _parsed_cmd[0] == "kill")
 	  kill();
 	else if (_parsed_cmd[0]== "MODE")
 		mode();
@@ -148,7 +147,6 @@ Client::search_command()
 		notice();
 	else
 		return;
-		// std::cout << "default\n";
 }
 
 void

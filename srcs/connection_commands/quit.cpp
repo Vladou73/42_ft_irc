@@ -9,7 +9,7 @@ Client::quit(Client &client, std::string msg) //quit est aussi appelé par KILL 
 		client._quit_msg = msg;
 
 	client._msg_buffer += ERROR(client._quit_msg); //d'apres la documentation c'est ce message qu'il faut envoyer au client qui quitte
-	if (!_server->_clients[client._client_id]._user.empty())
+	if (_server->_clients[client._client_id]._connected == true)
         _server->_count_clients--;
 
 	client._socket_connected = false;

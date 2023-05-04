@@ -4,7 +4,6 @@ SRCS =	srcs/main.cpp\
 		srcs/function_utils.cpp\
 		srcs/server.cpp\
 		srcs/client.cpp\
-		srcs/client_commands.cpp\
 		srcs/channel.cpp\
 		srcs/channel_commands/join.cpp\
     	srcs/channel_commands/privmsg.cpp\
@@ -16,9 +15,13 @@ SRCS =	srcs/main.cpp\
 		srcs/channel_commands/kick.cpp\
 		srcs/channel_commands/invite.cpp\
 		srcs/connection_commands/quit.cpp\
+		srcs/connection_commands/pass.cpp\
+		srcs/connection_commands/user.cpp\
+		srcs/connection_commands/nick.cpp\
 		srcs/server_commands/oper.cpp\
 		srcs/server_commands/kill.cpp\
 		srcs/server_commands/mode.cpp\
+		srcs/server_commands/ping.cpp\
 # srcs/channel_commands.cpp\
 
 CC = c++
@@ -26,7 +29,7 @@ CC = c++
 OBJS_PATH = objects/
 OBJS = ${addprefix ${OBJS_PATH}, ${SRCS:.cpp=.o}}
 
-CFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 #-fsanitize=address 
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 #-fsanitize=address
 
 $(NAME_FT): $(OBJS_FT)
 	$(CXX) $(CXXFLAGS) -o $(NAME_FT) $(OBJS_FT)
