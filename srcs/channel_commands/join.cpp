@@ -35,7 +35,6 @@ Client::join()
                     (*it).resize(64);
                 std::string	mess_op = "You are the Operator of the Channel : " + *it + "\r\n";
                 Channel channel(*it);
-                channel._id_operators.push_back(_client_id);
                 _server->_channels.insert(std::pair<std::string, Channel>(*it, channel));
 				_msg_buffer += mess_op.c_str();
             }
@@ -47,6 +46,14 @@ Client::join()
             {
                 chan->second._clients.insert(std::pair<int, Client *>(_client_id, this));
                 chan->second._first_connexion.insert(std::pair<int, bool>(_client_id, true));
+                if (chan->second._id_operators.empty())
+                {
+                    chan->second._id_operators.push_back(0);
+                    chan->second._id_operators.push_back(_client_id);
+                    break ;
+                }
+                else if (client_is_chann_oper(_client_id, chan->second._id_operators) == true)
+                    chan->second._id_operators.pop_back();
             }
         }
         std::map<std::string, Channel>::iterator chan = _server->_channels.begin();
