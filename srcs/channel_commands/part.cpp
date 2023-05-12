@@ -55,6 +55,7 @@ Client::part()
                     }
                 }
                 chan->second._first_connexion.erase(chan->second._first_connexion.find(_client_id));
+                erase_from_chan_opers(chan->second._id_operators, _client_id);
                 _msg_buffer += RPL_PART(USER_ID2(_nick, _user), chan_name, part_msg);
 
                 //msg aux autres clients du channel

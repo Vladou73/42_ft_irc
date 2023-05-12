@@ -11,7 +11,7 @@ Client::kick()
         return ;
     }
     if (_connected == true)
-	{	
+	{
 		std::vector<std::string> chan_names = parse_commas(_parsed_cmd[1]);
 		std::vector<std::string> client_names = parse_commas(_parsed_cmd[2]);
 		for (std::vector<std::string>::iterator it = chan_names.begin(); it != chan_names.end(); it++)
@@ -60,6 +60,15 @@ Client::kick()
             {
                 chan->second._clients.erase(*first);
                 chan->second._first_connexion.erase(*first);
+				erase_from_chan_opers(chan->second._id_operators, *first);
+				for (std::vector<std::string>::iterator it = _server->_clients[*first]._canals.begin(); it != _server->_clients[*first]._canals.end(); it++) // Dans le client, suppression du nom du canal du vector _canals
+                {
+                    if (*it == chan->first)
+                    {
+                        _canals.erase(it);
+                        break;
+                    }
+                }
             }
 		}
 	}

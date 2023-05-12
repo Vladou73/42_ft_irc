@@ -128,8 +128,8 @@
 # define RPL_UMODEIS(nickname, modes) (":localhost 221 " + nickname + " " + modes + "\r\n")
 # define ERR_UMODEUNKNOWNFLAG(nickname) (":localhost 501 " + nickname + " :Unknown MODE flag\r\n")
 # define RPL_CHANNELMODEIS(nickname, channel, modes) (":localhost 324 " + nickname + " " + channel + " " + modes + "\r\n")
+# define MODE_CHANNELMSGWITHPARAM(channel, mode, nick) (":localhost MODE " + channel + " " + mode + " " + nick + "\r\n")
 # define ERR_CHANOPRIVSNEEDED(nickname, channel) (":localhost 482 " + nickname + " " + channel + " :You're not channel operator\r\n")
-//TODO  enlever channel "<client> <modechar> :is unknown mode char to me"
 # define ERR_UNKNOWNMODE(nick, modechar) (":localhost 472 " + nick + " " + modechar + " :is unknown mode char for\r\n")
 
 #endif

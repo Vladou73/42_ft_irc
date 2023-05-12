@@ -19,4 +19,6 @@ int                         search_for_client_by_nick(std::string nick, std::map
 bool                        client_is_chann_oper(int client_id, std::vector<int> channel_operators);
 int                         search_for_client_by_nick_in_channel(std::string nick, std::map<int, Client *> clients);
 std::string                 mess_trunc(std::string to_trunc);
+void						erase_from_chan_opers(std::vector<int>&id_operators, int client_id);
+
 #endif

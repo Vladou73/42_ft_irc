@@ -95,3 +95,18 @@ mess_trunc(std::string to_trunc)
 	}
 	return (to_trunc);
 }
+
+
+
+
+void	erase_from_chan_opers(std::vector<int>&id_operators, int client_id)
+{
+	for (std::vector<int>::iterator it = id_operators.begin(); it != id_operators.end(); it++)
+	{
+		if (*it == client_id)
+		{
+			id_operators.erase(it);
+			return;
+		}
+	}
+}

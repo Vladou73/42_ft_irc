@@ -53,7 +53,7 @@ Client::join()
                     break ;
                 }
                 else if (client_is_chann_oper(_client_id, chan->second._id_operators) == true)
-                    chan->second._id_operators.pop_back();
+                    erase_from_chan_opers(chan->second._id_operators, _client_id);
             }
         }
         std::map<std::string, Channel>::iterator chan = _server->_channels.begin();

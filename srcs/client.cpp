@@ -217,6 +217,7 @@ Client::delete_client_from_chans()
 	{
 		if (chan->second._clients.find(_client_id) != chan->second._clients.end())
 		{
+			erase_from_chan_opers(chan->second._id_operators, _client_id);
 			chan->second._clients.erase(_client_id);
 			chan->second._first_connexion.erase(chan->second._first_connexion.find(_client_id));
 			//msg aux autres clients du channel

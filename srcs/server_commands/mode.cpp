@@ -106,12 +106,16 @@ Client::channel_mode(void)
                 if (*it == target_client_fd)
                 {
                     channel->second._id_operators.erase(it);
+                    _msg_buffer += MODE_CHANNELMSGWITHPARAM(channel->first, "-o", _parsed_cmd[3]);
                     break;
                 }
             }
         }
         else
+        {
             channel->second._id_operators.push_back(target_client_fd);
+            _msg_buffer += MODE_CHANNELMSGWITHPARAM(channel->first, "+o", _parsed_cmd[3]);
+        }
     }
     else
         _msg_buffer += ERR_UNKNOWNMODE(_nick, modestring);
