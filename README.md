@@ -1,12 +1,10 @@
-# WORK IN PROGRESS - ft_irc - Internet Relay Chat
+# ft_irc - Internet Relay Chat
 
-This project is about creating your own IRC server.
+This team project was about creating our own IRC server.
 
-
-You will use an actual IRC client to connect to your server and test it.
-
-Internet is ruled by solid standards protocols that allow connected computers to interact
-with each other.
+IRC is a text-based communication protocol on the Internet.
+It offers real-time messaging (via polling and sockets) that can be either public or private. Users can exchange
+direct messages and join group channels.
 
 # Documentation
 Have a look at the pages of our wiki : https://github.com/Vladou73/42_ft_irc/wiki 
